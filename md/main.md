@@ -1,79 +1,39 @@
-# Reinforcement Learning:
-Mathematics and algorithms from MDPs to RLHF, InstructGPT,
-and DeepSeek-R1, with Python
+# Reinforcement Learning: Mathematics and algorithms from MDPs to RLHF, InstructGPT, and DeepSeek-R1, with Python
 
-Welcome to the open-source repository for **Reinforcement Learning: Mathematics and algorithms from MDPs to RLHF, InstructGPT, and DeepSeek-R1, with Python**. This comprehensive, 158-page textbook serves as an educational compilation and rigorous distillation of the mathematically established methods, architectures, and algorithms that define modern Reinforcement Learning (RL).
+[Table of contents](#chapters) | [Next: 00 Preface](chapters/00-preface.md) →
 
-Rather than proposing speculative novel inventions, this book acts as a clean, self-contained, and structurally cohesive reference manual designed to bridge the gap between abstract mathematical proofs and concrete programmatic implementations.
 
----
+This book derives standard reinforcement learning methods and writes Python for the same updates. The algorithms, theorems, and named systems are due to the works listed in the References. It does not introduce a new algorithm. Chapters 11 and 12 describe the shape of InstructGPT-style and DeepSeek-R1-style training; they do not train those published systems, and they do not use their models, data, or infrastructure.
 
-## 🎯 Target Audience & Purpose
+**Generative artificial intelligence tools, including Google Gemini, were utilized to refine the technical prose explanations and generate the foundational layout structures for the architectural flowcharts. The final text, content curation, and programmatic logic were meticulously edited and verified by the author. All mathematical derivations, algorithmic loops, and Python source code listings have been manually cross-verified against primary literature by the author, who assumes sole responsibility for the technical correctness, accuracy, and integrity of the final work.**
 
-This book is deliberately designed for:
-* **Machine Learning Engineers & Data Scientists:** Looking to master the mathematical mechanics behind the algorithms they deploy (e.g., PPO, DeepSeek-R1, and Actor-Critic variants).
-* **Academic Students & Researchers:** Seeking a rigorous, unified mathematical framework that systematically transitions from foundational Markov Decision Processes (MDPs) to contemporary LLM reinforcement learning alignment.
-* **Self-Directed Learners:** Who want a self-contained guide covering both classical tabular theory and deep, scalable function approximation without skipping steps in the derivations.
+## Chapters
 
----
+- [00 Preface](chapters/00-preface.md)
+- [01 The RL Problem](chapters/01-the-rl-problem.md)
+- [02 Value Functions and the Bellman Equations](chapters/02-value-functions-the-bellman-equations.md)
+- [03 Dynamic Programming](chapters/03-dynamic-programming.md)
+- [04 Monte Carlo Methods](chapters/04-monte-carlo-methods.md)
+- [05 Temporal-Difference Learning](chapters/05-temporal-difference-learning.md)
+- [06 TD Control](chapters/06-td-control.md)
+- [07 Function Approximation: The Deadly Triad](chapters/07-function-approximation-the-deadly-triad.md)
+- [08 Deep Q-Networks: DQN and Double DQN](chapters/08-deep-q-networks-dqn-double-dqn.md)
+- [09 Policy Gradients: REINFORCE](chapters/09-policy-gradients-reinforce.md)
+- [10 Actor-Critic Methods](chapters/10-actor-critic-methods.md)
+- [11 Reinforcement Learning from Human Feedback](chapters/11-reinforcement-learning-from-human-feedback.md)
+- [12 InstructGPT and DeepSeek-R1-style Training](chapters/12-instructgpt-and-deepseek-r1-style-training.md)
+- [13 Summary](chapters/13-summary.md)
+- [14 Exercises and Code Solutions](chapters/14-exercises-fully-code-solutions.md)
+- [Appendix A: Statistical Concepts](appendix/a-statistical-concepts.md)
+- [Appendix B: Bellman Expectation Derivation](appendix/b-bellman-expectation-derivation.md)
+- [Appendix C: Bellman Optimality Derivation](appendix/c-bellman-optimality-derivation.md)
+- [Appendix D: Robbins--Monro Step-Size Conditions](appendix/d-robbins-monro-step-size-conditions.md)
+- [Appendix E: Policy Gradient Theorem and Expectations](appendix/e-policy-gradient-theorem-and-expectations.md)
+- [Appendix F: KL Non-Negativity](appendix/f-kl-non-negativity.md)
+- [Appendix G: PPO Derivations](appendix/g-ppo-derivations.md)
+- [Appendix H: Rejection Sampling](appendix/h-rejection-sampling.md)
+- [References](references.md)
 
-## ✨ Key Highlights & Features
+## Source of truth
 
-* **Complete Mathematical Derivations:** No "hand-waving." Every equation—from Bellman Optimality and the Robbins-Monro convergence criteria to policy gradient updates—is derived step-by-step.
-* **Unified Architectural Pacing:** Progresses logically from basic environments to the complex reward-shaping mechanics underpinning state-of-the-art modern reasoning systems (such as DeepSeek-R1, GRPO, and RLHF frameworks).
-* **Production-Ready Code Paradigms:** Accompanied by modular, clean Python/PyTorch examples demonstrating theoretical concepts in physical tracking environments and discrete algorithmic challenges.
-* **Peer-Vetted Bibliographic Foundation:** Fully cited against core literature, linking structural advancements directly back to seminal papers by Sutton, Barto, Watkins, Williams, and modern open-science preprints.
-
----
-
-## 📂 Available Formats
-
-This book is available in the following formats in this repository:
-
-* **📄 [PDF](tex/main.pdf):** The compiled publication-ready PDF for reading and printing.
-* **📝 [Markdown](md/main.md):** The main book source in Markdown format for browser viewing and lightweight editing.
-* **📘 [LaTeX source](tex/main.tex):** The full source used to generate the PDF, including the chapter structure and publication layout.
-
----
-
-## 🛠️ Methodology & Curation Notice
-
-In alignment with modern open-science publishing standards (including the guidelines established by **Springer Nature** and **NeurIPS**), this text openly declares its development methodology:
-
-* **Linguistic Scaffolding:** Generative Artificial Intelligence was utilized as a structural drafting assistant to synthesize foundational definitions, refine linguistic syntax, and optimize prose readability across the 158 pages.
-* **Technical & Mathematical Governance:** *The human author served as the absolute technical editor and supervisor.* Every mathematical proof, subscript boundaries, clipping threshold, objective function, and code block has been manually audited, cross-checked against primary sources, and verified for absolute scientific correctness. The human author assumes 100% professional accountability for the integrity, correctness, and pedagogical pacing of this text.
-
----
-
-## 📚 Repository Structure
-
-```text
-├── README.md                  # Project overview and usage notes
-├── .gitignore                 # Ignore rules for local/generated files
-├── code/                      # RL implementations and chapter examples
-├── figures/                   # Figure assets used by the book and docs
-├── md/                        # Markdown source for chapters and narrative content
-├── scripts/                   # Export and build scripts
-├── tex/                       # LaTeX source for publication workflows
-```
-
----
-
-## 🤝 Citation & Open Access
-
-This textbook is an open-access resource licensed under the **Creative Commons Attribution 4.0 International (CC BY 4.0)** license. You are free to share, adapt, and build upon this material for any purpose, provided that you give appropriate credit to the author and cite the permanent archive DOI.
-
-To cite this book in your academic work, please use the following BibTeX entry:
-
-```bibtex
-@misc{gautam2026rl,
-  author       = {Dipesh Gautam},
-  title        = {Reinforcement Learning: Mathematics and algorithms from MDPs to RLHF, InstructGPT, and DeepSeek-R1, with Python},
-  year         = {2026},
-  howpublished = {GitHub Repository},
-  note         = {Open-source textbook and source code},
-  url          = {https://github.com/dipeshgautam2012/rl-book-project}
-}
-```
-
-Use code with caution.
+The LaTeX book in [tex/main.tex](../tex/main.tex) remains the authoritative source. The markdown files in this folder are derived from it and are intended for GitHub-friendly reading.
