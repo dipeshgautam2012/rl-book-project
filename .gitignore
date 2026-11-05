@@ -1,0 +1,37 @@
+# Keep source files tracked.
+!code/
+!figures/
+!md/
+!scripts/
+!tex/
+!README.md
+!.gitignore
+
+# Editor / OS junk
+.DS_Store
+.vscode/
+.idea/
+.obsidian/
+*.swp
+*~
+
+# Python caches / venvs
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+
+# LaTeX build output
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.pdf
+*.toc
+
+# Local scratch / backups
+/figures_backup/
+*.bak
+*.tmp
+*.zip
