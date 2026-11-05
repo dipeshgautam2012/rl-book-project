@@ -77,3 +77,9 @@ To cite this book in your academic work, please use the following BibTeX entry:
 ```
 
 Use code with caution.
+
+## Math test
+
+$$
+E = mc^2 \tag{1.1}
+$$
