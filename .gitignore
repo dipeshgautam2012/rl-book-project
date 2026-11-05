@@ -34,3 +34,6 @@ venv/
 *.bak
 *.tmp
 *.zip
+
+# Pandoc build output
+build/
