@@ -7,9 +7,9 @@ When the model $P$ is known, the Bellman equations are two computations: obtain 
 
 For a *fixed* policy $\pi$, the Bellman expectation equation is linear in the unknowns $V^\pi(s)$. In matrix form that is $\mathbf{V}^\pi=\mathbf{R}^\pi+\gamma\mathbf{P}^\pi\mathbf{V}^\pi$, which rearranges to the linear solve (2.6):
 
-```math
+$$
 \mathbf{V}^\pi=(I-\gamma\mathbf{P}^\pi)^{-1}\mathbf{R}^\pi.
-```
+$$
 
 One solve gives every $V^\pi(s)$ at once. No iteration is required.
 
@@ -29,8 +29,7 @@ Both need the model $P$. If $P$ is unknown, DP does not apply; later chapters us
 
 Value iteration computes $V^*$ by repeatedly applying (2.8), then a greedy $\pi^*$. On non-terminal states the starting table $V_0$ may be any guess; the updates still converge. After a terminal state there are no further rewards, so the return from there is $0$. Those entries stay at $V(\text{terminal})=0$ and are not updated. Each round then updates every non-terminal value by (2.8) on the current table $V_k$. The policy at $s$ is (2.10) on that same table:
 
-```math
-\begin{equation}
+$$
 \begin{aligned}
 V_{k+1}(s)
 &
@@ -43,8 +42,7 @@ V_{k+1}(s)
 \arg\max_{a} \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma V_k(s') \right].
 \end{aligned}
 \tag{3.1}
-\end{equation}
-```
+$$
 
 Equation (3.1) uses the previous-round table $V_k$ at every next state $s'$, for both $V_{k+1}$ and $\pi_{k+1}$. The algorithm below writes the new number into $V(s)$ before moving to the next state in the loop, so a later state’s value and action may already read that new $V(s)$. Repeating this backup still improves the table: an early $V_k$ is only a guess, a later $V_k$ is closer to $V^*$. For $\gamma\in[0,1)$, $V_k$ converges to $V^*$, and the greedy $\pi_k$ at that limit is an approximate $\pi^*$. Exact $V^*$ is a limit of infinitely many sweeps. In practice one sweep records $\Delta$, the largest $|V(s)-v|$ over the non-terminals just updated, and stops when $\Delta<\varepsilon$ for a chosen tolerance $\varepsilon>0$.
 
@@ -164,8 +162,7 @@ Policy evaluation computes $V^\pi$ for a fixed $\pi$, the expected return from e
 
 With one action $a=\pi(s)$ at each $s$, there is no $\max$, so the Bellman expectation equation is linear in $V^\pi$, unlike (3.1). Equation (2.6) solves that system by one matrix inverse. When there are many states the inverse is expensive, so the algorithm below instead repeats the one-step backup over non-terminals until $V$ settles. That inner stop is the same $\Delta<\varepsilon$ as in Section 3.1: $\Delta$ is the largest $|V(s)-v|$ over one sweep of (3.2). The limit is $V^\pi$, the value of this fixed $\pi$, not $V^*$ unless $\pi$ is already optimal. The backup is
 
-```math
-\begin{equation}
+$$
 V(s)
 \leftarrow
 \sum_{s',r}
@@ -174,15 +171,13 @@ P(s',r \mid s,\pi(s))
 r + \gamma V(s')
 \right].
 \tag{3.2}
-\end{equation}
-```
+$$
 
 Only $\pi(s)$ appears—there is no $\max$ over actions.
 
 Policy improvement builds a greedy policy from the just-computed $V^\pi$. For each state, score every action by one-step lookahead under $V^\pi$, then take the best:
 
-```math
-\begin{equation}
+$$
 \pi'(s)
 \leftarrow
 \arg\max_{a}
@@ -192,8 +187,7 @@ P(s',r \mid s,a)
 r + \gamma V^\pi(s')
 \right].
 \tag{3.3}
-\end{equation}
-```
+$$
 
 (That score is $Q^\pi(s,a)$; the algorithm only stores $V$, not a $Q$-table.) If $\pi'=\pi$, stop. Otherwise set $\pi\leftarrow\pi'$ and return to evaluation.
 

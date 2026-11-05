@@ -27,9 +27,9 @@ The same exchange happens at every junction. Index those steps by a discrete tim
 
 4.  **Learning Step:** Agent updates its policy or value estimates based on $(S_t, A_t, R_{t+1}, S_{t+1})$.
 
-```math
+$$
 S_t \xrightarrow{A_t} (S_{t+1}, R_{t+1}) \xrightarrow{A_{t+1}} (S_{t+2}, R_{t+2}) \rightarrow \cdots
-```
+$$
 
 The rule in step 2 is the **policy** $\pi$: given the current junction, which turn to take. It is only that turn-taking rule—not the layout of the streets, and not the fare. Even if two trips start at the same junction, the driver may take a different turn, because the environment is not deterministic: a road may be closed, or traffic may block a street.
 
@@ -37,25 +37,25 @@ The policy is how the driver chooses among the turns that are still legal. If le
 
 - **Stochastic policy $\pi(a \mid s)$.** A distribution over actions in a state:
 
-```math
+$$
 \pi(a \mid s) = P(A_t = a \mid S_t = s), \quad \sum_{a \in \mathcal{A}} \pi(a \mid s) = 1.
-```
+$$
 Two visits to an open junction can then take different roads.
 
 - **Deterministic policy $\pi(s)$.** A fixed map from state to one action:
 
-```math
+$$
 a = \pi(s).
-```
+$$
 At a red light that is $\pi(\text{red light})=\text{wait}$ on every visit.
 
 ## The Markov decision process
 
 A trajectory is the sequence
 
-```math
+$$
 S_0,\; A_0,\; R_1,\; S_1,\; A_1,\; R_2,\; S_2,\; \ldots
-```
+$$
 
 We cannot usually write down one frozen sequence in advance. After each action the environment replies with a next state and reward, and that reply can be random: the taxi takes a left at the same junction and, depending on construction or traffic, reaches a different street. The policy of Section 1.1 selects the action at each state; the environment replies with $(s',r)$.
 
@@ -76,29 +76,25 @@ Four objects define it: the states, the actions, the transition probability $P$,
 
 $\mathcal{S}$ and $\mathcal{A}$ are the agent’s interface. What remains is $P$: the probability of the next state and reward after the agent acts. In full generality that probability could depend on the entire past,
 
-```math
+$$
 P(S_{t+1}, R_{t+1} \mid S_t, A_t, S_{t-1}, A_{t-1}, \dots, S_0, A_0).
-```
+$$
 
 Carrying every previous intersection, turn, and fare is unusable. If construction, traffic, and layout at *this* junction already sit in $S_t$, then older decisions add nothing. The same left turn from the same junction has the same distribution over $(S_{t+1}, R_{t+1})$ whether the taxi arrived from the north or the east. That is the **Markov property**. Given the present state and the action just chosen, the future is independent of the past.
 
-```math
-\begin{equation}
+$$
 P(S_{t+1}, R_{t+1} \mid S_t, A_t, S_{t-1}, A_{t-1}, \dots, S_0, A_0)
 =
 P(S_{t+1}, R_{t+1} \mid S_t, A_t). \tag{1.1}
-\end{equation}
-```
+$$
 
 Under (1.1) the environment depends on the agent only through the current state and action. Write lowercase $s \in \mathcal{S}$, $a \in \mathcal{A}$, $s' \in \mathcal{S}$, and $r \in \mathbb{R}$ for particular values of the random variables $S_t$, $A_t$, $S_{t+1}$, and $R_{t+1}$. The transition probability is therefore
 
-```math
-\begin{equation}
+$$
 P(s',r \mid s,a)
 =
 P\!\left(S_{t+1}=s',\, R_{t+1}=r \mid S_t=s,\, A_t=a\right). \tag{1.2}
-\end{equation}
-```
+$$
 
 The pair $(s', r)$ is joint because the next state and the immediate reward often come together—arriving at a destination, for example, both changes the state and yields a reward. Together with the policy $\pi(a \mid s)$, (1.2) generates the trajectory: the agent chooses $A_t$ from $\pi$, then the environment draws $(S_{t+1}, R_{t+1})$ from $P$. From here on, statements about the environment use $P(s',r \mid s,a)$.
 
@@ -108,33 +104,28 @@ Equation (1.2) is the joint of one next junction and one fare. From a junction s
 
 **Where the taxi goes.** The joint $P(s',r\mid s,a)$ is the probability of reaching next state $s'$ together with each possible fare (reward) $r$. The probability of being in $s'$ after the turn is the total of those probabilities over every fare:
 
-```math
-\begin{equation}
+$$
 P(s' \mid s,a) = \sum_{r} P(s',r \mid s,a)
 \quad\text{[law of total probability]}
 \tag{1.3}
-\end{equation}
-```
+$$
 
 **What fare to expect, given also the next junction.** The expected fare given this junction, this turn, and arrival at $s'$ is
 
-```math
-\begin{equation}
+$$
 R(s,a,s')
 =
 \mathbb{E}[R_{t+1} \mid S_t=s, A_t=a, S_{t+1}=s']
 =
 \sum_{r} r\, \frac{P(s',r \mid s,a)}{P(s' \mid s,a)}.
 \tag{1.4}
-\end{equation}
-```
+$$
 
 So $R(s,a,s')$ is the expected immediate reward from taking action $a$ in state $s$ and arriving at $s'$ (, <a href="#eq:B.4" data-reference-type="eqref" data-reference="eq:B.4">[eq:B.4]</a>).
 
 **What fare to expect for this turn.** If the next junction is not fixed, average the immediate reward given only $(s,a)$:
 
-```math
-\begin{equation}
+$$
 R(s,a)
 =
 \mathbb{E}[R_{t+1} \mid S_t=s, A_t=a]
@@ -143,15 +134,13 @@ R(s,a)
 =
 \sum_{s'} P(s' \mid s,a)\, R(s,a,s').
 \tag{1.5}
-\end{equation}
-```
+$$
 
 So $R(s,a)$ is the expected immediate reward from taking action $a$ in state $s$ (, <a href="#eq:B.5" data-reference-type="eqref" data-reference="eq:B.5">[eq:B.5]</a>). The last equality averages $R(s,a,s')$ over the next-state distribution (1.3).
 
 **When $\pi$ chooses the action.** The agent no longer fixes $a$; at state $s$ it chooses actions according to $\pi(a\mid s)$. Averaging under $\pi$ gives the expected reward from $s$ and the next-state probability from $s$ under that policy:
 
-```math
-\begin{equation}
+$$
 R^\pi(s)
 =
 \mathbb{E}_\pi[R_{t+1} \mid S_t=s]
@@ -160,18 +149,15 @@ R^\pi(s)
 =
 \sum_a \pi(a \mid s) \sum_{s',r} r\, P(s',r \mid s,a),
 \tag{1.6}
-\end{equation}
-```
+$$
 
-```math
-\begin{equation}
+$$
 P^\pi(s' \mid s)
 =
 \sum_a \pi(a \mid s)\, P(s' \mid s,a)
 \quad\text{[law of total probability]}
 \tag{1.7}
-\end{equation}
-```
+$$
 
 So $R^\pi(s)$ is the expected immediate reward from $s$ under $\pi$ (, <a href="#eq:B.12" data-reference-type="eqref" data-reference="eq:B.12">[eq:B.12]</a>), and $P^\pi(s'\mid s)$ is the probability of moving from $s$ to $s'$ under $\pi$. Those quantities are stacked into a vector and a matrix in Chapter 2, for one fixed policy.
 
@@ -183,16 +169,14 @@ Rewards at different times are not treated as equal. A fare collected now is wor
 
 Without discounting, the infinite sum $\sum_{k=0}^\infty R_{t+k+1}$ can diverge even when every reward is bounded. With $\gamma \in [0,1)$, the geometric weights force the sum to converge, and they also express “sooner is better”:
 
-```math
-\begin{equation}
+$$
 G_t
 =
 \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}
 =
 R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \cdots.
 \tag{1.8}
-\end{equation}
-```
+$$
 
 So $R_{t+1}$ enters at full weight, $R_{t+2}$ at weight $\gamma$, $R_{t+3}$ at $\gamma^2$, and so on.
 
@@ -202,31 +186,27 @@ So $R_{t+1}$ enters at full weight, $R_{t+2}$ at weight $\gamma$, $R_{t+3}$ at $
 
 - If $\gamma=1$, there is no discounting; that is usable mainly for episodic tasks that stop at a finite horizon $T$:
 
-```math
-\begin{equation}
+$$
 G_t = \sum_{k=0}^{T-t-1} \gamma^k R_{t+k+1}.
 \tag{1.9}
-\end{equation}
-```
+$$
 
 The infinite sum (1.8) rewrites by factoring $\gamma$ from every term after the first:
 
-```math
+$$
 \begin{aligned}
 G_t
 &= R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \gamma^3 R_{t+4} + \cdots \\
 &= R_{t+1} + \gamma \left( R_{t+2} + \gamma R_{t+3} + \gamma^2 R_{t+4} + \cdots \right) \\
 &= R_{t+1} + \gamma G_{t+1}.
 \end{aligned}
-```
+$$
 
 The recursive form is therefore
 
-```math
-\begin{equation}
+$$
 G_t = R_{t+1} + \gamma G_{t+1}.
 \tag{1.10}
-\end{equation}
-```
+$$
 
 So the return is the immediate reward plus a discounted copy of the return from the next time. That identity is what value functions will average in the next chapter.

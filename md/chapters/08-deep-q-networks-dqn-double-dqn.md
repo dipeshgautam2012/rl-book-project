@@ -15,16 +15,15 @@ Section 8.1 writes the neural update. Sections 8.2–8.3 cover replay and the ta
 
 In linear FA, a fixed map produces a feature vector $\mathbf{x}(s,a)\in\mathbb{R}^d$ for each pair, and
 
-```math
+$$
 \hat{Q}(s,a;\mathbf{w})=\mathbf{w}^\top\mathbf{x}(s,a).
-```
+$$
 
 Only $\mathbf{w}$ is learned. A neural network estimates the same $Q(s,a)$, but the features are no longer a fixed $\mathbf{x}$. They are computed inside the network from parameters $\theta$. Write the result as $\hat{Q}(s,a;\theta)$. When $\mathcal{A}$ is discrete and small, the network often maps the state $s$ to a vector of scores, one entry per action. Action choice is unchanged from Chapter 6: pick $A_t$ by $\varepsilon$-greedy or softmax on those scores.
 
 The semi-gradient Q-learning update (7.3) lifts to
 
-```math
-\begin{equation}
+$$
 \theta
 \leftarrow
 \theta
@@ -39,8 +38,7 @@ R_{t+1}
 \bigr)
 \nabla_\theta\hat{Q}(S_t,A_t;\theta).
 \tag{8.1}
-\end{equation}
-```
+$$
 
 The parameters $\theta$ play the same role as $\mathbf{w}$ in linear FA: they are the weights of $\hat{Q}$, updated by a semi-gradient step on the TD error. The difference is only the form of $\hat{Q}$—linear in $\mathbf{w}$, nonlinear in $\theta$—so the factor after the TD error is $\nabla_\theta\hat{Q}$ from backpropagation instead of $\mathbf{x}_t$.
 
@@ -58,13 +56,13 @@ Random replay mixes old and new experiences, so learning batches are less correl
 
 Replay (Section 8.2) changes **which** experiences enter the update: sample from $\mathcal{D}$ instead of using only the newest transition. It does not change **how** the one-step target is built. Inside (8.1) that target is still
 
-```math
+$$
 U_t
 =
 R_{t+1}
 +
 \gamma\max_{a'}\hat{Q}(S_{t+1},a';\theta)
-```
+$$
 
 (with $U_t=R_{t+1}$ if $S_{t+1}$ is terminal). Both the prediction $\hat{Q}(S_t,A_t;\theta)$ and the bootstrap $\max_{a'}\hat{Q}(S_{t+1},a';\theta)$ depend on the same online weights $\theta$.
 
@@ -74,23 +72,20 @@ A **target network** removes the shared dependence. Keep a second parameter vect
 
 For a replayed experience $(s,a,r,s',d)$, replace $\theta$ by $\theta^-$ in the $\max$:
 
-```math
-\begin{equation}
+$$
 y
 =
 r
 +
 \gamma(1-d)\max_{a'}\hat{Q}(s',a';\theta^-).
 \tag{8.2}
-\end{equation}
-```
+$$
 
 When $d=1$ (terminal $s'$), the factor $(1-d)$ is $0$, so the $\max\hat{Q}$ term drops out and $y=r$: there is no bootstrap return from a terminal state. When $d=0$, (8.2) is $r+\gamma\max_{a'}\hat{Q}(s',a';\theta^-)$. So (8.2) is $U_t$ from (8.1), with $\theta^-$ in the bootstrap and $(1-d)$ writing the terminal case.
 
 DQN samples a minibatch of $B$ experiences $\{(s_j,a_j,r_j,s'_j,d_j)\}_{j=1}^{B}$ from $\mathcal{D}$ and applies (8.2) to each:
 
-```math
-\begin{equation}
+$$
 y_j
 =
 r_j
@@ -99,26 +94,22 @@ r_j
 \qquad
 j=1,\ldots,B.
 \tag{8.3}
-\end{equation}
-```
+$$
 
 Neither side of that difference is the true $Q^*$: $y_j$ is a bootstrap TD target from (8.2), and $\hat{Q}(s_j,a_j;\theta)$ is the online prediction. The one-step error on sample $j$ is still written $y_j-\hat{Q}(s_j,a_j;\theta)$, treating $y_j$ as the regression target. Averaging the squared errors gives the minibatch objective
 
-```math
-\begin{equation}
+$$
 J(\theta)
 =
 \frac{1}{2B}
 \sum_{j=1}^{B}
 \bigl(y_j-\hat{Q}(s_j,a_j;\theta)\bigr)^2.
 \tag{8.4}
-\end{equation}
-```
+$$
 
 Each $y_j$ depends on $\theta^-$ (held fixed for the copy period), not on the online $\theta$ being differentiated. The **semi-gradient** of (8.4) therefore treats every $y_j$ as constant:
 
-```math
-\begin{equation}
+$$
 \nabla_\theta J(\theta)
 =
 -
@@ -127,13 +118,11 @@ Each $y_j$ depends on $\theta^-$ (held fixed for the copy period), not on the on
 \bigl(y_j-\hat{Q}(s_j,a_j;\theta)\bigr)
 \nabla_\theta\hat{Q}(s_j,a_j;\theta).
 \tag{8.5}
-\end{equation}
-```
+$$
 
 Gradient descent on $J$ is then
 
-```math
-\begin{equation}
+$$
 \theta
 \leftarrow
 \theta
@@ -147,8 +136,7 @@ Gradient descent on $J$ is then
 \bigl(y_j-\hat{Q}(s_j,a_j;\theta)\bigr)
 \nabla_\theta\hat{Q}(s_j,a_j;\theta).
 \tag{8.6}
-\end{equation}
-```
+$$
 
 Compared with (8.1), the experiences come from replay and the bootstrap uses $\theta^-$ through the $y_j$. When $B=1$, (8.3)–(8.6) reduce to a single replayed transition.
 
@@ -303,17 +291,17 @@ That select-and-evaluate split is the Double Q-learning idea of : one estimate p
 
 Ordinary DQN:
 
-```math
+$$
 y
 =
 r
 +
 \gamma(1-d)\max_{a'}\hat{Q}(s',a';\theta^-),
-```
+$$
 
 i.e. select and evaluate with $\theta^-$:
 
-```math
+$$
 a^*
 =
 \arg\max_{a'}\hat{Q}(s',a';\theta^-),
@@ -323,11 +311,11 @@ y
 r
 +
 \gamma(1-d)\,\hat{Q}(s',a^*;\theta^-).
-```
+$$
 
 Double DQN selects with $\theta$ instead:
 
-```math
+$$
 a^*
 =
 \arg\max_{a'}\hat{Q}(s',a';\theta),
@@ -337,12 +325,11 @@ y
 r
 +
 \gamma(1-d)\,\hat{Q}(s',a^*;\theta^-).
-```
+$$
 
 For a minibatch:
 
-```math
-\begin{equation}
+$$
 y_j
 =
 r_j
@@ -354,8 +341,7 @@ s'_j,
 \theta^-
 \Bigr).
 \tag{8.7}
-\end{equation}
-```
+$$
 
 Replace (8.3) by (8.7); the loss (8.4)–(8.6), replay, and $\theta^-\leftarrow\theta$ stay unchanged.
 

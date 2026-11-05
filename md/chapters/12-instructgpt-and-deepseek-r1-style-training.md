@@ -16,59 +16,51 @@ We are not training those published systems (InstructGPT and DeepSeek-R1) in thi
 ## Supervised fine-tuning
 
 SFT starts from a pretrained checkpoint $\pi_{\mathrm{base}}$ and a dataset of **fixed** prompt–reply pairs
-```math
+$$
 \mathcal{D}_{\mathrm{SFT}}=\bigl\{(x^{(n)}, y^{(n)})\bigr\}_{n=1}^{N}.
-```
+$$
 The replies are written (or already accepted) strings — human demos in InstructGPT, long chain-of-thought traces in a DeepSeek-R1-style cold start. The goal is to raise the probability of those strings: maximize $\pi_\theta(y\mid x)$ on $\mathcal{D}_{\mathrm{SFT}}$. There is no sampler and no reward.
 
 On one training pair $(x,y)$ with $y=(y_1,\ldots,y_T)$,
-```math
+$$
 \log\pi_\theta(y\mid x)
 =
 \sum_{t=0}^{T-1}
 \log\pi_\theta(y_{t+1}\mid x, y_1,\ldots,y_t).
-```
+$$
 The statistical target is the **total** log-likelihood of the dataset
-```math
-\begin{equation}
+$$
 J_{\mathrm{SFT}}(\theta)
 =
 \sum_{n=1}^{N}
 \log\pi_\theta\bigl(y^{(n)}\mid x^{(n)}\bigr).
 \tag{12.1}
-\end{equation}
-```
-```math
-\begin{equation}
+$$
+$$
 L_{\mathrm{SFT}}(\theta)
 =
 -\frac1N J_{\mathrm{SFT}}(\theta).
 \tag{12.2}
-\end{equation}
-```
+$$
 
 In ordinary autoregressive generation the prefix $y_1,\ldots,y_t$ is sampled from the model’s previous outputs: $y_1\sim\pi_\theta(\cdot\mid x)$, then $y_2\sim\pi_\theta(\cdot\mid x,y_1)$, and so on.
 
 **Teacher forcing** does not use those samples. For the SFT loss, each term $\log\pi_\theta(y_{t+1}\mid x, y_1,\ldots,y_t)$ uses the **gold** prefix $y_1,\ldots,y_t$ from $\mathcal{D}_{\mathrm{SFT}}$, and the target is gold $y_{t+1}$. If the gold sentence is “The cat sat” and the model predicts `dog` instead of `cat`, training still feeds gold **`cat`** as the next input and applies a loss against gold `sat`. At inference, `dog` would be fed and the rest of the string would drift. Teacher forcing is that training setup — not a second teacher network.
 
 Differentiating (12.2) gives
-```math
-\begin{equation}
+$$
 \nabla_\theta L_{\mathrm{SFT}}(\theta)
 =
 -\frac1N\sum_{n=1}^{N}
 \sum_{t=0}^{T_n-1}
 \nabla_\theta\log\pi_\theta\bigl(y^{(n)}_{t+1}\mid x^{(n)}, y^{(n)}_1,\ldots,y^{(n)}_t\bigr).
 \tag{12.3}
-\end{equation}
-```
+$$
 Gradient descent with step size $\alpha>0$ is
-```math
-\begin{equation}
+$$
 \theta\leftarrow\theta-\alpha\,\nabla_\theta L_{\mathrm{SFT}}(\theta).
 \tag{12.4}
-\end{equation}
-```
+$$
 In practice: a mini-batch forward, $L_{\mathrm{SFT}}$, `backward`, optimizer step.
 
 After enough steps, $\pi_\theta(y\mid x)$ is larger than it was under $\pi_{\mathrm{base}}$ on the demos. That is **behavioral cloning** of fixed strings. SFT does not sample its own replies, does not call a verifier, and does not optimize “any correct trace” — only the traces in $\mathcal{D}_{\mathrm{SFT}}$. The model is also biased toward gold prefixes; at use time the prefix is its **own** tokens (exposure bias). Sampling scored by a reward is what closes that gap (Sections 11.5–11.6 and 12.3.2).
@@ -136,12 +128,10 @@ GRPO is derived in Section 12.3.2; reject-then-SFT in Section 12.3.3. The second
 ### Rule-based reward
 
 Math, code with unit tests, and short-answer STEM have a key: a gold number, a test suite, or a short target string. A fixed **verifier**, usually a program that implements rules instead of a reward model $r_\phi$, scores each reply. That reward is an **accuracy** term plus a **format** term:
-```math
-\begin{equation}
+$$
 r(x,y)=r_{\mathrm{acc}}(x,y)+r_{\mathrm{format}}(y).
 \tag{12.5}
-\end{equation}
-```
+$$
 No $\phi$ is trained, and humans do not label each sampled $y$. Each prompt $x$ in $\mathcal{D}$ is stored with a **key** the policy does not see — a gold answer or unit tests — and the verifier uses that key to score $y$. The two terms in (12.5) are $0$–$1$ checkers:
 
 - $r_{\mathrm{format}}(y)\in\{0,1\}$: $1$ if the reply has the required format (for example `<think>…</think>` tags).
@@ -161,30 +151,28 @@ The RL **loop** is the same shape as Chapter 11 Stage 2: sample $y$ from $\pi_\t
 We do not implement those papers’ models or training stack. We follow a similar update on the Chapter 11 toy. The toy already has a gold key, so a program can score $y$ and we skip $r_\phi$ (Section 12.3.1). Section 11.6 already forms $A_k$ from **other replies to the same** $x$ (leave-one-out). GRPO is that idea with a group mean and std.
 
 Fix one prompt $x\in\mathcal{D}$ with a key. Copy $\theta_{\mathrm{old}}\leftarrow\theta$. **Sample** a group of $G$ replies, i.i.d. given that same $x$:
-```math
+$$
 y^{(1)},\ldots,y^{(G)}\sim\pi_{\theta_{\mathrm{old}}}(\cdot\mid x),
 \qquad
 y^{(i)}=\bigl(y^{(i)}_1,\ldots,y^{(i)}_{T_i}\bigr).
-```
+$$
 The sampling condition is only $x$: reply $i$ does not see the other replies. As in (11.1), each $y^{(i)}$ is generated with
-```math
+$$
 \pi_{\theta_{\mathrm{old}}}\bigl(y^{(i)}\mid x\bigr)
 =
 \prod_{t=0}^{T_i-1}
 \pi_{\theta_{\mathrm{old}}}\bigl(y^{(i)}_{t+1}\mid x,y^{(i)}_1,\ldots,y^{(i)}_t\bigr).
-```
+$$
 
 Score each finished reply with (12.5): $r_i=r_{\mathrm{acc}}\bigl(x,y^{(i)}\bigr)+r_{\mathrm{format}}\bigl(y^{(i)}\bigr)$.
 
 **Group advantage.** Baseline is this group’s own mean, then scale by the group’s std so $A$ is order-1 when $r$ is $0/1/2$:
-```math
-\begin{equation}
+$$
 A_i
 =
 \frac{r_i-\mathrm{mean}(r)}{\mathrm{std}(r)+\delta}.
 \tag{12.6}
-\end{equation}
-```
+$$
 $\delta>0$ is a small constant added so we never divide by zero (typical $10^{-8}$). If every $r_i$ is equal, then $\mathrm{mean}(r)=r_i$ as well, so the numerator is $0$ and $\mathrm{std}(r)=0$. Without $\delta$ that is $0/0$ (undefined), not a blow-up. With $\delta$ you get $A_i=0/\delta=0$ — no update (the group has nothing to prefer). There is no “nonzero numerator over zero std” case: $\mathrm{std}(r)=0$ if and only if every $r_i$ is the same, which forces the numerator to $0$ too. Section 11.6 uses $A_k=R_k-b_k$ with leave-one-out $b_k$. Here the baseline is the group’s mean of the $G$ rule scores; the std only rescales.
 
 <div class="asidenote">
@@ -194,13 +182,13 @@ $\delta>0$ is a small constant added so we never divide by zero (typical $10^{-8
 </div>
 
 The importance ratio remains the same as in (11.8):
-```math
+$$
 \rho_i(\theta)
 =
 \frac{\pi_\theta\bigl(y^{(i)}\mid x\bigr)}{\pi_{\theta_{\mathrm{old}}}\bigl(y^{(i)}\mid x\bigr)}.
-```
+$$
 Freeze $A_i$ and minimize the same clip scalar as (11.9),
-```math
+$$
 L_{\mathrm{clip}}(\theta)
 =
 -\frac1G\sum_{i=1}^{G}
@@ -208,25 +196,23 @@ L_{\mathrm{clip}}(\theta)
 \rho_i(\theta)\,A_i,\;
 \mathrm{clip}(\rho_i(\theta),1-\varepsilon,1+\varepsilon)\,A_i
 \bigr).
-```
+$$
 **KL.** In (11.4) the score $R_\theta$ is $r_\phi-\beta\log(\pi_\theta/\pi_{\mathrm{ref}})$, so the log-ratio goes into $A_k$. Here $r_i$ is only (12.5). Subtracting the KL from $r_i$ would send it through the group mean and std in (12.6), so $A_i$ would mix the rule score with drift from $\pi_{\mathrm{ref}}$. Therefore the KL is added to the loss instead:
-```math
-\begin{equation}
+$$
 L_{\mathrm{GRPO}}(\theta)
 =
 L_{\mathrm{clip}}(\theta)
 +
 \beta\,\mathrm{KL}\bigl(\pi_\theta(\cdot\mid x)\,\|\,\pi_{\mathrm{ref}}(\cdot\mid x)\bigr).
 \tag{12.7}
-\end{equation}
-```
+$$
 The KL is estimated by averaging over the $G$ sampled replies:
-```math
+$$
 \frac1G\sum_{i=1}^{G}
 \log\frac{\pi_\theta\bigl(y^{(i)}\mid x\bigr)}{\pi_{\mathrm{ref}}\bigl(y^{(i)}\mid x\bigr)}
 \approx
 \mathrm{KL}\bigl(\pi_\theta(\cdot\mid x)\,\|\,\pi_{\mathrm{ref}}(\cdot\mid x)\bigr).
-```
+$$
 $\pi_{\mathrm{ref}}$ is a freeze of $\pi_\theta$ **at the start of this RL stage**. It only enters (12.7). It never samples.
 
 $A_i$ and $\theta_{\mathrm{old}}$ stay frozen on the inner loop of $E$ gradient-descent steps on (12.7). If $E=1$, there is only one step, so $\rho=1$ and the clip does not act. If $E>1$, several steps on the same batch can drive $\pi_\theta$ far from $\pi_{\theta_{\mathrm{old}}}$; the clip in Section 11.6.2 stops that (Issue 2).
@@ -310,13 +296,13 @@ The keep-chance is a **hard filter** $f(x,y)\in\{0,1\}$: $f=1$ only if $r_{\math
 <div class="asidenote">
 
 **Kept mix.** A kept reply has distribution
-```math
+$$
 p(y\mid x)
 =
 \frac{\pi(y\mid x)\,f(x,y)}{Z(x)},
 \qquad
 Z(x)=P(f=1\mid x).
-```
+$$
 This is only the closed form of that mix (). The algorithm never uses it: it samples from $\pi$ and checks $f$.
 
 **Toy.** Four replies with $\pi=(0.40,0.10,0.30,0.20)$ and $f=(1,1,0,0)$ give $Z=0.50$ and $p=(0.80,0.20,0,0)$.

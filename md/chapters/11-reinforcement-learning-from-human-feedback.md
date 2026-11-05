@@ -6,17 +6,17 @@
 Chapters 9 and 10 assume the environment returns a reward after each action. Many language tasks have no such signal. **Reinforcement learning from human feedback (RLHF)** () replaces that missing reward by a model trained from human comparisons, then improves the language-model policy with the policy-gradient methods of Chapters 9–10. To do so, a set of prompts and model replies is collected; humans mark which reply they prefer in each pair; those comparisons train a scalar reward model; and policy gradient then raises the probability of preferred answers.
 
 A single comparison looks like this. A user types the prompt
-```math
+$$
 x=\text{2+2}.
-```
+$$
 The model answers with a short token sequence. Several responses are possible:
-```math
+$$
 y^{(1)}=(\text{it},\,\text{is},\,4),
 \qquad
 y^{(2)}=(\text{it},\,\text{is},\,5),
 \qquad
 y^{(3)}=(\text{it},\,\text{equals},\,4).
-```
+$$
 One reply is “it is 4”, another “it is 5”, and another “it equals 4”. Here $y^{(1)}$ and $y^{(3)}$ are both correct in substance but use different middle tokens; $y^{(2)}$ is wrong. A person comparing a pair marks a preference—e.g. $y^{(1)}$ over $y^{(2)}$, or either of $y^{(1)}$ and $y^{(3)}$ over $y^{(2)}$. There is no environment function that returns a reward after each token—only that kind of judgment on full answers. Asking humans to give an absolute score to every sample is slow and noisy; picking the better of two is easier.
 
 RLHF works in two stages. Stage 1 trains $r_\phi$ once from human preference triples. Stage 2 is the policy loop: sample replies from $\pi_\theta$, score them with $r_\phi$, update $\theta$, and resample. Later we add a frozen reference $\pi_{\mathrm{ref}}$ into that score.
@@ -45,13 +45,13 @@ As an MDP episode from Chapter 1:
 For $y^{(1)}=(\text{it},\,\text{is},\,4)$, the path is $S_0=x=\text{2+2}$, $A_0=\text{it}$, $S_1=(x,\text{it})$, $A_1=\text{is}$, $S_2=(x,\text{it},\text{is})$, $A_2=4$. Other replies diverge at some token: $y^{(2)}$ matches that prefix and ends with $A_2=5$; $y^{(3)}$ branches earlier with $A_1=\text{equals}$.
 
 Once $A_t$ is chosen, the next state is the unique string that appends that token, so
-```math
+$$
 P(S_{t+1}\mid S_t,A_t)=1.
-```
+$$
 For example, $P\bigl((x,\text{it},\text{is})\mid (x,\text{it}),\,\text{is}\bigr)=1$. Unlike in the taxi example, where the same turn can lead to different next junctions, here the next state is fixed once the token is chosen. Which full answer appears is decided only by $\pi_\theta$: from $S_1=(x,\text{it})$ it may sample $\text{is}$ or $\text{equals}$, so $y^{(1)}$ and $y^{(3)}$ can both follow from that state.
 
 The probability of a full response $y=(y_1,\ldots,y_T)$ given the prompt $x$ is the joint over its tokens. By the chain rule,
-```math
+$$
 \pi_\theta(y\mid x)
 =
 \pi_\theta(y_1,\ldots,y_T\mid x)
@@ -60,10 +60,9 @@ The probability of a full response $y=(y_1,\ldots,y_T)$ given the prompt $x$ is 
 \pi_\theta(y_2\mid x,y_1)
 \cdots
 \pi_\theta(y_T\mid x,y_1,\ldots,y_{T-1}),
-```
+$$
 which is
-```math
-\begin{equation}
+$$
 \pi_\theta(y\mid x)
 =
 \prod_{t=0}^{T-1}
@@ -74,10 +73,9 @@ which is
 \sum_{t=0}^{T-1}
 \log\pi_\theta(y_{t+1}\mid x,y_1,\ldots,y_t).
 \tag{11.1}
-\end{equation}
-```
+$$
 Each factor is the policy at the corresponding state: $\pi_\theta(y_{t+1}\mid x,y_1,\ldots,y_t)=\pi_\theta(A_t\mid S_t)$. For $y=y^{(1)}=(\text{it},\,\text{is},\,4)$,
-```math
+$$
 \log\pi_\theta(y^{(1)}\mid x)
 =
 \log\pi_\theta(\text{it}\mid x)
@@ -85,44 +83,44 @@ Each factor is the policy at the corresponding state: $\pi_\theta(y_{t+1}\mid x,
 \log\pi_\theta(\text{is}\mid x,\text{it})
 +
 \log\pi_\theta(4\mid x,\text{it},\text{is}).
-```
+$$
 
 The human judges the finished string, not each token. So the reward is sparse: $R_1=\cdots=R_{T-1}=0$ and $R_T=r(x,y)$, a score for the full response. The return from Chapter 1 is then $G_t=R_{t+1}+\gamma R_{t+2}+\cdots$; with this sparse sequence it is just a discounted copy of that terminal score. Those intermediate zeros are not a claim that early tokens do not matter—they shape what comes later and thus $r(x,y)$—but that no separate score is observed after each token. Here, after writing $\text{it}$ or $\text{is}$ there is no natural “partial answer” grade; a person (or a reward model trained on preferences) only ranks full replies such as $y^{(1)}$ against $y^{(2)}$. Defining a reliable reward for every prefix is usually hard, costly, or infeasible, so standard RLHF treats the task signal as terminal only.
 
 <div class="asidenote">
 
 Intermediate rewards *are* useful in **multi-step reasoning**, where the model produces a chain of steps before a final answer. Take a short arithmetic word problem, for example
-```math
+$$
 x=\text{A store has 3 boxes with 4 apples each. How many apples in total?}
-```
+$$
 A reasoned reply might be three lines: (1) $\text{apples per box}=4$, (2) $\text{number of boxes}=3$, (3) $\text{total}=3\times 4=12$. With only an **outcome** reward—$+1$ if the last number is $12$, else $0$—every token in a long wrong derivation shares the same terminal $G_t$, so early mistakes are hard to blame. If a teacher or verifier can mark each line as it appears (step 1 correct, step 2 correct, step 3 wrong), those grades are intermediate **process rewards**: $R_t$ need not stay zero before the end. Tool use is similar—a small reward when a calculator call succeeds, then a final reward when the overall answer is right. That labeling is a different problem from preference comparisons on full replies.
 
 </div>
 
 Take $\gamma=1$. The only nonzero reward is the terminal $r(x,y)$, so a $\gamma<1$ would shrink that score by $\gamma^{T-t-1}$ with no useful meaning here. From (1.10), $G_t=R_{t+1}+G_{t+1}$. With earlier rewards zero, every $G_t$ equals the terminal score: $G_t=r(x,y)$. From (9.8) (REINFORCE),
-```math
+$$
 \theta
 \leftarrow
 \theta+\alpha\sum_{t=0}^{T-1}\gamma^{t}G_t\,\nabla_\theta\log\pi_\theta(A_t\mid S_t).
-```
+$$
 Substitute $\gamma=1$, $G_t=r(x,y)$, and $A_t=y_{t+1}$, $S_t=(x,y_1,\ldots,y_t)$:
-```math
+$$
 \theta
 \leftarrow
 \theta+\alpha\,r(x,y)\sum_{t=0}^{T-1}\nabla_\theta\log\pi_\theta(y_{t+1}\mid x,y_1,\ldots,y_t).
-```
+$$
 The sum is $\nabla_\theta$ of the sum of logs in (11.1), so it equals $\nabla_\theta\log\pi_\theta(y\mid x)$:
-```math
+$$
 \theta
 \leftarrow
 \theta+\alpha\,r(x,y)\,\nabla_\theta\log\pi_\theta(y\mid x).
-```
+$$
 Both $y^{(1)}$ and $y^{(3)}$ are correct replies; $y^{(2)}$ is wrong. For either correct sample the update has the same form. Taking $y^{(1)}$,
-```math
+$$
 \theta
 \leftarrow
 \theta+\alpha\,r(x,y^{(1)})\,\nabla_\theta\log\pi_\theta(y^{(1)}\mid x).
-```
+$$
 A well-chosen $r$ should score $y^{(1)}$ and $y^{(3)}$ high (positive) and $y^{(2)}$ low (negative). Then sampling $y^{(1)}$ or $y^{(3)}$ raises that reply’s probability, and sampling $y^{(2)}$ lowers $\pi_\theta(y^{(2)}\mid x)$. What is missing is that scalar $r$—Section 11.2 learns it from preferences such as $y^{(1)}\succ y^{(2)}$; read as $y^{(1)}$ is preferred to $y^{(2)}$.
 
 <div class="implnote">
@@ -150,55 +148,51 @@ Output: trained policy $\pi_\theta$.
 The policy-gradient update in Section 11.1 needs a reward $r(x,y)$ for each full reply. What we collect instead are pairwise preferences. Return to the example: for the same prompt $x=\text{2+2}$, a human sees $y^{(1)}=(\text{it},\,\text{is},\,4)$ and $y^{(2)}=(\text{it},\,\text{is},\,5)$ and marks $y^{(1)}$ preferred. Write $y_w$ for the winner and $y_l$ for the loser, so here $y_w=y^{(1)}$ and $y_l=y^{(2)}$. Each labeled example is a triple $(x,y_w,y_l)$; the dataset is many such triples. This section turns those judgments into a scalar $r(x,y)$.
 
 That scalar is learned by a **reward model** $r_\phi$, separate from the policy $\pi_\theta$: a neural network with weights $\phi$ that takes $(x,y)$ and outputs one number. The reward model’s architecture is a design choice; what the math needs is a differentiable score $r_\phi(x,y)$ that we can train by gradient descent on $\phi$. On a labeled triple the winner should score above the loser, $r_\phi(x,y_w)>r_\phi(x,y_l)$. The gap
-```math
+$$
 z=r_\phi(x,y_w)-r_\phi(x,y_l)
-```
+$$
 is positive when the model agrees with the label, negative when it disagrees, and zero on a tie. That gap is on the whole real line, but a preference is uncertain—even a clear winner is not preferred with probability $1$ in every labeling—so we need a probability $P(y_w\succ y_l\mid x)$ in $(0,1)$, not the raw $z$.
 
 The **sigmoid** (logistic) function
-```math
+$$
 \sigma(z)=\frac{1}{1+e^{-z}}
-```
+$$
 maps any real $z$ into $(0,1)$. It is increasing, $\sigma(0)=\tfrac12$, and $\sigma(z)\to 1$ as $z\to+\infty$ while $\sigma(z)\to 0$ as $z\to-\infty$. Applied to the reward gap, it turns “how much higher is $y_w$’s score” into “how probable is the preference $y_w\succ y_l$”:
-```math
-\begin{equation}
+$$
 P(y_w\succ y_l\mid x)
 =
 \sigma\bigl(r_\phi(x,y_w)-r_\phi(x,y_l)\bigr).
 \tag{11.2}
-\end{equation}
-```
+$$
 Equal rewards give probability $\tfrac12$. A larger gap makes the preference more certain.
 
 Fitting $\phi$ means making (11.2) large on every labeled triple—maximum likelihood. Equivalently, minimize the **negative log-likelihood**
-```math
+$$
 L(\phi)
 =
 -\sum_{(x,\,y_w,\,y_l)}
 \log P(y_w\succ y_l\mid x).
-```
+$$
 Substitute (11.2):
-```math
-\begin{equation}
+$$
 L(\phi)
 =
 -\sum_{(x,\,y_w,\,y_l)}
 \log\sigma\bigl(r_\phi(x,y_w)-r_\phi(x,y_l)\bigr).
 \tag{11.3}
-\end{equation}
-```
+$$
 Gradient descent on $L$ updates the reward-model weights. With step size $\alpha_\phi>0$,
-```math
+$$
 \phi
 \leftarrow
 \phi-\alpha_\phi\,\nabla_\phi L(\phi).
-```
+$$
 On a single labeled triple $(x,y_w,y_l)$ the same step is
-```math
+$$
 \phi
 \leftarrow
 \phi-\alpha_\phi\,\nabla_\phi\Bigl[-\log\sigma\bigl(r_\phi(x,y_w)-r_\phi(x,y_l)\bigr)\Bigr].
-```
+$$
 Those steps raise $r_\phi(x,y_w)$ relative to $r_\phi(x,y_l)$. After training, $r_\phi(x,y)$ is the reward $r(x,y)$ used in the Section 11.1 update.
 
 <div class="implnote">
@@ -252,25 +246,25 @@ Output: policy $\pi_\theta$.
 </div>
 
 This simple combination of reward model and policy has an issue. Read the step-4 update
-```math
+$$
 \theta
 \leftarrow
 \theta+\alpha\,r_\phi(x,y)\,\nabla_\theta\log\pi_\theta(y\mid x).
-```
+$$
 The only weight on $\nabla_\theta\log\pi_\theta$ is $r_\phi(x,y)$. Step 3 fit $r_\phi$ only on human-labeled pairs—for the same prompt, something like
-```math
+$$
 y_w=(\text{it},\,\text{is},\,4)\succ y_l=(\text{it},\,\text{is},\,5)
-```
+$$
 —but step 4 may sample any fresh $y$, including strings never ranked. If the reward model returns a large positive score $r_\phi(x,y)$, the $\theta$-step moves in the direction of $\nabla_\theta\log\pi_\theta(y\mid x)$, which raises $\pi_\theta(y\mid x)$. That is **reward hacking**, in which $\theta$ is driven by a high $r_\phi$ even when humans would not prefer that reply.
 
 For example, a forward pass might return
-```math
+$$
 r_\phi(x,y_w)=0.8,
 \qquad
 r_\phi(x,y_l)=-0.5,
 \qquad
 r_\phi\bigl(x,(4,\,4,\,4)\bigr)=2.4.
-```
+$$
 The junk reply $(4,\,4,\,4)$ was never preferred, yet its features can still trigger a high $r_\phi$, so the $\theta$-update increases $\pi_\theta\bigl((4,\,4,\,4)\mid x\bigr)$. If instead $r_\phi$ scored that string low (negative), the same update would decrease that probability. Nothing in the naive algorithm stops the high-score case.
 
 ## Staying close to the reference policy
@@ -287,7 +281,7 @@ In the usual setup, $\pi_\theta$ and $\pi_{\text{ref}}$ share the same architect
 The figure is the overview pipeline with that penalty in the Stage 2 score. With the penalty, Stage 1 still fits $r_\phi$ once; Stage 2 still samples $y\sim\pi_\theta$ and updates $\theta$. Frozen $\pi_{\text{ref}}$ (gray) enters only the score and is never trained.
 
 The penalty in that score is the KL divergence between the two distributions over replies:
-```math
+$$
 \mathrm{KL}\bigl(\pi_\theta(\cdot\mid x)\,\|\,\pi_{\text{ref}}(\cdot\mid x)\bigr)
 =
 \sum_{y}
@@ -295,19 +289,19 @@ The penalty in that score is the KL divergence between the two distributions ove
 \log\frac{\pi_\theta(y\mid x)}{\pi_{\text{ref}}(y\mid x)}
 =
 \mathbb{E}_{y\sim\pi_\theta(\cdot\mid x)}\Bigl[\log\frac{\pi_\theta(y\mid x)}{\pi_{\text{ref}}(y\mid x)}\Bigr].
-```
+$$
 The KL is always positive or zero—never negative. It is zero only when $\pi_\theta(\cdot\mid x)$ and $\pi_{\text{ref}}(\cdot\mid x)$ are the same distribution, and positive whenever they differ; the proof via Jensen’s inequality is in . When $\pi_\theta$ puts mass on replies that $\pi_{\text{ref}}$ almost never writes, the KL is large.
 
 Section 9.3 wrote the objective as the expected return of a trajectory,
-```math
+$$
 J(\theta)
 =
 \int P(\tau;\theta)\,R(\tau)\,d\tau
 =
 \mathbb{E}\bigl[R(\tau)\bigr].
-```
+$$
 Here a trajectory is a prompt $x$ and a reply $y$, so without a penalty that objective is $\mathbb{E}_{x\sim\mathcal{D}}\,\mathbb{E}_{y\sim\pi_\theta(\cdot\mid x)}[r_\phi(x,y)]$. With the penalty, the return subtracts a multiple of the KL:
-```math
+$$
 \begin{aligned}
 J(\theta)
 &=
@@ -348,33 +342,31 @@ r_\phi(x,y)
 \beta\log\frac{\pi_\theta(y\mid x)}{\pi_{\text{ref}}(y\mid x)}
 \Biggr].
 \end{aligned}
-```
+$$
 Here $\beta>0$ is a hyperparameter chosen before training. Raising $\beta$ punishes drift from $\pi_{\text{ref}}$ more; lowering $\beta$ lets $\pi_\theta$ follow $r_\phi$ more freely.
 
 At this stage the reward model is already trained: keep $\phi$ fixed and improve only the policy. The inner score still involves both networks—$r_\phi$ and $\log\pi_\theta$—but only $\theta$ will be updated. Write that score as $R_\theta$ to mark the policy parameters:
-```math
+$$
 R_\theta(x,y)
 =
 r_\phi(x,y)-\beta\log\frac{\pi_\theta(y\mid x)}{\pi_{\text{ref}}(y\mid x)}.
-```
+$$
 The objective is then expected shaped reward under $\pi_\theta$,
-```math
-\begin{equation}
+$$
 J(\theta)
 =
 \mathbb{E}_{x\sim\mathcal{D}}\,
 \mathbb{E}_{y\sim\pi_\theta(\cdot\mid x)}
 \bigl[R_\theta(x,y)\bigr].
 \tag{11.4}
-\end{equation}
-```
+$$
 
 With $\phi$ fixed, the remaining task is to raise $J(\theta)$ in (11.4) by changing $\theta$. Section 11.5 writes that gradient and a practical update.
 
 ## Policy gradient for RLHF
 
 The score $R_\theta(x,y)$ in (11.4) depends on $\theta$ through $\log\pi_\theta$, so it cannot be treated as constant when differentiating $J$. Maximizing $J$ is the same as minimizing
-```math
+$$
 L(\theta)
 =
 -J(\theta)
@@ -384,9 +376,9 @@ L(\theta)
 \Biggl[
 \sum_y\pi_\theta(y\mid x)\,R_\theta(x,y)
 \Biggr].
-```
+$$
 Both $\pi_\theta$ and $R_\theta$ depend on $\theta$. Differentiate $L$ with the product rule:
-```math
+$$
 \begin{aligned}
 \nabla_\theta L(\theta)
 &=
@@ -398,9 +390,9 @@ Both $\pi_\theta$ and $R_\theta$ depend on $\theta$. Differentiate $L$ with the 
 \sum_y\pi_\theta(y\mid x)\,\nabla_\theta R_\theta(x,y)
 \Biggr].
 \end{aligned}
-```
+$$
 For $u>0$, $\nabla_\theta\log u=\frac{1}{u}\nabla_\theta u$, so $\nabla_\theta u=u\,\nabla_\theta\log u$. With $u=\pi_\theta(y\mid x)$,
-```math
+$$
 \begin{aligned}
 \sum_y R_\theta(x,y)\,\nabla_\theta\pi_\theta(y\mid x)
 &=
@@ -409,9 +401,9 @@ For $u>0$, $\nabla_\theta\log u=\frac{1}{u}\nabla_\theta u$, so $\nabla_\theta u
 &=
 \mathbb{E}_{y\sim\pi_\theta(\cdot\mid x)}\bigl[R_\theta(x,y)\,\nabla_\theta\log\pi_\theta(y\mid x)\bigr].
 \end{aligned}
-```
+$$
 With $\phi$ and $\pi_{\text{ref}}$ frozen, $\nabla_\theta R_\theta(x,y)=-\beta\,\nabla_\theta\log\pi_\theta(y\mid x)$, so
-```math
+$$
 \begin{aligned}
 \sum_y\pi_\theta(y\mid x)\,\nabla_\theta R_\theta(x,y)
 &=
@@ -424,19 +416,18 @@ With $\phi$ and $\pi_{\text{ref}}$ frozen, $\nabla_\theta R_\theta(x,y)=-\beta\,
 &=
 0
 \end{aligned}
-```
+$$
 by <a href="#eq:E.1" data-reference-type="eqref" data-reference="eq:E.1">[eq:E.1]</a> in . The derivative through $R_\theta$ cancels. What remains is
-```math
+$$
 \nabla_\theta L(\theta)
 =
 -
 \mathbb{E}_{x\sim\mathcal{D}}\,
 \mathbb{E}_{y\sim\pi_\theta(\cdot\mid x)}
 \bigl[R_\theta(x,y)\,\nabla_\theta\log\pi_\theta(y\mid x)\bigr],
-```
+$$
 and
-```math
-\begin{equation}
+$$
 \nabla_\theta J(\theta)
 =
 -\nabla_\theta L(\theta)
@@ -445,12 +436,11 @@ and
 \mathbb{E}_{y\sim\pi_\theta(\cdot\mid x)}
 \bigl[R_\theta(x,y)\,\nabla_\theta\log\pi_\theta(y\mid x)\bigr].
 \tag{11.5}
-\end{equation}
-```
+$$
 $R_\theta$ still depends on $\theta$; after the cancellation it appears in $\nabla_\theta L$ only as a weight on $\nabla_\theta\log\pi_\theta$.
 
 Section 10.1 subtracted a baseline $b(S_t)$ that depends on the state alone. Here treat the prompt $x$ as that state and the reply $y$ as the action. If $b(x)$ does not depend on $y$, then $\mathbb{E}_{y\sim\pi_\theta(\cdot\mid x)}\bigl[b(x)\,\nabla_\theta\log\pi_\theta(y\mid x)\bigr]=0$ by the same argument as (E.3), so
-```math
+$$
 \nabla_\theta L(\theta)
 =
 -
@@ -460,27 +450,24 @@ Section 10.1 subtracted a baseline $b(S_t)$ that depends on the state alone. Her
 \bigl(R_\theta(x,y)-b(x)\bigr)\,
 \nabla_\theta\log\pi_\theta(y\mid x)
 \bigr].
-```
+$$
 The ideal $b(x)$ is $\mathbb{E}[R_\theta(x,Y)\mid x]$. It is unknown, so estimate it from samples. Draw **one prompt** $x\sim\mathcal{D}$ and $K$ i.i.d. replies $y_1,\ldots,y_K\sim\pi_\theta(\cdot\mid x)$. The **leave-one-out** baseline for reply $k$ is the average of the other $K-1$ scores:
-```math
+$$
 b_k
 =
 \frac{1}{K-1}\sum_{j\neq k}R_\theta(x,y_j)
-```
+$$
 (e.g. $K=3$ gives $b_1=\tfrac12\bigl(R_\theta(x,y_2)+R_\theta(x,y_3)\bigr)$). Leaving $y_k$ out is what makes the estimate unbiased: $b_k$ does not depend on $y_k$, so given $x$ and the other replies it is a fixed number and $\mathbb{E}\bigl[b_k\,\nabla_\theta\log\pi_\theta(y_k\mid x)\bigr]=0$ by the same argument as (E.3). Averaging all $K$ scores, including $R_\theta(x,y_k)$, would make the baseline depend on $y_k$ and the estimate of $\nabla_\theta L$ would be biased. With this $b_k$,
-```math
-\begin{equation}
+$$
 \nabla_\theta L(\theta)
 \approx
 -\frac{1}{K}\sum_{k=1}^{K}
 \bigl(R_\theta(x,y_k)-b_k\bigr)\,
 \nabla_\theta\log\pi_\theta(y_k\mid x),
 \tag{11.6}
-\end{equation}
-```
+$$
 with $\log\pi_\theta(y_k\mid x)$ from (11.1). Gradient descent $\theta\leftarrow\theta-\alpha\nabla_\theta L$ uses that estimate and does not evaluate the scalar $L$:
-```math
-\begin{equation}
+$$
 \theta
 \leftarrow
 \theta
@@ -490,27 +477,26 @@ with $\log\pi_\theta(y_k\mid x)$ from (11.1). Gradient descent $\theta\leftarrow
 \bigl(R_\theta(x,y_k)-b_k\bigr)\,
 \nabla_\theta\log\pi_\theta(y_k\mid x).
 \tag{11.7}
-\end{equation}
-```
+$$
 The training rule is (11.7): the right-hand side of (11.6) is the direction. You could form that vector by hand (compute each $\nabla_\theta\log\pi_\theta(y_k\mid x)$, multiply by $R_k-b_k$, average, add $\alpha$ times it). Automatic differentiation (e.g. PyTorch `backward`) needs a **scalar** whose gradient equals that direction. Same pattern as (9.8)$\to$(9.9).
 
 The objective $L=-J$ is not that scalar. $L(\theta)=-\mathbb{E}_{y\sim\pi_\theta}[R_\theta(x,y)]$ averages over replies drawn from $\pi_\theta$, so $\theta$ sits inside the sampling distribution. Autodiff on a batch of already-drawn $y_k$ cannot see that dependence: treating $-\frac1K\sum_k R_\theta(x,y_k)$ as if the $y_k$ were a fixed dataset independent of $\theta$ either misses the score $\nabla\log\pi$ entirely, or—if $R_\theta$ still depends on $\theta$ through the KL term—adds $\nabla_\theta R$ paths that (11.5) already cancelled in the true gradient. So differentiating a plug-in estimate of the actual $L$ does not recover (11.6).
 
 What we need is a **surrogate**: a scalar built so that autodiff, on this batch, returns exactly the estimated gradient (11.6). Compute $R_\theta(x,y_k)$ and $b_k$ at the current $\theta$ and hold them fixed (as $G_t$ is held fixed in (9.9)). Set
-```math
+$$
 \widetilde{L}(\theta)
 =
 -\frac{1}{K}\sum_{k=1}^{K}
 \bigl(R_\theta(x,y_k)-b_k\bigr)\,\log\pi_\theta(y_k\mid x).
-```
+$$
 Differentiating only through $\log\pi_\theta$,
-```math
+$$
 \nabla_\theta\widetilde{L}
 =
 -\frac{1}{K}\sum_{k=1}^{K}
 \bigl(R_\theta(x,y_k)-b_k\bigr)\,
 \nabla_\theta\log\pi_\theta(y_k\mid x),
-```
+$$
 which is (11.6). So $\theta\leftarrow\theta-\alpha\nabla_\theta\widetilde{L}$ is (11.7). The value of $\widetilde{L}$ need not track return; only its gradient matters.
 
 This is REINFORCE with a leave-one-out baseline (RLOO). An earlier multi-sample leave-one-out baseline is VIMCO (), built for variational Monte Carlo objectives; the arithmetic leave-one-out form in (11.6)–(11.7) matches . Section 11.6 presents **Proximal Policy Optimization (PPO)**, which reuses each batch for several updates; records the autodiff check for $L^{\mathrm{IS}}$ and the clip cases.
@@ -687,7 +673,7 @@ The first problem is fixed by **importance sampling** (); the second by the **cl
 ### Importance sampling
 
 The gradient in Section 11.5 uses the current $\pi_\theta$:
-```math
+$$
 \nabla_\theta L(\theta)
 =
 -
@@ -697,15 +683,15 @@ The gradient in Section 11.5 uses the current $\pi_\theta$:
 \bigl(R_\theta(x,y)-b(x)\bigr)\,
 \nabla_\theta\log\pi_\theta(y\mid x)
 \bigr].
-```
+$$
 The stored replies came from $\pi_{\theta_{\mathrm{old}}}(\cdot\mid x)$. Hold the prompt $x$ fixed: the outer $\mathbb{E}_{x\sim\mathcal{D}}$ is unchanged. Write
-```math
+$$
 \rho(\theta,y)
 =
 \frac{\pi_\theta(y\mid x)}{\pi_{\theta_{\mathrm{old}}}(y\mid x)},
-```
+$$
 so $\pi_\theta(y\mid x)=\rho(\theta,y)\,\pi_{\theta_{\mathrm{old}}}(y\mid x)$. Expand the inner expectation as a sum and substitute only that density ():
-```math
+$$
 \begin{aligned}
 \mathbb{E}_{y\sim\pi_\theta(\cdot\mid x)}
 \bigl[
@@ -733,9 +719,9 @@ so $\pi_\theta(y\mid x)=\rho(\theta,y)\,\pi_{\theta_{\mathrm{old}}}(y\mid x)$. E
 \nabla_\theta\log\pi_\theta(y\mid x)
 \Bigr].
 \end{aligned}
-```
+$$
 The $\nabla_\theta\log\pi_\theta$ factor stays on the current policy: that is what $\nabla_\theta L$ differentiates. Therefore
-```math
+$$
 \nabla_\theta L(\theta)
 =
 -
@@ -746,18 +732,17 @@ The $\nabla_\theta\log\pi_\theta$ factor stays on the current policy: that is wh
 \bigl(R_\theta(x,y)-b(x)\bigr)\,
 \nabla_\theta\log\pi_\theta(y\mid x)
 \Bigr].
-```
+$$
 For a single fixed prompt $x$, draw $y_k\sim\pi_{\theta_{\mathrm{old}}}(\cdot\mid x)$ and write $\rho_k(\theta)=\rho(\theta,y_k)$ and $A_k=R_k-b_k$. The sample estimate is
-```math
+$$
 \nabla_\theta L(\theta)
 \approx
 -\frac{1}{K}\sum_{k=1}^{K}
 \rho_k(\theta)\,A_k\,
 \nabla_\theta\log\pi_\theta(y_k\mid x).
-```
+$$
 Descent $\theta\leftarrow\theta-\alpha\nabla_\theta L$ is then
-```math
-\begin{equation}
+$$
 \theta
 \leftarrow
 \theta
@@ -767,36 +752,34 @@ Descent $\theta\leftarrow\theta-\alpha\nabla_\theta L$ is then
 \rho_k(\theta)\,A_k\,
 \nabla_\theta\log\pi_\theta(y_k\mid x).
 \tag{11.8}
-\end{equation}
-```
+$$
 When $\theta=\theta_{\mathrm{old}}$, every $\rho_k=1$ and (11.8) reduces to (11.7). Libraries typically do not form (11.8) by hand. They run automatic differentiation on a **surrogate**: a scalar whose gradient equals the sample estimate above. Two surrogates do that. The first freezes $A_k$ and keeps $\rho_k(\theta)$ live:
-```math
+$$
 L^{\mathrm{IS}}(\theta)
 =
 -\frac{1}{K}\sum_{k=1}^{K}\rho_k(\theta)\,A_k.
-```
+$$
 The second freezes $A_k$ and $\rho_k$ and differentiates through $\log\pi_\theta$:
-```math
+$$
 \widetilde{L}^{\mathrm{IS}}(\theta)
 =
 -\frac{1}{K}\sum_{k=1}^{K}
 \rho_k\,A_k\,\log\pi_\theta(y_k\mid x).
-```
+$$
 The second is not intrinsically invalid, but freezing $\rho$ is easy to get wrong on a reused batch. If $\rho_k$ is computed once at $\theta=\theta_{\mathrm{old}}$ (every $\rho_k=1$) and kept for every inner step, later updates drop importance sampling and apply (11.7) to $\pi_{\theta_{\mathrm{old}}}$ samples—Issue 1 again. So PPO uses $L^{\mathrm{IS}}$: $\rho_k(\theta)$ stays live and is recomputed each inner step. Descent on that scalar implements (11.8).
 
 On the inner loop $y_k$ and $A_k$ are fixed; only $\theta$, hence each $\rho_k$, moves. Write the same loss as
-```math
+$$
 L^{\mathrm{IS}}(\theta)
 =
 -\frac{1}{K}\bigl(\rho_1 A_1+\rho_2 A_2+\cdots+\rho_K A_K\bigr).
-```
+$$
 If $A_j>0$, raising $\rho_j$ raises that sum, so $L^{\mathrm{IS}}$ falls; if $A_j<0$, lowering $\rho_j$ raises $\rho_j A_j$, so $L^{\mathrm{IS}}$ falls again. Nothing in that scalar says stop at $\rho=1$. For example take $A_1=2$ and $A_2=-2$: raising $\rho_1$ from $1$ to $2$ drops $L^{\mathrm{IS}}$ by $2/K$; lowering $\rho_2$ from $1$ to $0.5$ drops it by $1/K$. After several inner steps the ratios can sit far from $1$. That is **Issue 2**.
 
 ### Clipped objective
 
 On the inner loop we want each $\rho_k$ near $1$: that means $\pi_\theta$ has not moved far from $\pi_{\theta_{\mathrm{old}}}$ on this batch. So we confine $\rho_k$ to the band $[1-\varepsilon,1+\varepsilon]$ (typical $\varepsilon=0.2$). PPO replaces each product $\rho_k A_k$ by $\min(\rho_k A_k,\mathrm{clip}(\rho_k)\,A_k)$ and minimizes
-```math
-\begin{equation}
+$$
 L^{\mathrm{PPO}}(\theta)
 =
 -\frac{1}{K}\sum_{k=1}^{K}
@@ -805,8 +788,7 @@ L^{\mathrm{PPO}}(\theta)
 \mathrm{clip}\bigl(\rho_k(\theta),\,1-\varepsilon,\,1+\varepsilon\bigr)\,A_k
 \Bigr).
 \tag{11.9}
-\end{equation}
-```
+$$
 For $A>0$, further increases of $\rho$ past $1+\varepsilon$ are not rewarded; for $A<0$, further decreases of $\rho$ below $1-\varepsilon$ are not rewarded. The figure plots the score used in the loss against $\rho$ for one reply: left panel $A>0$, right panel $A<0$.
 
 <figure id="fig-14-3" data-latex-placement="ht">

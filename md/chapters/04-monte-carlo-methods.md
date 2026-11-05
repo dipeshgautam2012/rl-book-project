@@ -8,7 +8,7 @@ Dynamic Programming (Chapter 3) requires full knowledge of the transition probab
 What we want is still $V^\pi(s)$: the **expected return** the agent gets from state $s$ if it follows policy $\pi$. That expectation depends on $\pi$ (which actions are chosen) and on the environment dynamics (where those actions lead and what rewards arrive). Without $P$, we cannot expand the expectation analytically.
 
 $G_t$ scores one trajectory from time $t$. To observe it, the rest of that trajectory must be generated through to the end. That end is already in the setup: a terminal yields no further rewards, and (1.9) is the return when the run stops at a finite $T$. An **episode** is one such trajectory, from a start $S_0$ until termination (a terminal, or $T$). Take the taxi introduced in Chapter 1: it starts at a pickup, turns at junctions, and the run ends at drop-off. One realized episode is
-```math
+$$
 S_0{=}\text{pickup},\;
 A_0{=}\text{left},\;
 R_1{=}-1,\;
@@ -17,7 +17,7 @@ A_1{=}\text{straight},\;
 R_2{=}10,\;
 S_2{=}\text{drop-off}
 \quad\text{(terminal)}.
-```
+$$
 The return from the pickup is $G_0=R_1+\gamma R_2=-1+10\gamma$, known only after drop-off. The next fare starts a new episode; it does not continue this sequence. So that next trip gives another $G_0$ from pickup, because what we want is the expected return $V^\pi(\text{pickup})$, not this one realized $G_0$. One episode is a sample; later episodes are further samples of the same expectation.
 
 A state may occur more than once before termination. Those are multiple visits in the same episode, each with its own return from that time to the end; they are not multiple episodes. For example, the taxi may return to the same junction before drop-off; the extra loop is another visit, with more fuel cost in the reward.
@@ -36,7 +36,7 @@ The same two rules apply to action-values: a visit is a pair $(s,a)$, first-visi
 
 Two episodes under $\pi$ (state-values only):
 
-```math
+$$
 \begin{align*}
 \text{Ep.~1:}\quad
 &S_0{=}A
@@ -62,7 +62,7 @@ S_2{=}A
 S_3{=}D
 \quad\text{(end)}.
 \end{align*}
-```
+$$
 
 <div class="center">
 
@@ -162,7 +162,7 @@ S_3{=}D
 
 For $A$, first-visit keeps one return per episode ($5.4631$ from ep.~1, $6.04$ from ep.~2); every-visit keeps every visit return ($5.4631$, $5.51$, $1$ from ep.~1 and $6.04$, $4$ from ep.~2):
 
-```math
+$$
 \begin{aligned}
 \text{first-visit:}\quad
 &N(A)=2,\quad
@@ -172,7 +172,7 @@ V(A)=\frac{5.4631+6.04}{2}=5.75155
 &N(A)=5,\quad
 V(A)=\frac{5.4631+5.51+1+6.04+4}{5}=4.40262
 \end{aligned}
-```
+$$
 
 </div>
 
@@ -180,8 +180,7 @@ V(A)=\frac{5.4631+5.51+1+6.04+4}{5}=4.40262
 
 The estimate of $V^\pi(s)=\mathbb{E}_\pi[G_t\mid S_t=s]$ is the average of the returns kept for $s$, first-visit or every-visit. After $N$ such returns $G^{(1)}(s),\ldots,G^{(N)}(s)$,
 
-```math
-\begin{equation}
+$$
 \begin{aligned}
 V_N(s)
 &=
@@ -194,15 +193,13 @@ V_N(s)
 V^\pi(s).
 \end{aligned}
 \tag{4.1}
-\end{equation}
-```
+$$
 
 Here $N$ is the number of visits kept for $s$ (Section 4.1). Both first-visit and every-visit use (4.1); both converge as that $N\to\infty$.
 
 We can update this sample mean **without** storing every past return. After $N$ returns the estimate is $V_N(s)$. When the next return $G^{(N+1)}(s)$ arrives:
 
-```math
-\begin{equation}
+$$
 \begin{aligned}
 V_{N+1}(s)
 &=
@@ -215,37 +212,34 @@ V_{N+1}(s)
 V_N(s) + \frac{1}{N+1}\Bigl( G^{(N+1)}(s) - V_N(s) \Bigr).
 \end{aligned}
 \tag{4.2}
-\end{equation}
-```
+$$
 
 So $V_N(s)$ summarizes the previous $N$ returns; the new return is folded in with weight $1/(N{+}1)$. Writing that weight as a step-size $\alpha$ gives
 
-```math
-\begin{equation}
+$$
 V_{N+1}(S_t)
 \leftarrow
 V_N(S_t) + \alpha \bigl( G_t^{(N+1)} - V_N(S_t) \bigr)
 \tag{4.3}
-\end{equation}
-```
+$$
 
 Here $t$ is the time in that episode, so $G_t=R_{t+1}+\gamma G_{t+1}$ is the return from the visit $S_t$, and $(N{+}1)$ is the next sample for that state.
 
 If the policy $\pi$ and the environment $P$ are stationary, vary the step. After $N$ samples the next one is sample $n=N{+}1$; write $\alpha_{N+1}$ for the step on that sample. Then (4.3) is
 
-```math
+$$
 V_{N+1}(S_t)
 \leftarrow
 V_N(S_t) + \alpha_{N+1} \bigl( G_t^{(N+1)} - V_N(S_t) \bigr).
-```
+$$
 
 Choose $\{\alpha_n\}$ so that
 
-```math
+$$
 \sum_{n=1}^{\infty}\alpha_n=\infty
 \qquad\text{and}\qquad
 \sum_{n=1}^{\infty}\alpha_n^2<\infty,
-```
+$$
 
 as derived in (). One choice that meets both is $\alpha_n=1/n$, i.e. $\alpha_{N+1}=1/(N{+}1)$, which recovers (4.2). Then $V\to V^\pi$. First-visit and every-visit take **a fixed $\pi$** and do not update it, so they use (4.2).
 
@@ -390,8 +384,7 @@ if __name__ == "__main__":
 
 The same Monte Carlo idea applies to **action-values**. Recall $Q^\pi(s,a)=\mathbb{E}_\pi[G_t\mid S_t=s,A_t=a]$. A **visit** is now a pair $(s,a)$: after taking $a$ in $s$, record the return $G_t$ from that time and average. After $N$ such returns $G^{(1)}(s,a),\ldots,G^{(N)}(s,a)$,
 
-```math
-\begin{equation}
+$$
 \begin{aligned}
 Q_N(s,a)
 &=
@@ -404,32 +397,27 @@ Q_N(s,a)
 Q^\pi(s,a).
 \end{aligned}
 \tag{4.4}
-\end{equation}
-```
+$$
 
 Here $N$ counts returns kept for that pair $(s,a)$ (first-visit: at most one per episode; every-visit: every occurrence of $(s,a)$). The incremental form of the sample mean is
 
-```math
-\begin{equation}
+$$
 \begin{aligned}
 Q_{N+1}(s,a)
 &=
 Q_N(s,a) + \frac{1}{N+1}\Bigl( G^{(N+1)}(s,a) - Q_N(s,a) \Bigr).
 \end{aligned}
 \tag{4.5}
-\end{equation}
-```
+$$
 
 With step-size $\alpha$ (the same two choices as after (4.3)), at a visit $(S_t,A_t)$ with return $G_t^{(N+1)}$,
 
-```math
-\begin{equation}
+$$
 Q_{N+1}(S_t,A_t)
 \leftarrow
 Q_N(S_t,A_t) + \alpha \bigl( G_t^{(N+1)} - Q_N(S_t,A_t) \bigr).
 \tag{4.6}
-\end{equation}
-```
+$$
 
 Compact code: $Q(S_t,A_t)\leftarrow Q(S_t,A_t)+\alpha\bigl(G_t-Q(S_t,A_t)\bigr)$.
 
@@ -437,9 +425,9 @@ The returns for $Q$ are computed the same way as for $V$, from the last time bac
 
 After $Q\approx Q^\pi$ is in hand, we may also return the greedy policy
 
-```math
+$$
 \pi'(s)=\arg\max_a Q(s,a).
-```
+$$
 
 This $\pi'$ is greedy in $Q^\pi$, so it is an improvement of the $\pi$ that generated the episodes. It is $\pi^*$ only if that $\pi$ was already optimal. Here $\pi$ stays fixed while $Q$ is estimated. The evaluate–improve loop with $\pi\leftarrow\pi'$ is Section 4.4.
 
@@ -561,23 +549,21 @@ if __name__ == "__main__":
 
 Sections 4.2–4.3 are prediction: $V^\pi$ or $Q^\pi$ for a given $\pi$, from episode returns, without $P$. This section is control: a policy that is (approximately) optimal in every state,
 
-```math
+$$
 \pi^*
 \in
 \arg\max_\pi V^\pi(s)
 \quad\text{for every }s
-```
+$$
 
 (equivalently, act greedily on $Q^*$).
 
 In Sections 4.2–4.3 the input $\pi$ is **fixed**: every episode is generated under that same $\pi$, and only $V$ or $Q$ is updated. More episodes refine $Q\to Q^\pi$ (better values for **that** $\pi$), but the behavior policy never changes. Section 4.3 may return a greedy readout
 
-```math
-\begin{equation}
+$$
 \pi'(s)=\arg\max_a Q(s,a)
 \tag{4.7}
-\end{equation}
-```
+$$
 
 after $Q$ is estimated; that $\pi'$ is taken from the finished table, not used to generate further episodes. So prediction improves the value estimates under a fixed policy—and can propose an improved $\pi'$—yet never updates the policy that collects data.
 
@@ -794,62 +780,60 @@ In the methods above, the same policy both **acts** and is **evaluated**. Off-po
 
 The idea of importance sampling (derived in ) is to rewrite an expectation under a target distribution $p$ using samples from a proposal distribution $q$:
 
-```math
+$$
 \mathbb{E}_{x\sim p}[f(x)]
 =
 \mathbb{E}_{x\sim q}\bigl[w(x)\, f(x)\bigr],
 \qquad
 w(x)=\frac{p(x)}{q(x)}.
-```
+$$
 
 Two forms approximate that expectation from draws $x_i\sim q$—**ordinary** and **weighted** importance sampling (see ):
 
-```math
+$$
 \mathbb{E}_{x\sim p}[f(x)]
 \approx
 \frac{1}{N}\sum_{i=1}^{N} w(x_i)\, f(x_i),
-```
+$$
 
-```math
+$$
 \mathbb{E}_{x\sim p}[f(x)]
 \approx
 \frac{\sum_{i=1}^{N} w(x_i)\, f(x_i)}{\sum_{i=1}^{N} w(x_i)}.
-```
+$$
 
 Here each sample $x$ will be a **trajectory**; $N$ is the number of such trajectory samples.
 
 For action-values under the target policy,
 
-```math
-\begin{equation}
+$$
 Q^\pi(s,a)
 =
 \mathbb{E}_\pi[G_t\mid S_t=s,A_t=a].
 \tag{4.8}
-\end{equation}
-```
+$$
 
 An episode generated by the behavior $b$ always starts at $t=0$:
 
-```math
+$$
 S_0,A_0,R_1,S_1,\ldots,S_{T-1},A_{T-1},R_T.
-```
+$$
 
 A trajectory from time $t$, given $S_t$, is
 
-```math
+$$
 A_t,R_{t+1},S_{t+1},A_{t+1},R_{t+2},\ldots,A_{T-1},R_T.
-```
+$$
 
 This is the sample $x$ in the importance-sampling formulas above. The same episode can contain the pair $(S_t,A_t)=(s,a)$ more than once; each occurrence starts its own trajectory sample. The return
 
-```math
+$$
 G_t=R_{t+1}+\gamma R_{t+2}+\cdots+\gamma^{T-t-1}R_T
-```
+$$
 
 is a function of this trajectory ($f(x)=G_t$). Under a policy $\pi$, the probability of the trajectory given $S_t$ is (chain rule; environment factors written as $P(s',r\mid s,a)$)
 
-```math
+$$
 \begin{aligned}
 &P_\pi(A_t,R_{t+1},S_{t+1},\ldots,R_T\mid S_t)
 \\
@@ -858,65 +842,56 @@ is a function of this trajectory ($f(x)=G_t$). Under a policy $\pi$, the probabi
 \pi(A_k\mid S_k)\,
 P(S_{k+1},R_{k+1}\mid S_k,A_k).
 \end{aligned}
-```
+$$
 
 The same expansion under $b$ replaces each $\pi$ by $b$. The importance-sampling weight from the opening of this subsection is their ratio (require $b(a\mid s)>0$ whenever $\pi(a\mid s)>0$):
 
-```math
-\begin{equation}
+$$
 w
 =
 \rho_{t:T-1}
 :=
 \frac{P_\pi(A_t,R_{t+1},S_{t+1},\ldots,R_T\mid S_t)}{P_b(A_t,R_{t+1},S_{t+1},\ldots,R_T\mid S_t)}.
 \tag{4.9}
-\end{equation}
-```
+$$
 
 Those environment factors do not depend on the policy: the same $P(S_{k+1},R_{k+1}\mid S_k,A_k)$ appears in $P_\pi$ and in $P_b$. They cancel, so
 
-```math
+$$
 \rho_{t:T-1}
 =
 \prod_{k=t}^{T-1}
 \frac{\pi(A_k\mid S_k)}{b(A_k\mid S_k)}.
-```
+$$
 
 Apply importance sampling <a href="#eq:A.13" data-reference-type="eqref" data-reference="eq:A.13">[eq:A.13]</a> to (4.8): the target is $\pi$, the proposal is $b$, the weight is (4.9), and $f=G_t$. Then
 
-```math
-\begin{equation}
+$$
 Q^\pi(s,a)
 =
 \mathbb{E}_b\bigl[\rho_{t:T-1}\,G_t\mid S_t=s,A_t=a\bigr].
 \tag{4.10}
-\end{equation}
-```
+$$
 
 With $N$ trajectory samples from visits to $(s,a)$ under $b$—each sample $x_i$ the trajectory from that visit, with return $G^{(i)}$ and weight $\rho^{(i)}=\rho_{t:T-1}^{(i)}$—ordinary and weighted importance sampling give
 
-```math
-\begin{equation}
+$$
 Q(s,a)
 \approx
 \frac{1}{N}\sum_{i=1}^{N}\rho^{(i)}G^{(i)},
 \tag{4.11}
-\end{equation}
-```
+$$
 
-```math
-\begin{equation}
+$$
 Q(s,a)
 \approx
 \frac{\sum_{i=1}^{N}\rho^{(i)}G^{(i)}}{\sum_{i=1}^{N}\rho^{(i)}}.
 \tag{4.12}
-\end{equation}
-```
+$$
 
 Write $Q_N(s,a)$ for the weighted estimate (4.12). When visit $N{+}1$ brings $G^{(N+1)}(s,a)$ and $\rho^{(N+1)}(s,a)$,
 
-```math
-\begin{equation}
+$$
 Q_{N+1}(s,a)
 =
 Q_N(s,a)
@@ -926,8 +901,7 @@ Q_N(s,a)
 G^{(N+1)}(s,a) - Q_N(s,a)
 \Bigr).
 \tag{4.13}
-\end{equation}
-```
+$$
 
 To apply (4.13) episode by episode, walk each episode **backward** ($t=T{-}1,\ldots,0$), as in Section 4.2. Start from $G\leftarrow 0$ and $\rho\leftarrow 1$: that is $G_T=0$ (no rewards after termination) and $\rho_{T:T-1}=1$ (empty product).
 
@@ -1018,39 +992,32 @@ if __name__ == "__main__":
 
 The same importance-sampling argument gives state-values. With $V^\pi(s)=\mathbb{E}_\pi[G_t\mid S_t=s]$ and the same weight (4.9),
 
-```math
-\begin{equation}
+$$
 V^\pi(s)
 =
 \mathbb{E}_b\bigl[\rho_{t:T-1}\,G_t\mid S_t=s\bigr].
 \tag{4.14}
-\end{equation}
-```
+$$
 
 With $N$ trajectory samples from visits to $s$ under $b$, returns $G^{(i)}$, and weights $\rho^{(i)}=\rho_{t:T-1}^{(i)}$, ordinary and weighted importance sampling give
 
-```math
-\begin{equation}
+$$
 V(s)
 \approx
 \frac{1}{N}\sum_{i=1}^{N}\rho^{(i)}G^{(i)},
 \tag{4.15}
-\end{equation}
-```
+$$
 
-```math
-\begin{equation}
+$$
 V(s)
 \approx
 \frac{\sum_{i=1}^{N}\rho^{(i)}G^{(i)}}{\sum_{i=1}^{N}\rho^{(i)}}.
 \tag{4.16}
-\end{equation}
-```
+$$
 
 Write $V_N(s)$ for the weighted estimate (4.16). When visit $N{+}1$ brings $G^{(N+1)}(s)$ and $\rho^{(N+1)}(s)$,
 
-```math
-\begin{equation}
+$$
 V_{N+1}(s)
 =
 V_N(s)
@@ -1060,5 +1027,4 @@ V_N(s)
 G^{(N+1)}(s) - V_N(s)
 \Bigr).
 \tag{4.17}
-\end{equation}
-```
+$$

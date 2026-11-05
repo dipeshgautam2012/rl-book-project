@@ -4,9 +4,9 @@
 
 
 **Control** asks which *action* to prefer from the current state, but one-step TD (5.2) only learns how good each *state* is under a fixed policy—a table of $V$ does not score actions. With a known model, DP can still choose the action
-```math
+$$
 \pi(s)=\arg\max_a\sum_{s',r}P(s',r\mid s,a)\bigl[r+\gamma V(s')\bigr];
-```
+$$
 without that $P$, the sum cannot be computed, so the $V$ table alone cannot rank actions. Model-free control therefore uses action-values $Q(s,a)$, which score each pair, so $\arg\max_a Q(s,a)$ needs no model. Monte Carlo control uses that idea, but learns $Q$ only from full returns $G_t$. This section keeps $Q$ for control and replaces that full-return backup by one-step TD, stepping $Q(S_t,A_t)$ toward a bootstrap from $Q$ at the next state. Two standard algorithms do that—**SARSA**, which is on-policy (the backup uses the next action the behavior policy actually takes), and **Q-learning**, which is off-policy (the backup uses a $\max$ over next actions).
 
 ## SARSA
@@ -15,36 +15,31 @@ The update (5.2) steps $V(S_t)$ toward $R_{t+1}+\gamma V(S_{t+1})$, which cannot
 
 The values $Q^\pi$ obey the compact Bellman expectation equation, the action-value analogue of (5.1) (<a href="#eq:B.18" data-reference-type="eqref" data-reference="eq:B.18">[eq:B.18]</a> in ):
 
-```math
-\begin{equation}
+$$
 Q^\pi(s,a)
 =
 \mathbb{E}_\pi\bigl[R_{t+1}+\gamma Q^\pi(S_{t+1},A_{t+1})\mid S_t=s,A_t=a\bigr].
 \tag{6.1}
-\end{equation}
-```
+$$
 
 Here $A_{t+1}$ is drawn from $\pi$ at $S_{t+1}$. Observe one transition and that next action and, because $Q^\pi$ is unknown, put the current table estimate $Q$ in its place to form the one-step backup
 
-```math
+$$
 U_t=R_{t+1}+\gamma Q(S_{t+1},A_{t+1}).
-```
+$$
 
 (If $S_{t+1}$ is terminal, take the $Q$ term as $0$.) The difference between that backup and the current estimate is the **TD error** on the pair—the same idea as (5.3):
 
-```math
-\begin{equation}
+$$
 \delta_t
 =
 \bigl(R_{t+1}+\gamma Q(S_{t+1},A_{t+1})\bigr) - Q(S_t,A_t).
 \tag{6.2}
-\end{equation}
-```
+$$
 
 Stepping $Q(S_t,A_t)$ toward $U_t$ with step-size $\alpha$ is (5.2) on pairs; the expanded and $\delta$ forms are the same update:
 
-```math
-\begin{equation}
+$$
 \begin{aligned}
 Q(S_t,A_t)
 &\leftarrow
@@ -56,8 +51,7 @@ Q(S_t,A_t)
 Q(S_t,A_t)+\alpha\,\delta_t.
 \end{aligned}
 \tag{6.3}
-\end{equation}
-```
+$$
 
 Because $A_{t+1}$ is chosen the same way as $A_t$, both from the behavior $\pi$, the actions in the backup match how we act, and the table estimates $Q^\pi$ for that same $\pi$. That is what **on-policy** means here. Recall that a **policy** is only the rule for picking an action given the state (Section 1.1), not the $Q$ table itself. Here that rule is $\varepsilon$-greedy in the **current** $Q$. With probability $1-\varepsilon$ take $\arg\max_a Q(s,a)$, otherwise pick uniformly in $\mathcal{A}$. Step 1 sets $Q(s,a)$ arbitrarily; $S_{t+1}$ comes from the environment after we take $A_t$; then $A_{t+1}$ is sampled from that $\varepsilon$-greedy $\pi$. As $Q$ improves, the same $\varepsilon$-greedy rule (now reading the new $Q$) is the updated behavior. That is evaluate–improve as in Monte Carlo control, but with a one-step TD evaluate step. The algorithm also returns $\pi'(s)=\arg\max_a Q(s,a)$. That $\pi'$ is greedy in the finished $Q$, not the $\varepsilon$-greedy $\pi$ used while learning.
 
@@ -145,36 +139,31 @@ The SARSA algorithm above returns $\pi'(s)=\arg\max_a Q(s,a)$. That $\pi'$ is gr
 
 The targets $Q^*$ obey the compact Bellman optimality equation (<a href="#eq:C.5" data-reference-type="eqref" data-reference="eq:C.5">[eq:C.5]</a> in ):
 
-```math
-\begin{equation}
+$$
 Q^*(s,a)
 =
 \mathbb{E}\bigl[R_{t+1}+\gamma\max_{a'} Q^*(S_{t+1},a')\mid S_t=s,A_t=a\bigr].
 \tag{6.4}
-\end{equation}
-```
+$$
 
 Unlike (6.1), the continuation after $S_{t+1}$ is a $\max$ over actions, not an action drawn from a behavior $\pi$. Observe one transition and, because $Q^*$ is unknown, put the current table estimate $Q$ in its place to form the one-step backup
 
-```math
+$$
 U_t=R_{t+1}+\gamma\max_{a'} Q(S_{t+1},a').
-```
+$$
 
 (If $S_{t+1}$ is terminal, take the $\max$ term as $0$.) The **TD error** on the pair is again backup minus estimate:
 
-```math
-\begin{equation}
+$$
 \delta_t
 =
 \bigl(R_{t+1}+\gamma\max_{a'} Q(S_{t+1},a')\bigr) - Q(S_t,A_t).
 \tag{6.5}
-\end{equation}
-```
+$$
 
 Stepping $Q(S_t,A_t)$ toward $U_t$ is the same $\alpha$-update as (6.3), with this backup:
 
-```math
-\begin{equation}
+$$
 \begin{aligned}
 Q(S_t,A_t)
 &\leftarrow
@@ -186,8 +175,7 @@ Q(S_t,A_t)
 Q(S_t,A_t)+\alpha\,\delta_t.
 \end{aligned}
 \tag{6.6}
-\end{equation}
-```
+$$
 
 Unlike SARSA, where both the current action $A_t$ and the next action $A_{t+1}$ are chosen by the same behavior policy (e.g. $\varepsilon$-greedy in $Q$), Q-learning does not put a behavior-sampled $A_{t+1}$ in the backup. The next action is whichever $a'$ currently maximizes $Q(S_{t+1},a')$. Acting may still use $\varepsilon$-greedy for $A_t$ to explore; only how the backup treats the next action differs. That is why Q-learning is **off-policy**. No importance-sampling weights are needed. The $\max$ already puts the greedy target inside the one-step backup.
 
@@ -272,18 +260,17 @@ SARSA and Q-learning choose $A_t$ $\varepsilon$-greedy in the current $Q$ (SARSA
 
 At state $s$, write $A^*=\arg\max_a Q(s,a)$ (break ties by any fixed rule). Because $A^*$ is still eligible on the uniform draw, its total probability is the greedy branch plus one share of that draw,
 
-```math
+$$
 \pi(A^*\mid s)
 =
 (1-\varepsilon)
 +
 \frac{\varepsilon}{\lvert\mathcal{A}\rvert}.
-```
+$$
 
 Every other action appears only on the uniform draw, each with probability $\varepsilon/\lvert\mathcal{A}\rvert$. For $\varepsilon\in(0,1]$,
 
-```math
-\begin{equation}
+$$
 \pi(a\mid s)
 =
 \begin{cases}
@@ -296,19 +283,16 @@ Every other action appears only on the uniform draw, each with probability $\var
 \text{if }a\neq A^*.
 \end{cases}
 \tag{6.7}
-\end{equation}
-```
+$$
 
 When $\varepsilon=0$, (6.7) is greedy. When $\varepsilon=1$, it is uniform. A fixed $\varepsilon>0$ explores forever, which helps coverage but keeps the behavior away from the greedy $\pi^*$. A common remedy is to shrink $\varepsilon$ over episodes $k=0,1,2,\ldots$ by a geometric factor. Writing $\varepsilon_k=\varepsilon_0^k$ does not work when the start is $\varepsilon_0=1$ (then $1^k=1$ forever), and it ties the starting level to the decay speed. Keep them separate: start at $\varepsilon_0\in(0,1]$ and multiply by $\lambda^k$ with $\lambda\in(0,1)$,
 
-```math
-\begin{equation}
+$$
 \varepsilon_k
 =
 \varepsilon_0\,\lambda^k.
 \tag{6.8}
-\end{equation}
-```
+$$
 
 Early episodes explore more; later ones concentrate on $\arg\max_a Q(s,a)$. In practice one may clip $\varepsilon_k$ below by a small floor so a little exploration remains; that floor is optional and is not part of (6.8). The same schedule can feed any method that chooses $A_t$ by (6.7)—including on-policy MC control, SARSA, and Q-learning.
 
@@ -362,15 +346,13 @@ $\varepsilon$-greedy in (6.7) uses $Q$ only to pick the greedy action $A^*$. Eve
 
 To rank every action by $Q$ instead, use a **Boltzmann (Gibbs)** distribution over $\mathcal{A}$: $\pi(a\mid s)\propto\exp\bigl(Q(s,a)/\tau\bigr)$, so better actions are more likely and temperature $\tau>0$ sets how sharp the ranking is. **Softmax** writes that distribution in normalized form—exponentiate each score $Q/\tau$, then divide by the sum:
 
-```math
-\begin{equation}
+$$
 \pi(a\mid s)
 =
 \frac{\exp\bigl(Q(s,a)/\tau\bigr)}
 {\sum_{b\in\mathcal{A}}\exp\bigl(Q(s,b)/\tau\bigr)}.
 \tag{6.9}
-\end{equation}
-```
+$$
 
 Large $\tau$ flattens $\pi$ toward uniform; small $\tau$ concentrates on $\arg\max_a Q(s,a)$. At $\tau=1$, (6.9) is the plain softmax of $Q$. Leave $\tau$ untuned and the sharpness tracks whatever scale $Q$ happens to have, so treat $\tau$ as a hyperparameter—fixed by trying a few values, or annealed over episodes like (6.8).
 
