@@ -11,7 +11,7 @@
 .vscode/
 .idea/
 .obsidian/
-/md/
+# md/
 *.swp
 *~
 

@@ -2,7 +2,7 @@
 Mathematics and algorithms from MDPs to RLHF, InstructGPT,
 and DeepSeek-R1, with Python
 
-Welcome to the open-source repository for **Reinforcement Learning: Mathematics and algorithms from MDPs to RLHF, InstructGPT, and DeepSeek-R1, with Python**. This comprehensive, 158-page textbook serves as an educational compilation and rigorous distillation of the mathematically established methods, architectures, and algorithms that define modern Reinforcement Learning (RL).
+Welcome to the open-source repository for **Reinforcement Learning: Mathematics and algorithms from MDPs to RLHF, InstructGPT, and DeepSeek-R1, with Python**. This comprehensive textbook serves as an educational compilation and rigorous distillation of the mathematically established methods, architectures, and algorithms that define modern Reinforcement Learning (RL).
 
 Rather than proposing speculative novel inventions, this book acts as a clean, self-contained, and structurally cohesive reference manual designed to bridge the gap between abstract mathematical proofs and concrete programmatic implementations.
 
