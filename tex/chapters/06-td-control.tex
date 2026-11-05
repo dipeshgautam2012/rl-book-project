@@ -77,7 +77,7 @@ Output: $Q\approx Q^\pi$ for the $\varepsilon$-greedy $\pi$ used while learning;
 
 \end{implnote}
 
-\lstinputlisting{code/ch06/sarsa.py}
+\lstinputlisting{../code/ch06/sarsa.py}
 
 
 \section{Q-learning}
@@ -150,7 +150,7 @@ Output: $Q\approx Q^*$; greedy $\pi(s)=\arg\max_a Q(s,a)$.
 
 \end{implnote}
 
-\lstinputlisting{code/ch06/q_learning.py}
+\lstinputlisting{../code/ch06/q_learning.py}
 
 
 \section{$\varepsilon$-greedy}
@@ -208,7 +208,7 @@ Input: $Q$, state $s$, $\varepsilon\in[0,1]$, action set $\mathcal{A}$.
 
 \end{implnote}
 
-\lstinputlisting{code/ch06/eps_greedy.py}
+\lstinputlisting{../code/ch06/eps_greedy.py}
 
 
 \section{Softmax}
@@ -240,7 +240,7 @@ Input: $Q$, state $s$, temperature $\tau>0$, action set $\mathcal{A}$.
 
 \end{implnote}
 
-\lstinputlisting{code/ch06/softmax.py}
+\lstinputlisting{../code/ch06/softmax.py}
 
 
 SARSA, Q-learning, (6.7), and (6.9) all use a table of $Q(s,a)$: one entry per pair, updated only when that pair is taken. That table works because $\mathcal{S}$ so far is a small fixed set. The same $s$ returns, and the same cell is updated. When $\mathcal{S}$ is large or continuous, it runs into two problems: the table does not fit, and a later observed state is almost never that same $s$, so the stored number is not used again. Chapter 7 replaces the table by a function $\hat{Q}(s,a;\mathbf{w})$ of a weight vector $\mathbf{w}$. Only those weights are stored and updated. SARSA and Q-learning keep the same backups, and (6.7) and (6.9) still choose $A_t$, now from $\hat{Q}$.

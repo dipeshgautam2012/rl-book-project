@@ -282,7 +282,7 @@ Output: $\mathbf{w}$ such that $\hat{Q}(s,a;\mathbf{w})=\mathbf{w}^\top\mathbf{x
 
 The updates above are \textbf{stochastic}. Each step uses one transition to form $U_t$ and the (full or semi) gradient of $J_t$, so no expectation appears inside the loss. A different objective is the squared \textbf{mean} residual $\tfrac12\bigl(\mathbb{E}[U\mid s,a]-\hat{Q}(s,a;\mathbf{w})\bigr)^2$ at a fixed pair. Its gradient is a product of two expectations and needs two independent draws of $(R,S')$---\textbf{double sampling}. That is not $\nabla_{\mathbf{w}} J_t$; online trajectories usually provide only one next state, so the algorithms use the stochastic $J_t$ updates.
 
-\lstinputlisting{code/ch07/linear_fa.py}
+\lstinputlisting{../code/ch07/linear_fa.py}
 
 
 \section{The Deadly Triad}

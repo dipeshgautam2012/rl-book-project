@@ -69,7 +69,7 @@ After enough steps, $\pi_\theta(y\mid x)$ is larger than it was under $\pi_{\mat
 
 We use \texttt{log\_pi} and \texttt{make\_h} from Section 11.5. On a gold pair, \texttt{log\_pi(h, x, y)} \textbf{is} teacher forcing: each term conditions on the gold prefix $y_{:t}$.
 
-\lstinputlisting{code/ch12/sft.py}
+\lstinputlisting{../code/ch12/sft.py}
 
 
 \section{InstructGPT: SFT then RLHF}
@@ -209,7 +209,7 @@ $A_i$ and $\theta_{\mathrm{old}}$ stay frozen on the inner loop of $E$ gradient-
 
 We use \texttt{sample\_response}, \texttt{log\_pi}, and \texttt{make\_h} from Section 11.5. The rule \texttt{r\_rule} is (12.5) on the toy vocabulary: accuracy is the answer token \texttt{4}; format is a first-token habit (\texttt{it}).
 
-\lstinputlisting{code/ch12/grpo.py}
+\lstinputlisting{../code/ch12/grpo.py}
 
 
 \subsection{Rejection sampling then SFT}
@@ -249,7 +249,7 @@ Let $\mathcal{D}_{\mathrm{keep}}$ be the kept pairs and $\mathcal{D}_{\mathrm{ge
 
 We use \texttt{sample\_response} and \texttt{make\_h} from Section 11.5. \texttt{sft} is that of Section 12.1. On the toy, $f=1$ iff both terms of (12.5) are $1$.
 
-\lstinputlisting{code/ch12/reject_then_sft.py}
+\lstinputlisting{../code/ch12/reject_then_sft.py}
 
 
 \textbf{Distillation} is the same SFT, on a \textbf{smaller} network. The last $\pi_\theta$ on the chain above (after the second GRPO) is the trained R1-style model. Distillation does not continue that chain: it trains a different student from \textbf{its own} pretrained $\pi_{\mathrm{base}}$ (not a copy of the teacher), by teacher-forcing on a set $\mathcal{D}_{\mathrm{SFT}}$ of teacher traces. In general those traces need not be rejection-sampled: any teacher strings can be the SFT data, and $f$ is optional. DeepSeek-R1 uses the replies \textbf{already kept} in Reject→SFT --- those $y$ with $f=1$, already in $\mathcal{D}_{\mathrm{SFT}}$ --- and does not run a second rejection loop. It runs that SFT on smaller dense models (Qwen, Llama). That student is not updated by GRPO.
@@ -273,5 +273,5 @@ We use \texttt{sample\_response} and \texttt{make\_h} from Section 11.5. \texttt
 
 We use the same \texttt{sft} as Section 12.1. \texttt{d\_sft} is the kept set from reject then SFT above. The student network is a new \texttt{make\_h()} from Section 11.5, not a copy of the teacher.
 
-\lstinputlisting{code/ch12/distill.py}
+\lstinputlisting{../code/ch12/distill.py}
 

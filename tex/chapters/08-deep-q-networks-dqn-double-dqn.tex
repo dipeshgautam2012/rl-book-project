@@ -173,7 +173,7 @@ Output: online weights $\theta$; greedy policy $\pi(s)=\arg\max_a\hat{Q}(s,a;\th
 
 \end{implnote}
 
-\lstinputlisting{code/ch08/dqn.py}
+\lstinputlisting{../code/ch08/dqn.py}
 
 
 \section{Double DQN}
@@ -242,7 +242,7 @@ Replace (8.3) by (8.7); the loss (8.4)--(8.6), replay, and $\theta^-\leftarrow\t
 
 In the program of Section 8.4, replace the \texttt{with torch.no\_grad():} block by
 
-\lstinputlisting{code/ch08/double_dqn_target.py}
+\lstinputlisting{../code/ch08/double_dqn_target.py}
 
 
 DQN (and Double DQN) stay \textbf{value-based}. They learn $\hat{Q}$ and choose actions from it. Chapter 9 instead parameterizes $\pi_\theta(a\mid s)$ directly and optimizes expected return by policy gradients.

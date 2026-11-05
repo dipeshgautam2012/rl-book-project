@@ -27,7 +27,6 @@ venv/
 *.fls
 *.log
 *.out
-*.pdf
 *.toc
 
 # Local scratch / backups

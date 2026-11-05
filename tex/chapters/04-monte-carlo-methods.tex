@@ -222,12 +222,12 @@ Output: $V\approx V^\pi$.
 
 To implement the first-visit and every-visit algorithms for $V^\pi$ in Python, initialize the states, terminals, and actions, and define helpers that take one transition and generate an episode under $\pi$:
 
-\lstinputlisting{code/ch04/env_step.py}
+\lstinputlisting{../code/ch04/env_step.py}
 
 
 The algorithms use that code. First-visit and every-visit for $V$ are:
 
-\lstinputlisting{code/ch04/mc_prediction_first_visit.py}
+\lstinputlisting{../code/ch04/mc_prediction_first_visit.py}
 
 
 \section{Action-value estimates}
@@ -334,7 +334,7 @@ Output: $Q\approx Q^\pi$ and greedy $\pi'(s)=\arg\max_a Q(s,a)$.
 
 The toy environment of Section 4.2 is reused here. First-visit and every-visit for $Q$, with a greedy readout $\pi'$, are:
 
-\lstinputlisting{code/ch04/mc_q_prediction.py}
+\lstinputlisting{../code/ch04/mc_q_prediction.py}
 
 
 \section{Monte Carlo Control}
@@ -422,7 +422,7 @@ Output: $Q\approx Q^*$ and $\pi\approx\pi^*$.
 
 The environment of Section 4.2 is reused here. Exploring starts needs its own episode generator:
 
-\lstinputlisting{code/ch04/mc_es.py}
+\lstinputlisting{../code/ch04/mc_es.py}
 
 
 \subsection{$\varepsilon$-greedy policies}
@@ -460,7 +460,7 @@ Output: $Q\approx Q^*$ and greedy $\pi\approx\pi^*$ (for acting); learning uses 
 
 The environment of Section 4.2 is reused here, and \texttt{greedy\_pi} from Section 4.3. On-policy $\varepsilon$-greedy control is:
 
-\lstinputlisting{code/ch04/on_policy_mc_control.py}
+\lstinputlisting{../code/ch04/on_policy_mc_control.py}
 
 
 \subsection{Off-policy Monte Carlo}
@@ -626,7 +626,7 @@ Output: $Q\approx Q^*$ and greedy $\pi\approx\pi^*$.
 
 The environment of Section 4.2 is reused here, and \texttt{eps\_greedy} and \texttt{generate\_episode} from Section 4.4.2. Off-policy control is:
 
-\lstinputlisting{code/ch04/off_policy_mc_control.py}
+\lstinputlisting{../code/ch04/off_policy_mc_control.py}
 
 
 \subsubsection*{Off-policy state-values}

@@ -458,7 +458,7 @@ Output: trained policy $\pi_\theta$.
 
 The code uses a toy setting: two arithmetic prompts, a five-token vocabulary from the Chapter 11 running example, and responses of fixed length $3$. Preference triples for $r_\phi$ are hand-labeled (correct `\texttt{4'' replies beat wrong }`5'' replies). $\pi_{\text{ref}}$ is a randomly initialized network instead of a supervised model.
 
-\lstinputlisting{code/ch11/rlhf_rloo.py}
+\lstinputlisting{../code/ch11/rlhf_rloo.py}
 
 
 \section{Proximal Policy Optimization (PPO)}
@@ -607,7 +607,7 @@ If $E=1$, then $\rho_k=1$ at the only update and PPO reduces to advantage-weight
 
 The helpers \texttt{sample\_response}, \texttt{log\_pi}, and \texttt{r\_phi} are those of Section 11.5. Only the policy loop changes: sample once from $\pi_{\theta_{\mathrm{old}}}$, freeze $A_k$, then $E$ steps on $L^{\mathrm{PPO}}$.
 
-\lstinputlisting{code/ch11/rlhf_ppo.py}
+\lstinputlisting{../code/ch11/rlhf_ppo.py}
 
 
 The objects in this chapter are the RLHF core: $\pi_\theta$, $r_\phi$, $\pi_{\mathrm{ref}}$, RLOO, PPO. Named systems that \textbf{wire} those objects (and, when the score is a program, replace $r_\phi$) are Chapter 12.

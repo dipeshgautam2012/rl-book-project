@@ -24,7 +24,7 @@ The GridWorld \textbf{is} an MDP in every case. The four approaches only differ 
 \end{itemize}
 All four return a greedy $\pi(s)=\arg\max_a Q(s,a)$ (value iteration reads it from $V$). Following that $\pi$ from a start cell is the path.
 
-\lstinputlisting{code/ch14/gridworld_solutions.py}
+\lstinputlisting{../code/ch14/gridworld_solutions.py}
 
 
 VI and Q-learning typically agree on a shortest path to $15$. SARSA can differ on cells where $\varepsilon$-greedy exploration is costly. MC is noisier: its target is a full $G_t$.
@@ -45,7 +45,7 @@ A table cannot store $Q(s,a)$ for every $s$. The network $\hat{Q}(s,a;\theta)$, 
 \caption{CartPole balancing task.}
 \end{figure}
 
-\lstinputlisting{code/ch14/cartpole_dqn.py}
+\lstinputlisting{../code/ch14/cartpole_dqn.py}
 
 
 \begin{figure}[ht]
