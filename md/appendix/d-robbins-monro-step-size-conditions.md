@@ -180,8 +180,5 @@ $$
 The sample errors $\xi_k$ never stop, but because $\sum\alpha_k^2<\infty$, the steps shrink fast enough that $\mathrm{Var}(E_{\text{noise}})\to 0$. For every $\varepsilon>0$, $\lim_{n\to\infty}\mathbb{P}(\lvert E_{\text{noise}}\rvert\ge\varepsilon)=0$, so $E_{\text{noise}}\to 0$ in probability: $\lim_{n\to\infty}E_{\text{noise}}=0$.
 
 The two conditions are
-$$
-\sum_{k=1}^{\infty}\alpha_k=\infty,
-\qquad
-\sum_{k=1}^{\infty}\alpha_k^2<\infty.
-$$
+
+<img src="../../figures/equations/rm.svg" alt="Robbins-Monro step-size conditions" style="width:100%; max-width:820px; display:block; margin:1em auto;" />

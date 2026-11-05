@@ -102,15 +102,9 @@ $$ is the **discounted visitation** of $s$: add $\gamma^t$ whenever the probabil
 \bigl(\nabla_\theta\pi_\theta(a\mid s)\bigr)\,
 Q^{\pi_\theta}(s,a).
 
-$$ Equivalently, with $\nabla_\theta\pi_\theta=\pi_\theta\,\nabla_\theta\log\pi_\theta$, $$
-\nabla_\theta J(\theta)
-=
-\mathbb{E}_{s\sim\mu_{\pi_\theta},\,a\sim\pi_\theta(\cdot\mid s)}
-\bigl[
-Q^{\pi_\theta}(s,a)\,
-\nabla_\theta\log\pi_\theta(a\mid s)
-\bigr].
+$$ Equivalently, with $\nabla_\theta\pi_\theta=\pi_\theta\,\nabla_\theta\log\pi_\theta$,
 
+<img src="../../figures/equations/pg.svg" alt="Policy gradient expectation form" style="width:100%; max-width:980px; display:block; margin:1em auto;" />
 
 **Proof of (E.4).** Write $\pi$ for $\pi_\theta$ and $V$, $Q$ for $V^{\pi_\theta}$, $Q^{\pi_\theta}$.
 

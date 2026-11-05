@@ -7,15 +7,9 @@ Details for Section 11.6 that are not repeated there: the autodiff check that $\
 ## Gradient of $L^{\mathrm{IS}}$
 
 Section 11.6 uses
-$$
-L^{\mathrm{IS}}(\theta)
-=
--\frac{1}{K}\sum_{k=1}^{K}\rho_k(\theta)\,A_k,
-\qquad
-\rho_k(\theta)
-=
-\frac{\pi_\theta(y_k\mid x)}{\pi_{\theta_{\mathrm{old}}}(y_k\mid x)},
-$$
+
+<img src="../../figures/equations/ppo.svg" alt="PPO objective and importance sampling objective" style="width:100%; max-width:980px; display:block; margin:1em auto;" />
+
 with $A_k$ and $\pi_{\theta_{\mathrm{old}}}$ fixed. Differentiating,
 $$
 \nabla_\theta L^{\mathrm{IS}}
@@ -40,17 +34,7 @@ which is the sample estimate of $\nabla_\theta L$ in Section 11.6. Descent on $L
 
 ## Clip cases and tables
 
-Section 11.6 minimizes
-$$
-L^{\mathrm{PPO}}(\theta)
-=
--\frac{1}{K}\sum_{k=1}^{K}
-\min\Bigl(
-\rho_k(\theta)\,A_k,\;
-\mathrm{clip}\bigl(\rho_k(\theta),\,1-\varepsilon,\,1+\varepsilon\bigr)\,A_k
-\Bigr).
-$$
-Here
+Section 11.6 minimizes the PPO objective shown above. The clipping rule is
 $$
 \mathrm{clip}(\rho)
 =

@@ -8,15 +8,11 @@ Show that the KL divergence used in Section 11.4 is always at least zero.
 
 ## Proof
 
-Let $p$ and $q$ be distributions on the same finite set, with $q(y)>0$ whenever $p(y)>0$. The KL divergence is $$
-\mathrm{KL}(p\|q)
-=
-\sum_y p(y)\log\frac{p(y)}{q(y)}
-=
-\mathbb{E}_{y\sim p}\Bigl[\log\frac{p(y)}{q(y)}\Bigr]
-=
--\,\mathbb{E}_{y\sim p}\Bigl[\log\frac{q(y)}{p(y)}\Bigr].
-$$ Since $-\log$ is convex, Jensen's inequality (\citetxt{jensen1906}{Jensen, 1906}) applies: for a convex function $f$, the function of the average is at most the average of the function. For finitely many points that is $$
+Let $p$ and $q$ be distributions on the same finite set, with $q(y)>0$ whenever $p(y)>0$. The KL divergence is
+
+<img src="../../figures/equations/kl.svg" alt="KL divergence and KL non-negativity" style="width:100%; max-width:980px; display:block; margin:1em auto;" />
+
+Since $-\log$ is convex, Jensen's inequality (\citetxt{jensen1906}{Jensen, 1906}) applies: for a convex function $f$, the function of the average is at most the average of the function. For finitely many points that is $$
 f\Bigl(\frac{x_1+\cdots+x_n}{n}\Bigr)
 \le
 \frac{f(x_1)+\cdots+f(x_n)}{n},
