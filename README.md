@@ -75,5 +75,3 @@ To cite this book in your academic work, please use the following BibTeX entry:
   note      = {Open-source textbook available at \url{https://github.com/dipeshgautam2012/rl-book-project}}
 }
 ```
-
-Use code with caution.
