@@ -37,3 +37,5 @@ This book derives standard reinforcement learning methods and writes Python for 
 ## Source of truth
 
 The LaTeX book in [tex/main.tex](../tex/main.tex) remains the authoritative source. The markdown files in this folder are derived from it and are intended for GitHub-friendly reading.
+
+[Table of contents](#chapters) | [Next: Preface](chapters/00-preface.md) →
