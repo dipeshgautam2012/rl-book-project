@@ -38,9 +38,10 @@ This book is available in the following formats in this repository:
 
 ## 🛠️ Methodology & Curation Notice
 
-This book derives standard reinforcement learning methods and writes Python for the same updates. The algorithms, theorems, and named systems are due to the works listed in the References. It does not introduce a new algorithm. Chapters 11 and 12 describe the shape of InstructGPT-style and DeepSeek-R1-style training; they do not train those published systems, and they do not use their models, data, or infrastructure.
+This text openly declares its development methodology:
 
-**Generative artificial intelligence tools were utilized to refine the prose explanations of these standard methods and optimize their linguistic flow. The final text, overarching structure, and conceptual curation were executed by the author. All mathematical derivations, algorithmic loops, and Python source code listings have been manually cross-verified against primary literature by the author, who assumes sole responsibility for the technical correctness, accuracy, and integrity of the final work.**
+* **Linguistic Refinement:** Generative artificial intelligence tools were utilized to refine the prose explanations of these standard methods and optimize their linguistic flow.
+* **Authorial Governance:** The final text, overarching structure, and conceptual curation were executed by the author. All mathematical derivations, algorithmic loops, and Python source code listings have been manually cross-verified against primary literature by the author, who assumes sole responsibility for the technical correctness, accuracy, and integrity of the final work.
 
 ---
 
