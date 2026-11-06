@@ -38,10 +38,9 @@ This book is available in the following formats in this repository:
 
 ## 🛠️ Methodology & Curation Notice
 
-In alignment with modern open-science publishing standards (including the guidelines established by **Springer Nature** and **NeurIPS**), this text openly declares its development methodology:
+This book derives standard reinforcement learning methods and writes Python for the same updates. The algorithms, theorems, and named systems are due to the works listed in the References. It does not introduce a new algorithm. Chapters 11 and 12 describe the shape of InstructGPT-style and DeepSeek-R1-style training; they do not train those published systems, and they do not use their models, data, or infrastructure.
 
-* **Linguistic Scaffolding:** Generative Artificial Intelligence was utilized as a structural drafting assistant to synthesize foundational definitions, refine linguistic syntax, and optimize prose readability across the 158 pages.
-* **Technical & Mathematical Governance:** *The human author served as the absolute technical editor and supervisor.* Every mathematical proof, subscript boundaries, clipping threshold, objective function, and code block has been manually audited, cross-checked against primary sources, and verified for absolute scientific correctness. The human author assumes 100% professional accountability for the integrity, correctness, and pedagogical pacing of this text.
+**Generative artificial intelligence tools were utilized to refine the prose explanations of these standard methods and optimize their linguistic flow. The final text, overarching structure, and conceptual curation were executed by the author. All mathematical derivations, algorithmic loops, and Python source code listings have been manually cross-verified against primary literature by the author, who assumes sole responsibility for the technical correctness, accuracy, and integrity of the final work.**
 
 ---
 
