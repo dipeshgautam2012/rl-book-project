@@ -19,64 +19,20 @@ The average return from $S_t$ under the current policy is, by definition, the st
 
 Like REINFORCE and the Monte Carlo methods of Chapter 4, this section uses the full return $G_t$. It addresses problem 1: replace that absolute return by a comparison against a state-dependent baseline. The example above subtracted the average return $150$ from every return in $S_t$. For that fix to be valid, the update must still estimate $\nabla_\theta J$ after the subtraction. Start from (9.7) and subtract from each return a **baseline** $b(s)$, a function of the state alone. Then
 
-$$
-\begin{aligned}
-&\mathbb{E}_{\tau\sim\pi_\theta}\Biggl[
-\sum_{t=0}^{T-1}
-\gamma^{t}\bigl(G_t-b(S_t)\bigr)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)
-\Biggr]
-\\
-&\qquad=
-\mathbb{E}_{\tau\sim\pi_\theta}\Biggl[
-\sum_{t=0}^{T-1}
-\gamma^{t}G_t\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)
-\Biggr]
--
-\sum_{t=0}^{T-1}\gamma^{t}\,
-\mathbb{E}\bigl[
-b(S_t)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)
-\bigr]
-\quad\text{[A.4]}
-\\
-&\qquad=
-\nabla_\theta J(\theta)
--
-\sum_{t=0}^{T-1}\gamma^{t}\cdot 0
-\quad\text{[(9.7) and (E.3)]}
-\\
-&\qquad=
-\nabla_\theta J(\theta).
-\end{aligned}
-$$
+```math
+\begin{aligned}&\mathbb{E}_{\tau\sim\pi_\theta}\Biggl[\sum_{t=0}^{T-1}\gamma^{t}\bigl(G_t-b(S_t)\bigr)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\Biggr]\\&\qquad=\mathbb{E}_{\tau\sim\pi_\theta}\Biggl[\sum_{t=0}^{T-1}\gamma^{t}G_t\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\Biggr]-\sum_{t=0}^{T-1}\gamma^{t}\,\mathbb{E}\bigl[b(S_t)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigr]\quad\text{[A.4]}\\&\qquad=\nabla_\theta J(\theta)-\sum_{t=0}^{T-1}\gamma^{t}\cdot 0\quad\text{[(9.7) and (E.3)]}\\&\qquad=\nabla_\theta J(\theta).\end{aligned}
+```
 
 So subtracting the baseline leaves the gradient unchanged:
 
-$$
-\nabla_\theta J(\theta)
-=
-\mathbb{E}_{\tau\sim\pi_\theta}\Biggl[
-\sum_{t=0}^{T-1}
-\gamma^{t}\bigl(G_t-b(S_t)\bigr)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)
-\Biggr].
-\tag{10.1}
-$$
+```math
+\nabla_\theta J(\theta)=\mathbb{E}_{\tau\sim\pi_\theta}\Biggl[\sum_{t=0}^{T-1}\gamma^{t}\bigl(G_t-b(S_t)\bigr)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\Biggr].\quad (10.1)
+```
 
 The $G_t$ term stays because $G_t$ depends on the action $A_t$. For the baseline term, apply the tower property (A.8) by conditioning on $S_t$:
-$$
-\begin{aligned}
-\mathbb{E}\bigl[b(S_t)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigr]
-&=
-\mathbb{E}\Bigl[\mathbb{E}\bigl[b(S_t)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigm|S_t\bigr]\Bigr]
-\\
-&=
-\mathbb{E}\Bigl[b(S_t)\,\mathbb{E}\bigl[\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigm|S_t\bigr]\Bigr]
-\\
-&=
-\mathbb{E}\bigl[b(S_t)\cdot 0\bigr]
-=
-0.
-\end{aligned}
-$$
+```math
+\begin{aligned}\mathbb{E}\bigl[b(S_t)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigr]&=\mathbb{E}\Bigl[\mathbb{E}\bigl[b(S_t)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigm|S_t\bigr]\Bigr]\\&=\mathbb{E}\Bigl[b(S_t)\,\mathbb{E}\bigl[\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigm|S_t\bigr]\Bigr]\\&=\mathbb{E}\bigl[b(S_t)\cdot 0\bigr]=0.\end{aligned}
+```
 Given $S_t$, the baseline is a fixed number, so it factors out of the inner average over $A_t$; that average is zero by <a href="#eq:E.1" data-reference-type="eqref" data-reference="eq:E.1">[eq:E.1]</a>. The same display is <a href="#eq:E.3" data-reference-type="eqref" data-reference="eq:E.3">[eq:E.3]</a> in .
 
 The choice of $b$ therefore changes how noisy the estimate is, not its mean. A good choice is the one in the example, the average return from $S_t$, which is $b(s)=V^{\pi_\theta}(s)=\mathbb{E}[G_t\mid S_t=s]$. With it, the weight $G_t-V^{\pi_\theta}(S_t)$ is positive when $A_t$ did better than the policy’s average in $S_t$ and negative when it did worse. This baseline is learned as $\hat{V}(s;\mathbf{w})$, a second approximator with its own weights $\mathbf{w}$, as in Chapter 7, and (10.1) holds for every $\mathbf{w}$, even before $\hat{V}$ is accurate.
@@ -85,77 +41,49 @@ REINFORCE with baseline therefore learns two things from the same episodes: the 
 
 Learning $\hat{V}$ is the prediction problem of Chapter 4: $V^{\pi_\theta}(s)=\mathbb{E}[G_t\mid S_t=s]$, so each sampled return $G_t$ is a target for $\hat{V}(S_t;\mathbf{w})$. Gradient descent on the squared error $\tfrac12\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)^2$, summed over the episode, gives
 
-$$
-\mathbf{w}
-\leftarrow
-\mathbf{w}
-+
-\alpha_{\mathbf{w}}
-\sum_{t=0}^{T-1}
-\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)\,
-\nabla_{\mathbf{w}}\hat{V}(S_t;\mathbf{w}).
-\tag{10.2}
-$$
+```math
+\mathbf{w}\leftarrow\mathbf{w}+\alpha_{\mathbf{w}}\sum_{t=0}^{T-1}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)\,\nabla_{\mathbf{w}}\hat{V}(S_t;\mathbf{w}).\quad (10.2)
+```
 
 The policy update is the **single-episode** estimate of (10.1), as (9.8) was for (9.7):
 
-$$
-\theta
-\leftarrow
-\theta
-+
-\alpha_\theta
-\sum_{t=0}^{T-1}
-\gamma^{t}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)\,
-\nabla_\theta\log\pi_\theta(A_t\mid S_t).
-\tag{10.3}
-$$
+```math
+\theta\leftarrow\theta+\alpha_\theta\sum_{t=0}^{T-1}\gamma^{t}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t).\quad (10.3)
+```
 
 Comparing (10.2) and (10.3) with gradient descent gives the losses. In $L(\theta)$, both $G_t$ and $\hat{V}(S_t;\mathbf{w})$ are fixed numbers:
 
-$$
-L(\mathbf{w})
-=
-\frac12\sum_{t=0}^{T-1}
-\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)^2,
-\qquad
-L(\theta)
-=
--\sum_{t=0}^{T-1}
-\gamma^{t}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)\,
-\log\pi_\theta(A_t\mid S_t).
-\tag{10.4}
-$$
+```math
+L(\mathbf{w})=\frac12\sum_{t=0}^{T-1}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)^2,\qquadL(\theta)=-\sum_{t=0}^{T-1}\gamma^{t}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)\,\log\pi_\theta(A_t\mid S_t).\quad (10.4)
+```
 
 Both updates use the same differences $G_t-\hat{V}(S_t;\mathbf{w})$, with $\hat{V}$ evaluated at the $\mathbf{w}$ from before this episode’s value step. That keeps the baseline a function of $S_t$ alone. If $\mathbf{w}$ were first adjusted to match this episode’s $G_t$ and then $\hat{V}$ were recomputed for (10.3), the baseline would depend on the episode’s actions $A_t$, and $\mathbb{E}\bigl[\hat{V}(S_t;\mathbf{w})\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigr]$ need not be zero. The order of the two parameter steps does not matter once those differences are fixed.
 
-<div class="implnote">
+> [!NOTE]
+>
+> Input: differentiable policy $\pi_\theta(a\mid s)$; differentiable state-value function $\hat{V}(s;\mathbf{w})$; step sizes $\alpha_\theta$, $\alpha_{\mathbf{w}}$; discount $\gamma$; number of episodes $M$.
+>
+> Output: trained policy $\pi_\theta$ and $\hat{V}$.
+>
+> 1.  Initialize $\theta$ and $\mathbf{w}$ (e.g. randomly).
+>
+> 2.  Loop for episode $=1,2,\ldots,M$:
+>
+>     - Generate an episode $\tau=(S_0,A_0,R_1,\ldots,S_T)$ by sampling $A_t\sim\pi_\theta(\cdot\mid S_t)$ until termination.
+>
+>     - For each $t=0,1,\ldots,T-1$:
+>
+>       - $G_t\leftarrow\sum_{k=t}^{T-1}\gamma^{k-t}R_{k+1}$.
+>
+>     - Evaluate $\hat{V}(S_t;\mathbf{w})$ for each $t$ (before updating $\mathbf{w}$).
+>
+>     - $\mathbf{w}\leftarrow\mathbf{w}+\alpha_{\mathbf{w}}\sum_{t=0}^{T-1}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)\nabla_{\mathbf{w}}\hat{V}(S_t;\mathbf{w})$.
+>
+>     - $\theta\leftarrow\theta+\alpha_\theta\sum_{t=0}^{T-1}\gamma^{t}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)\nabla_\theta\log\pi_\theta(A_t\mid S_t)$.
+>
+> 3.  Return $\pi_\theta$ and $\hat{V}$.
 
-Input: differentiable policy $\pi_\theta(a\mid s)$; differentiable state-value function $\hat{V}(s;\mathbf{w})$; step sizes $\alpha_\theta$, $\alpha_{\mathbf{w}}$; discount $\gamma$; number of episodes $M$.
-
-Output: trained policy $\pi_\theta$ and $\hat{V}$.
-
-1.  Initialize $\theta$ and $\mathbf{w}$ (e.g. randomly).
-
-2.  Loop for episode $=1,2,\ldots,M$:
-
-    - Generate an episode $\tau=(S_0,A_0,R_1,\ldots,S_T)$ by sampling $A_t\sim\pi_\theta(\cdot\mid S_t)$ until termination.
-
-    - For each $t=0,1,\ldots,T-1$:
-
-      - $G_t\leftarrow\sum_{k=t}^{T-1}\gamma^{k-t}R_{k+1}$.
-
-    - Evaluate $\hat{V}(S_t;\mathbf{w})$ for each $t$ (before updating $\mathbf{w}$).
-
-    - $\mathbf{w}\leftarrow\mathbf{w}+\alpha_{\mathbf{w}}\sum_{t=0}^{T-1}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)\nabla_{\mathbf{w}}\hat{V}(S_t;\mathbf{w})$.
-
-    - $\theta\leftarrow\theta+\alpha_\theta\sum_{t=0}^{T-1}\gamma^{t}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)\nabla_\theta\log\pi_\theta(A_t\mid S_t)$.
-
-3.  Return $\pi_\theta$ and $\hat{V}$.
-
-</div>
-
-``` python
+```python
 import random
 import torch
 import torch.nn as nn
@@ -250,57 +178,30 @@ if __name__ == "__main__":
 Section 10.1 chose the Monte Carlo baseline $b(s)=V^{\pi_\theta}(s)$, so the policy update weights each action by $G_t-V^{\pi_\theta}(S_t)$: how that action’s return compares with the average return from the state. In the opening example, that weight was $-50\gamma^t$ for $a_1$ and $+50\gamma^t$ for $a_2$. Naming that difference makes the comparison itself the object of study: the policy gradient can be written with it as the weight, and Section 10.3 can replace this Monte Carlo estimate by a TD one (problem 2).
 
 The weight $G_t-V^{\pi_\theta}(S_t)$ is random. Given $S_t=s$ and $A_t=a$, expand its conditional expectation by linearity (A.5):
-$$
-\begin{aligned}
-&\mathbb{E}\bigl[G_t-V^{\pi_\theta}(S_t)\bigm|S_t=s,A_t=a\bigr]
-\\
-&\qquad=
-\mathbb{E}[G_t\mid S_t=s,A_t=a]
--
-\mathbb{E}\bigl[V^{\pi_\theta}(S_t)\bigm|S_t=s,A_t=a\bigr].
-\end{aligned}
-$$
+```math
+\begin{aligned}&\mathbb{E}\bigl[G_t-V^{\pi_\theta}(S_t)\bigm|S_t=s,A_t=a\bigr]\\&\qquad=\mathbb{E}[G_t\mid S_t=s,A_t=a]-\mathbb{E}\bigl[V^{\pi_\theta}(S_t)\bigm|S_t=s,A_t=a\bigr].\end{aligned}
+```
 The first term is $Q^{\pi_\theta}(s,a)$ by definition (B.13). In the second, $S_t=s$ is given, so $V^{\pi_\theta}(S_t)$ is the fixed number $V^{\pi_\theta}(s)$, and the expectation of a constant is that constant. Hence
-$$
-\mathbb{E}\bigl[G_t-V^{\pi_\theta}(S_t)\bigm|S_t=s,A_t=a\bigr]
-=
-Q^{\pi_\theta}(s,a)-V^{\pi_\theta}(s).
-$$
+```math
+\mathbb{E}\bigl[G_t-V^{\pi_\theta}(S_t)\bigm|S_t=s,A_t=a\bigr]=Q^{\pi_\theta}(s,a)-V^{\pi_\theta}(s).
+```
 The **advantage** of action $a$ in state $s$ under policy $\pi$ is that difference: how much is gained by taking $a$ compared with the average return $V^{\pi}(s)$ from the state $s$.
 
-$$
-A^{\pi}(s,a)
-=
-Q^{\pi}(s,a)-V^{\pi}(s).
-\tag{10.5}
-$$
+```math
+A^{\pi}(s,a)=Q^{\pi}(s,a)-V^{\pi}(s).\quad (10.5)
+```
 
 The expectation of the advantage, when the action is drawn from $\pi$ in $s$, is zero. Take the expectation of both sides of (10.5) and apply linearity (A.4):
-$$
-\begin{aligned}
-\mathbb{E}_{A\sim\pi(\cdot\mid s)}\bigl[A^{\pi}(s,A)\bigr]
-&=
-\mathbb{E}_{A\sim\pi(\cdot\mid s)}\bigl[Q^{\pi}(s,A)-V^{\pi}(s)\bigr]
-\\
-&=
-\mathbb{E}_{A\sim\pi(\cdot\mid s)}\bigl[Q^{\pi}(s,A)\bigr]
--
-\mathbb{E}_{A\sim\pi(\cdot\mid s)}\bigl[V^{\pi}(s)\bigr].
-\end{aligned}
-$$
+```math
+\begin{aligned}\mathbb{E}_{A\sim\pi(\cdot\mid s)}\bigl[A^{\pi}(s,A)\bigr]&=\mathbb{E}_{A\sim\pi(\cdot\mid s)}\bigl[Q^{\pi}(s,A)-V^{\pi}(s)\bigr]\\&=\mathbb{E}_{A\sim\pi(\cdot\mid s)}\bigl[Q^{\pi}(s,A)\bigr]-\mathbb{E}_{A\sim\pi(\cdot\mid s)}\bigl[V^{\pi}(s)\bigr].\end{aligned}
+```
 The first term equals $V^{\pi}(s)$ by (B.19). The second equals $V^{\pi}(s)$ as well: given $s$, $V^{\pi}(s)$ is a constant, so its expectation is itself. The two terms cancel, and the expectation of the advantage is zero. Under $\pi$, better-than-average and worse-than-average actions cancel. In the example, $A^{\pi_\theta}(S_t,a_1)=100-150=-50$ and $A^{\pi_\theta}(S_t,a_2)=200-150=+50$, and $\tfrac12(-50)+\tfrac12(+50)=0$.
 
 The same comparison appears in the $Q$ form of the policy gradient. Equation (9.7a) weights $\nabla_\theta\log\pi_\theta(A_t\mid S_t)$ by $Q^{\pi_\theta}(S_t,A_t)$. Subtracting the baseline $V^{\pi_\theta}(S_t)$, as in Section 10.1, replaces that weight by $Q^{\pi_\theta}(S_t,A_t)-V^{\pi_\theta}(S_t)=A^{\pi_\theta}(S_t,A_t)$:
 
-$$
-\nabla_\theta J(\theta)
-=
-\mathbb{E}_{\tau\sim\pi_\theta}\Biggl[
-\sum_{t=0}^{T-1}
-\gamma^{t}A^{\pi_\theta}(S_t,A_t)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)
-\Biggr].
-\tag{10.6}
-$$
+```math
+\nabla_\theta J(\theta)=\mathbb{E}_{\tau\sim\pi_\theta}\Biggl[\sum_{t=0}^{T-1}\gamma^{t}A^{\pi_\theta}(S_t,A_t)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\Biggr].\quad (10.6)
+```
 
 REINFORCE with baseline estimates the advantage by the Monte Carlo error $G_t-\hat{V}(S_t;\mathbf{w})$, where $\hat{V}(\cdot;\mathbf{w})$ is the learned approximation of $V^{\pi_\theta}$ from Section 10.1. That estimate is unbiased when $\hat{V}=V^{\pi_\theta}$, because $\mathbb{E}[G_t\mid S_t,A_t]=Q^{\pi_\theta}(S_t,A_t)$. It still uses the full return $G_t$, so problem 2 remains.
 
@@ -308,120 +209,77 @@ REINFORCE with baseline estimates the advantage by the Monte Carlo error $G_t-\h
 
 Sections 10.1–10.2 fixed problem 1, but the advantage is still estimated with the full return $G_t$ (problem 2). Start from the advantage itself (10.5):
 
-$$
-A^{\pi_\theta}(s,a)
-=
-Q^{\pi_\theta}(s,a)-V^{\pi_\theta}(s).
-$$
+```math
+A^{\pi_\theta}(s,a)=Q^{\pi_\theta}(s,a)-V^{\pi_\theta}(s).
+```
 
 Substitute (B.20) for $Q^{\pi_\theta}$:
 
-$$
-\begin{aligned}
-A^{\pi_\theta}(s,a)
-&=
-\mathbb{E}_\pi\bigl[R_{t+1}+\gamma V^{\pi_\theta}(S_{t+1})\mid S_t=s,A_t=a\bigr]
--
-V^{\pi_\theta}(s)
-\\
-&=
-\mathbb{E}_\pi\bigl[R_{t+1}+\gamma V^{\pi_\theta}(S_{t+1})-V^{\pi_\theta}(s)\mid S_t=s,A_t=a\bigr].
-\end{aligned}
-$$
+```math
+\begin{aligned}A^{\pi_\theta}(s,a)&=\mathbb{E}_\pi\bigl[R_{t+1}+\gamma V^{\pi_\theta}(S_{t+1})\mid S_t=s,A_t=a\bigr]-V^{\pi_\theta}(s)\\&=\mathbb{E}_\pi\bigl[R_{t+1}+\gamma V^{\pi_\theta}(S_{t+1})-V^{\pi_\theta}(s)\mid S_t=s,A_t=a\bigr].\end{aligned}
+```
 
 So $A^{\pi_\theta}(s,a)$ is already that conditional expectation: a one-step TD error of the true $V^{\pi_\theta}$. Sample one transition and replace the unknown $V^{\pi_\theta}$ by the learned $\hat{V}(\cdot;\mathbf{w})$:
 
-$$
-\delta_t
-=
-R_{t+1}+\gamma\hat{V}(S_{t+1};\mathbf{w})-\hat{V}(S_t;\mathbf{w}),
-\tag{10.7}
-$$
+```math
+\delta_t=R_{t+1}+\gamma\hat{V}(S_{t+1};\mathbf{w})-\hat{V}(S_t;\mathbf{w}),\quad (10.7)
+```
 
 with $\hat{V}(S_{t+1};\mathbf{w})=0$ when $S_{t+1}$ is terminal. Write $U_t=R_{t+1}+\gamma\hat{V}(S_{t+1};\mathbf{w})$, so $\delta_t=U_t-\hat{V}(S_t;\mathbf{w})$—the same TD error as (5.3). If $\hat{V}=V^{\pi_\theta}$, then $\delta_t$ is an unbiased sample of $A^{\pi_\theta}(S_t,A_t)$ by the display above; if not, $\delta_t$ is biased. In exchange it depends on one reward and one next-state value (problem 2).
 
 Section 10.2 wrote the policy gradient with the advantage as the weight (10.6). Estimate that weight by $\delta_t$:
 
-$$
-\nabla_\theta J(\theta)
-\approx
-\mathbb{E}_{\tau\sim\pi_\theta}\Biggl[
-\sum_{t=0}^{T-1}
-\gamma^{t}\delta_t\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)
-\Biggr].
-\tag{10.7a}
-$$
+```math
+\nabla_\theta J(\theta)\approx\mathbb{E}_{\tau\sim\pi_\theta}\Biggl[\sum_{t=0}^{T-1}\gamma^{t}\delta_t\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\Biggr].\quad (10.7a)
+```
 
 Here $\hat{V}(S_{t+1};\mathbf{w})$ stands in for the rest of the return, so $\delta_t$ judges $A_t$: positive when the step beat what $\hat{V}$ expected from $S_t$, negative when it fell short. That judgment makes $\hat{V}$ the **critic** and $\pi_\theta$ the **actor**—an **actor–critic** method. In Section 10.1 the same $\hat{V}$ only subtracted from the observed $G_t$; every later reward stayed in the weight, so $\hat{V}$ was a baseline, not a critic.
 
 After each transition, update both with the same $\delta_t$ (evaluated before the $\mathbf{w}$ step). The critic uses semi-gradient TD(0) on $U_t$ (Chapter 7); the actor uses the one-step form of (10.3):
 
-$$
-\mathbf{w}
-\leftarrow
-\mathbf{w}
-+
-\alpha_{\mathbf{w}}\,
-\delta_t\,
-\nabla_{\mathbf{w}}\hat{V}(S_t;\mathbf{w}),
-\tag{10.8}
-$$
+```math
+\mathbf{w}\leftarrow\mathbf{w}+\alpha_{\mathbf{w}}\,\delta_t\,\nabla_{\mathbf{w}}\hat{V}(S_t;\mathbf{w}),\quad (10.8)
+```
 
-$$
-\theta
-\leftarrow
-\theta
-+
-\alpha_\theta\,
-\gamma^{t}\delta_t\,
-\nabla_\theta\log\pi_\theta(A_t\mid S_t).
-\tag{10.9}
-$$
+```math
+\theta\leftarrow\theta+\alpha_\theta\,\gamma^{t}\delta_t\,\nabla_\theta\log\pi_\theta(A_t\mid S_t).\quad (10.9)
+```
 
 With $U_t$ and $\delta_t$ treated as fixed numbers, the losses are
 
-$$
-L(\mathbf{w})
-=
-\frac12\bigl(U_t-\hat{V}(S_t;\mathbf{w})\bigr)^2,
-\qquad
-L(\theta)
-=
--\gamma^{t}\delta_t\,\log\pi_\theta(A_t\mid S_t).
-\tag{10.10}
-$$
+```math
+L(\mathbf{w})=\frac12\bigl(U_t-\hat{V}(S_t;\mathbf{w})\bigr)^2,\qquadL(\theta)=-\gamma^{t}\delta_t\,\log\pi_\theta(A_t\mid S_t).\quad (10.10)
+```
 
 Compute $\delta_t$ with the current $\mathbf{w}$ before either parameter step. The algorithm below updates $\mathbf{w}$ first, then $\theta$, both with that same $\delta_t$. As in Section 10.1, once $\delta_t$ is fixed the order of the two steps does not matter.
 
-<div class="implnote">
+> [!NOTE]
+>
+> Input: differentiable policy $\pi_\theta(a\mid s)$; differentiable state-value function $\hat{V}(s;\mathbf{w})$; step sizes $\alpha_\theta$, $\alpha_{\mathbf{w}}$; discount $\gamma$; number of episodes $M$.
+>
+> Output: trained policy $\pi_\theta$ and $\hat{V}$.
+>
+> 1.  Initialize $\theta$ and $\mathbf{w}$ (e.g. randomly).
+>
+> 2.  Loop for episode $=1,2,\ldots,M$:
+>
+>     - Initialize $S$ (the start state $S_0$); $t\leftarrow 0$.
+>
+>     - Loop until $S$ is terminal:
+>
+>       - Sample $A\sim\pi_\theta(\cdot\mid S)$; take $A$, observe $R$, $S'$.
+>
+>       - $\delta\leftarrow R+\gamma\hat{V}(S';\mathbf{w})-\hat{V}(S;\mathbf{w})$, with $\hat{V}(S';\mathbf{w})=0$ if $S'$ is terminal.
+>
+>       - $\mathbf{w}\leftarrow\mathbf{w}+\alpha_{\mathbf{w}}\,\delta\,\nabla_{\mathbf{w}}\hat{V}(S;\mathbf{w})$.
+>
+>       - $\theta\leftarrow\theta+\alpha_\theta\,\gamma^{t}\delta\,\nabla_\theta\log\pi_\theta(A\mid S)$.
+>
+>       - $S\leftarrow S'$; $t\leftarrow t+1$.
+>
+> 3.  Return $\pi_\theta$ and $\hat{V}$.
 
-Input: differentiable policy $\pi_\theta(a\mid s)$; differentiable state-value function $\hat{V}(s;\mathbf{w})$; step sizes $\alpha_\theta$, $\alpha_{\mathbf{w}}$; discount $\gamma$; number of episodes $M$.
-
-Output: trained policy $\pi_\theta$ and $\hat{V}$.
-
-1.  Initialize $\theta$ and $\mathbf{w}$ (e.g. randomly).
-
-2.  Loop for episode $=1,2,\ldots,M$:
-
-    - Initialize $S$ (the start state $S_0$); $t\leftarrow 0$.
-
-    - Loop until $S$ is terminal:
-
-      - Sample $A\sim\pi_\theta(\cdot\mid S)$; take $A$, observe $R$, $S'$.
-
-      - $\delta\leftarrow R+\gamma\hat{V}(S';\mathbf{w})-\hat{V}(S;\mathbf{w})$, with $\hat{V}(S';\mathbf{w})=0$ if $S'$ is terminal.
-
-      - $\mathbf{w}\leftarrow\mathbf{w}+\alpha_{\mathbf{w}}\,\delta\,\nabla_{\mathbf{w}}\hat{V}(S;\mathbf{w})$.
-
-      - $\theta\leftarrow\theta+\alpha_\theta\,\gamma^{t}\delta\,\nabla_\theta\log\pi_\theta(A\mid S)$.
-
-      - $S\leftarrow S'$; $t\leftarrow t+1$.
-
-3.  Return $\pi_\theta$ and $\hat{V}$.
-
-</div>
-
-``` python
+```python
 import random
 import torch
 import torch.nn as nn

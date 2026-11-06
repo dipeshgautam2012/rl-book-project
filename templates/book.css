@@ -193,6 +193,28 @@ div.asidenote::before {
   margin-bottom: 0.3rem;
 }
 
+/* ---------- Note boxes (from GitHub alerts) ---------- */
+div.note {
+  background: #fff8c5;
+  border: 1px solid #d4a72c;
+  border-radius: 6px;
+  padding: 0.8rem 1.1rem;
+  margin: 1.25rem 0;
+}
+div.note::before {
+  content: "Note";
+  display: block;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9a6700;
+  margin-bottom: 0.3rem;
+}
+div.note p:first-of-type {
+  margin-top: 0;
+}
+
 /* ---------- Figures ---------- */
 figure {
   margin: 1.5rem auto;

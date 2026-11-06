@@ -2,7 +2,7 @@
 
 # References
 
-<div class="list">
+<div class="list" markdown="1">
 
 <span id="cite:baird1995" data-label="cite:baird1995"></span>
 Baird, L. (1995). Residual algorithms: Reinforcement learning with function approximation. In *Proceedings of the 12th International Conference on Machine Learning* (pp. 30–37).

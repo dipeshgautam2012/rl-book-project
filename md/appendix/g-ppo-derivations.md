@@ -12,29 +12,21 @@ Section 11.6 uses
 
 with $A_k$ and $\pi_{\theta_{\mathrm{old}}}$ fixed. Differentiating,
 
-$$
-\nabla_\theta L^{\mathrm{IS}}
-=
--\frac{1}{K}\sum_{k=1}^{K}A_k\,\nabla_\theta\rho_k(\theta).
-$$
+```math
+\nabla_\theta L^{\mathrm{IS}}=-\frac{1}{K}\sum_{k=1}^{K}A_k\,\nabla_\theta\rho_k(\theta).
+```
 
 For each $k$,
 
-$$
-\nabla_\theta\rho_k
-=
-\frac{\nabla_\theta\pi_\theta(y_k\mid x)}{\pi_{\theta_{\mathrm{old}}}(y_k\mid x)}
-=
-\rho_k(\theta)\,\nabla_\theta\log\pi_\theta(y_k\mid x),
-$$
+```math
+\nabla_\theta\rho_k=\frac{\nabla_\theta\pi_\theta(y_k\mid x)}{\pi_{\theta_{\mathrm{old}}}(y_k\mid x)}=\rho_k(\theta)\,\nabla_\theta\log\pi_\theta(y_k\mid x),
+```
 
 using $\nabla_\theta\pi_\theta=\pi_\theta\,\nabla_\theta\log\pi_\theta$. Therefore
 
-$$
-\nabla_\theta L^{\mathrm{IS}}
-=
--\frac{1}{K}\sum_{k=1}^{K}\rho_k(\theta)\,A_k\,\nabla_\theta\log\pi_\theta(y_k\mid x),
-$$
+```math
+\nabla_\theta L^{\mathrm{IS}}=-\frac{1}{K}\sum_{k=1}^{K}\rho_k(\theta)\,A_k\,\nabla_\theta\log\pi_\theta(y_k\mid x),
+```
 
 which is the sample estimate of $\nabla_\theta L$ in Section 11.6. Descent on $L^{\mathrm{IS}}$ implements (11.8). When $\theta=\theta_{\mathrm{old}}$, every $\rho_k=1$ and the display reduces to (11.6).
 
@@ -42,27 +34,15 @@ which is the sample estimate of $\nabla_\theta L$ in Section 11.6. Descent on $L
 
 Section 11.6 minimizes the PPO objective shown above. The clipping rule is
 
-$$
-\mathrm{clip}(\rho)
-=
-\begin{cases}
-1-\varepsilon & \text{if }\rho<1-\varepsilon,\\
-\rho & \text{if }1-\varepsilon\le\rho\le 1+\varepsilon,\\
-1+\varepsilon & \text{if }\rho>1+\varepsilon.
-\end{cases}
-$$
+```math
+\mathrm{clip}(\rho)=\begin{cases}1-\varepsilon & \text{if }\rho<1-\varepsilon,\\\rho & \text{if }1-\varepsilon\le\rho\le 1+\varepsilon,\\1+\varepsilon & \text{if }\rho>1+\varepsilon.\end{cases}
+```
 
 So the score on one reply is
 
-$$
-\min\bigl(\rho A,\ \mathrm{clip}(\rho)\,A\bigr)
-=
-\begin{cases}
-\min\bigl(\rho A,\ (1-\varepsilon)A\bigr) & \text{if }\rho<1-\varepsilon,\\
-\rho A & \text{if }1-\varepsilon\le\rho\le 1+\varepsilon,\\
-\min\bigl(\rho A,\ (1+\varepsilon)A\bigr) & \text{if }\rho>1+\varepsilon.
-\end{cases}
-$$
+```math
+\min\bigl(\rho A,\ \mathrm{clip}(\rho)\,A\bigr)=\begin{cases}\min\bigl(\rho A,\ (1-\varepsilon)A\bigr) & \text{if }\rho<1-\varepsilon,\\\rho A & \text{if }1-\varepsilon\le\rho\le 1+\varepsilon,\\\min\bigl(\rho A,\ (1+\varepsilon)A\bigr) & \text{if }\rho>1+\varepsilon.\end{cases}
+```
 
 **Range** as $\rho$ runs over $(0,\infty)$:
 
@@ -71,9 +51,9 @@ $$
 | $A>0$ | $(0,\ (1+\varepsilon)A]$ | cannot run to $+\infty$ when $\rho\to\infty$ |
 | $A<0$ | $(-\infty,\ (1-\varepsilon)A]$ | cannot improve past $(1-\varepsilon)A$ when $\rho\to 0$; still $\to-\infty$ when $\rho\to\infty$ |
 
-$$
+```math
 **Numbers --- $A>0$ (e.g. $A=2$, $\varepsilon=0.2$).**
-$$
+```
 
 | $\rho$ | $\rho A$ | $\mathrm{clip}(\rho)$ | $\mathrm{clip}(\rho)\,A$ | $\min(\rho A,\mathrm{clip}\,A)$ |
 | --- | --- | --- | --- | --- |
@@ -85,9 +65,9 @@ $$
 
 From $\rho=1$ to $1.2$ the score rises; past $1.2$ the $\min$ stays at $2.4$.
 
-$$
+```math
 **Numbers --- $A<0$ (e.g. $A=-2$, $\varepsilon=0.2$).**
-$$
+```
 
 | $\rho$ | $\rho A$ | $\mathrm{clip}(\rho)$ | $\mathrm{clip}(\rho)\,A$ | $\min(\rho A,\mathrm{clip}\,A)$ |
 | --- | --- | --- | --- | --- |

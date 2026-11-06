@@ -9,215 +9,127 @@ To say how good that junction is under a fixed $\pi$, take the expected return f
 
 The expected return from $s$ when actions afterward follow $\pi$ is the **state-value** $V^\pi(s)$.
 
-$$
-V^\pi(s) = \mathbb{E}_\pi [G_t \mid S_t = s].
-\tag{2.1}
-$$
+```math
+V^\pi(s) = \mathbb{E}_\pi [G_t \mid S_t = s].\quad (2.1)
+```
 
 We also care how good a particular turn $a$ is at that junction. Fix $A_t=a$, then follow $\pi$ from the next state on: the expected return is the **action-value** $Q^\pi(s,a)$.
 
-$$
-Q^\pi(s,a) = \mathbb{E}_\pi [G_t \mid S_t = s, A_t = a].
-\tag{2.2}
-$$
+```math
+Q^\pi(s,a) = \mathbb{E}_\pi [G_t \mid S_t = s, A_t = a].\quad (2.2)
+```
 
 ## Bellman expectation equations
 
 $V^\pi(s)$ is an expected return, and the return is an infinite discounted sum of future rewards. Computing that expectation by listing every possible future under $\pi$ and $P$ is not practical. Using $G_t=R_{t+1}+\gamma G_{t+1}$ in the definition of $V^\pi$, the Bellman expectation equation is obtained as follows.
 
-$$
-\begin{aligned}
-V^\pi(s)
-&= \mathbb{E}_\pi [G_t \mid S_t = s] \\
-&= \mathbb{E}_\pi [R_{t+1} + \gamma G_{t+1} \mid S_t = s] \\
-&= \mathbb{E}_\pi [R_{t+1} \mid S_t = s] + \gamma \mathbb{E}_\pi [G_{t+1} \mid S_t = s].
-\end{aligned}
-$$
+```math
+\begin{aligned}V^\pi(s)&= \mathbb{E}_\pi [G_t \mid S_t = s] \\&= \mathbb{E}_\pi [R_{t+1} + \gamma G_{t+1} \mid S_t = s] \\&= \mathbb{E}_\pi [R_{t+1} \mid S_t = s] + \gamma \mathbb{E}_\pi [G_{t+1} \mid S_t = s].\end{aligned}
+```
 
 So
 
-$$
-V^\pi(s)
-=
-\mathbb{E}_\pi [R_{t+1} \mid S_t = s]
-+
-\gamma\, \mathbb{E}_\pi [G_{t+1} \mid S_t = s].
-\tag{2.3}
-$$
+```math
+V^\pi(s)=\mathbb{E}_\pi [R_{t+1} \mid S_t = s]+\gamma\, \mathbb{E}_\pi [G_{t+1} \mid S_t = s].\quad (2.3)
+```
 
 The first term is the expected immediate reward from $s$ under $\pi$. The second is the expected value of the next state, again under $\pi$. Expanding both over $\pi(a\mid s)$ and $P(s',r\mid s,a)$ is in , <a href="#eq:B.1" data-reference-type="eqref" data-reference="eq:B.1">[eq:B.1]</a>. The result is
 
-$$
-V^\pi(s) = \sum_{a \in \mathcal{A}} \pi(a \mid s) \sum_{s', r} P(s',r \mid s,a) \left[ r + \gamma V^\pi(s') \right].
-\tag{2.4}
-$$
+```math
+V^\pi(s) = \sum_{a \in \mathcal{A}} \pi(a \mid s) \sum_{s', r} P(s',r \mid s,a) \left[ r + \gamma V^\pi(s') \right].\quad (2.4)
+```
 
 The inner piece $r+\gamma V^\pi(s')$ looks only one step ahead: $r$ is the immediate reward on the transition to $s'$ (a value of $R_{t+1}$), and $V^\pi(s')$ is the value at the next state. That one-step rewrite is a **backup**.
 
 Equation (2.4) nests two averages—over actions under $\pi$, then over transitions under $P$. These are the same as $V^\pi$ through $Q^\pi$ (, <a href="#eq:B.14" data-reference-type="eqref" data-reference="eq:B.14">[eq:B.14]</a> and <a href="#eq:B.17" data-reference-type="eqref" data-reference="eq:B.17">[eq:B.17]</a>):
 
-$$
-V^\pi(s)
-=
-\sum_{a \in \mathcal{A}}
-\pi(a \mid s)\, Q^\pi(s,a),
-\qquad
-Q^\pi(s,a)
-=
-\sum_{s',r}
-P(s',r \mid s,a)
-\bigl[
-r + \gamma V^\pi(s')
-\bigr].
-$$
+```math
+V^\pi(s)=\sum_{a \in \mathcal{A}}\pi(a \mid s)\, Q^\pi(s,a),\qquadQ^\pi(s,a)=\sum_{s',r}P(s',r \mid s,a)\bigl[r + \gamma V^\pi(s')\bigr].
+```
 
 So the outer sum in (2.4) averages over actions under $\pi$, and the inner sum averages over the next state and reward under $P$.
 
 Starting from $Q^\pi(s,a)$ and eliminating $V^\pi$ at the next state (, <a href="#eq:B.2" data-reference-type="eqref" data-reference="eq:B.2">[eq:B.2]</a>) gives
 
-$$
-Q^\pi(s,a) = \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma \sum_{a'} \pi(a' \mid s') Q^\pi(s',a') \right].
-\tag{2.5}
-$$
+```math
+Q^\pi(s,a) = \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma \sum_{a'} \pi(a' \mid s') Q^\pi(s',a') \right].\quad (2.5)
+```
 
 ### Matrix form
 
 The policy-averaged form of $V^\pi$ (, <a href="#eq:B.3" data-reference-type="eqref" data-reference="eq:B.3">[eq:B.3]</a>) is
 
-$$
-V^\pi(s)
-=
-R^\pi(s)
-+
-\gamma
-\sum_{s'}
-P^\pi(s' \mid s)\, V^\pi(s'),
-$$
+```math
+V^\pi(s)=R^\pi(s)+\gamma\sum_{s'}P^\pi(s' \mid s)\, V^\pi(s'),
+```
 
 with $R^\pi$ and $P^\pi$ as in Section 1.3. For a finite state space of size $N$, stack $V^\pi(s)$ into a vector $\mathbf{V}^\pi\in\mathbb{R}^N$, stack $R^\pi(s)$ into $\mathbf{R}^\pi$, and let $\mathbf{P}^\pi$ be the $N\times N$ matrix with entry $(s,s')$ equal to $P^\pi(s'\mid s)$. The display above for every $s$ is the single matrix equation
 
-$$
+```math
 \mathbf{V}^\pi = \mathbf{R}^\pi + \gamma \mathbf{P}^\pi \mathbf{V}^\pi.
-$$
+```
 
 Solve for $\mathbf{V}^\pi$:
 
-$$
-\mathbf{V}^\pi - \gamma \mathbf{P}^\pi \mathbf{V}^\pi = \mathbf{R}^\pi
-\implies
-(I - \gamma \mathbf{P}^\pi)\mathbf{V}^\pi = \mathbf{R}^\pi
-\implies
-\mathbf{V}^\pi = (I - \gamma \mathbf{P}^\pi)^{-1} \mathbf{R}^\pi.
-\tag{2.6}
-$$
+```math
+\mathbf{V}^\pi - \gamma \mathbf{P}^\pi \mathbf{V}^\pi = \mathbf{R}^\pi\implies(I - \gamma \mathbf{P}^\pi)\mathbf{V}^\pi = \mathbf{R}^\pi\implies\mathbf{V}^\pi = (I - \gamma \mathbf{P}^\pi)^{-1} \mathbf{R}^\pi.\quad (2.6)
+```
 
 For $\gamma\in[0,1)$, $I-\gamma\mathbf{P}^\pi$ is invertible, so evaluating $\pi$ is one linear solve—not an iteration.
 
-<div class="asidenote">
-
-A two-junction taxi makes the arrays concrete. The states are the depot $D$ and the street $S$. Under $\pi$ the taxi always leaves the depot for the street (immediate reward $0$). From the street it collects a fare of $1$ and returns to the depot with probability $1/2$, or stays on the street with reward $0$ with probability $1/2$. Then
-
-$$
-\mathbf{P}^\pi
-=
-\begin{bmatrix}
-0 & 1 \\
-\tfrac{1}{2} & \tfrac{1}{2}
-\end{bmatrix},
-\qquad
-\mathbf{R}^\pi
-=
-\begin{bmatrix}
-0 \\
-\tfrac{1}{2}
-\end{bmatrix},
-$$
-
-with rows and columns ordered $(D,S)$. Take $\gamma=1/2$. The two scalar copies of (2.4) are
-
-$$
-\begin{aligned}
-V^\pi(D)
-&=
-0 + \tfrac{1}{2} V^\pi(S), \\
-V^\pi(S)
-&=
-\tfrac{1}{2} + \tfrac{1}{2}
-\bigl(
-\tfrac{1}{2} V^\pi(D) + \tfrac{1}{2} V^\pi(S)
-\bigr).
-\end{aligned}
-$$
-
-The same system is (2.6):
-
-$$
-I - \gamma \mathbf{P}^\pi
-=
-\begin{bmatrix}
-1 & -\tfrac{1}{2} \\
--\tfrac{1}{4} & \tfrac{3}{4}
-\end{bmatrix},
-\qquad
-\mathbf{V}^\pi
-=
-(I - \gamma \mathbf{P}^\pi)^{-1} \mathbf{R}^\pi
-=
-\begin{bmatrix}
-\tfrac{2}{5} \\
-\tfrac{4}{5}
-\end{bmatrix}.
-$$
-
-So $V^\pi(D)=2/5$ and $V^\pi(S)=4/5$. Substituting back into $\mathbf{R}^\pi+\gamma\mathbf{P}^\pi\mathbf{V}^\pi$ recovers the same vector.
-
-</div>
+> [!NOTE]
+>
+> A two-junction taxi makes the arrays concrete. The states are the depot $D$ and the street $S$. Under $\pi$ the taxi always leaves the depot for the street (immediate reward $0$). From the street it collects a fare of $1$ and returns to the depot with probability $1/2$, or stays on the street with reward $0$ with probability $1/2$. Then
+>
+> ```math
+> \mathbf{P}^\pi=\begin{bmatrix}0 & 1 \\\tfrac{1}{2} & \tfrac{1}{2}\end{bmatrix},\qquad\mathbf{R}^\pi=\begin{bmatrix}0 \\\tfrac{1}{2}\end{bmatrix},
+> ```
+>
+> with rows and columns ordered $(D,S)$. Take $\gamma=1/2$. The two scalar copies of (2.4) are
+>
+> ```math
+> \begin{aligned}V^\pi(D)&=0 + \tfrac{1}{2} V^\pi(S), \\V^\pi(S)&=\tfrac{1}{2} + \tfrac{1}{2}\bigl(\tfrac{1}{2} V^\pi(D) + \tfrac{1}{2} V^\pi(S)\bigr).\end{aligned}
+> ```
+>
+> The same system is (2.6):
+>
+> ```math
+> I - \gamma \mathbf{P}^\pi=\begin{bmatrix}1 & -\tfrac{1}{2} \\-\tfrac{1}{4} & \tfrac{3}{4}\end{bmatrix},\qquad\mathbf{V}^\pi=(I - \gamma \mathbf{P}^\pi)^{-1} \mathbf{R}^\pi=\begin{bmatrix}\tfrac{2}{5} \\\tfrac{4}{5}\end{bmatrix}.
+> ```
+>
+> So $V^\pi(D)=2/5$ and $V^\pi(S)=4/5$. Substituting back into $\mathbf{R}^\pi+\gamma\mathbf{P}^\pi\mathbf{V}^\pi$ recovers the same vector.
 
 ## Bellman optimality equations
 
 The Bellman expectation equations are for one fixed $\pi$. We now want values that are best in every state: the **optimal** state-value and action-value
 
-$$
-V^*(s) = \max_\pi V^\pi(s),
-\qquad
-Q^*(s,a) = \max_\pi Q^\pi(s,a).
-\tag{2.7}
-$$
+```math
+V^*(s) = \max_\pi V^\pi(s),\qquadQ^*(s,a) = \max_\pi Q^\pi(s,a).\quad (2.7)
+```
 
 Under an optimal policy the agent no longer averages actions with $\pi(a\mid s)$; it takes an action that attains the maximum. The same one-step backup as (2.4), with that $\max$ in place of the average over $\pi$, is the **Bellman optimality equation** (, <a href="#eq:C.2" data-reference-type="eqref" data-reference="eq:C.2">[eq:C.2]</a>):
 
-$$
-V^*(s) = \max_{a \in \mathcal{A}} \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma V^*(s') \right].
-\tag{2.8}
-$$
+```math
+V^*(s) = \max_{a \in \mathcal{A}} \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma V^*(s') \right].\quad (2.8)
+```
 
 The $\max$ means: score every action by that sum and keep the best. That is only possible once the next-state values $V^*(s')$ are known; those values depend on other states the same way, so (2.8) couples the whole table and does not yield $V^*$ by one pass of “try every $a$.”
 
-$$
-Q^*(s,a) = \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma \max_{a'} Q^*(s',a') \right].
-\tag{2.9}
-$$
+```math
+Q^*(s,a) = \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma \max_{a'} Q^*(s',a') \right].\quad (2.9)
+```
 
 From (2.8), an optimal policy is greedy on those one-step scores:
 
-$$
-\pi^*(s)
-=
-\arg\max_{a \in \mathcal{A}}
-\sum_{s',r}
-P(s',r \mid s,a)
-\left[
-r + \gamma V^*(s')
-\right].
-\tag{2.10}
-$$
+```math
+\pi^*(s)=\arg\max_{a \in \mathcal{A}}\sum_{s',r}P(s',r \mid s,a)\left[r + \gamma V^*(s')\right].\quad (2.10)
+```
 
 That choice uses $P$ even after $V^*$ is known. Computing $Q^*$ from (2.9) also uses $P$. Once the table $Q^*$ is known, the same policy is an $\arg\max$ over $a$ and does not use $P$:
 
-$$
-\pi^*(s) = \arg\max_{a \in \mathcal{A}} Q^*(s,a).
-\tag{2.11}
-$$
+```math
+\pi^*(s) = \arg\max_{a \in \mathcal{A}} Q^*(s,a).\quad (2.11)
+```
 
 The $\arg\max$ can contain more than one action: two turns with the same score. A greedy $\pi^*$ always takes one of them. Randomizing between those two is also optimal. Taking a turn whose score is strictly smaller is not (, [C.4](#app:C.4)).
 

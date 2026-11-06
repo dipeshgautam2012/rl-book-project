@@ -7,9 +7,9 @@ When the model $P$ is known, the Bellman equations are two computations: obtain 
 
 For a *fixed* policy $\pi$, the Bellman expectation equation is linear in the unknowns $V^\pi(s)$. In matrix form that is $\mathbf{V}^\pi=\mathbf{R}^\pi+\gamma\mathbf{P}^\pi\mathbf{V}^\pi$, which rearranges to the linear solve (2.6):
 
-$$
+```math
 \mathbf{V}^\pi=(I-\gamma\mathbf{P}^\pi)^{-1}\mathbf{R}^\pi.
-$$
+```
 
 One solve gives every $V^\pi(s)$ at once. No iteration is required.
 
@@ -29,57 +29,45 @@ Both need the model $P$. If $P$ is unknown, DP does not apply; later chapters us
 
 Value iteration computes $V^*$ by repeatedly applying (2.8), then a greedy $\pi^*$. On non-terminal states the starting table $V_0$ may be any guess; the updates still converge. After a terminal state there are no further rewards, so the return from there is $0$. Those entries stay at $V(\text{terminal})=0$ and are not updated. Each round then updates every non-terminal value by (2.8) on the current table $V_k$. The policy at $s$ is (2.10) on that same table:
 
-$$
-\begin{aligned}
-V_{k+1}(s)
-&
-\leftarrow
-\max_{a} \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma V_k(s') \right],
-\\
-\pi_{k+1}(s)
-&
-\leftarrow
-\arg\max_{a} \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma V_k(s') \right].
-\end{aligned}
-\tag{3.1}
-$$
+```math
+\begin{aligned}V_{k+1}(s)&\leftarrow\max_{a} \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma V_k(s') \right],\\\pi_{k+1}(s)&\leftarrow\arg\max_{a} \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma V_k(s') \right].\end{aligned}\quad (3.1)
+```
 
 Equation (3.1) uses the previous-round table $V_k$ at every next state $s'$, for both $V_{k+1}$ and $\pi_{k+1}$. The algorithm below writes the new number into $V(s)$ before moving to the next state in the loop, so a later state’s value and action may already read that new $V(s)$. Repeating this backup still improves the table: an early $V_k$ is only a guess, a later $V_k$ is closer to $V^*$. For $\gamma\in[0,1)$, $V_k$ converges to $V^*$, and the greedy $\pi_k$ at that limit is an approximate $\pi^*$. Exact $V^*$ is a limit of infinitely many sweeps. In practice one sweep records $\Delta$, the largest $|V(s)-v|$ over the non-terminals just updated, and stops when $\Delta<\varepsilon$ for a chosen tolerance $\varepsilon>0$.
 
-<figure id="fig-5-1" data-latex-placement="ht">
+<div class="book-figure" align="center" markdown="1" id="fig-5-1">
 
-<figcaption>Value iteration.</figcaption>
-</figure>
-
-<div class="implnote">
-
-Input: model $P(s',r\mid s,a)$ and tolerance $\varepsilon>0$.
-
-Output: $V\approx V^*$ and greedy $\pi\approx\pi^*$.
-
-1.  Choose any initial $V(s)$ for non-terminal states; set $V(s)\leftarrow 0$ for terminals and leave them fixed.
-
-2.  Repeat:
-
-    - $\Delta\leftarrow 0$.
-
-    - For each non-terminal state $s$:
-
-      - $v\leftarrow V(s)$.
-
-      - $V(s)\leftarrow\max_a\sum_{s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
-
-      - $\pi(s)\leftarrow\arg\max_a\sum_{s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
-
-      - $\Delta\leftarrow\max(\Delta,|v-V(s)|)$.
-
-    - Stop if $\Delta<\varepsilon$.
-
-3.  Return $V$ and $\pi$ (use $\pi$ only after this stop).
+**Figure 3.1.** Value iteration.
 
 </div>
 
-``` python
+> [!NOTE]
+>
+> Input: model $P(s',r\mid s,a)$ and tolerance $\varepsilon>0$.
+>
+> Output: $V\approx V^*$ and greedy $\pi\approx\pi^*$.
+>
+> 1.  Choose any initial $V(s)$ for non-terminal states; set $V(s)\leftarrow 0$ for terminals and leave them fixed.
+>
+> 2.  Repeat:
+>
+>     - $\Delta\leftarrow 0$.
+>
+>     - For each non-terminal state $s$:
+>
+>       - $v\leftarrow V(s)$.
+>
+>       - $V(s)\leftarrow\max_a\sum_{s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
+>
+>       - $\pi(s)\leftarrow\arg\max_a\sum_{s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
+>
+>       - $\Delta\leftarrow\max(\Delta,|v-V(s)|)$.
+>
+>     - Stop if $\Delta<\varepsilon$.
+>
+> 3.  Return $V$ and $\pi$ (use $\pi$ only after this stop).
+
+```python
 import numpy as np
 
 def value_iteration(P_model, n_states, n_actions, terminals, gamma=0.99, eps=1e-8):
@@ -153,81 +141,67 @@ The process is:
 
 Each time the policy changes, $V$ must be recomputed for that policy. The process stops when the **policy** stops changing.
 
-<figure id="fig-5-2" data-latex-placement="ht">
+<div class="book-figure" align="center" markdown="1" id="fig-5-2">
+
 <img src="../../figures/policy_iteration_cycle.jpeg" style="width:62.0%" />
-<figcaption>Policy iteration.</figcaption>
-</figure>
+
+**Figure 3.2.** Policy iteration.
+
+</div>
 
 Policy evaluation computes $V^\pi$ for a fixed $\pi$, the expected return from each state if the agent keeps following $\pi$. It does not yet change $\pi$.
 
 With one action $a=\pi(s)$ at each $s$, there is no $\max$, so the Bellman expectation equation is linear in $V^\pi$, unlike (3.1). Equation (2.6) solves that system by one matrix inverse. When there are many states the inverse is expensive, so the algorithm below instead repeats the one-step backup over non-terminals until $V$ settles. That inner stop is the same $\Delta<\varepsilon$ as in Section 3.1: $\Delta$ is the largest $|V(s)-v|$ over one sweep of (3.2). The limit is $V^\pi$, the value of this fixed $\pi$, not $V^*$ unless $\pi$ is already optimal. The backup is
 
-$$
-V(s)
-\leftarrow
-\sum_{s',r}
-P(s',r \mid s,\pi(s))
-\left[
-r + \gamma V(s')
-\right].
-\tag{3.2}
-$$
+```math
+V(s)\leftarrow\sum_{s',r}P(s',r \mid s,\pi(s))\left[r + \gamma V(s')\right].\quad (3.2)
+```
 
 Only $\pi(s)$ appears—there is no $\max$ over actions.
 
 Policy improvement builds a greedy policy from the just-computed $V^\pi$. For each state, score every action by one-step lookahead under $V^\pi$, then take the best:
 
-$$
-\pi'(s)
-\leftarrow
-\arg\max_{a}
-\sum_{s',r}
-P(s',r \mid s,a)
-\left[
-r + \gamma V^\pi(s')
-\right].
-\tag{3.3}
-$$
+```math
+\pi'(s)\leftarrow\arg\max_{a}\sum_{s',r}P(s',r \mid s,a)\left[r + \gamma V^\pi(s')\right].\quad (3.3)
+```
 
 (That score is $Q^\pi(s,a)$; the algorithm only stores $V$, not a $Q$-table.) If $\pi'=\pi$, stop. Otherwise set $\pi\leftarrow\pi'$ and return to evaluation.
 
 Value iteration (3.1) mixes $\max$ into every value sweep. Policy iteration fully evaluates one $\pi$ before improving it. Both need $P$. A value-iteration sweep is one $\max$ backup per state, cheaper, with a stop when $\Delta<\varepsilon$. A policy-iteration round repeats (3.2) until $V$ is $V^\pi$, then applies (3.3), so each round is heavier. Policy iteration often needs fewer of those rounds than value iteration needs sweeps. There is no preferred method. Value iteration is policy iteration with evaluation truncated to one sweep; that truncation avoids the inner cost. Full evaluation is only needed when $\pi$ should change after $V$ is $V^\pi$: each outer step is then a strict improvement, and the process stops when $\pi$ is unchanged.
 
-<div class="implnote">
+> [!NOTE]
+>
+> Input: model $P(s',r\mid s,a)$ and tolerance $\varepsilon>0$.
+>
+> Output: $V\approx V^*$ and $\pi\approx\pi^*$.
+>
+> 1.  Choose any initial $\pi(s)$ on non-terminals. Set $V(s)\leftarrow 0$ for terminals (leave fixed). Non-terminal $V$ may start arbitrarily.
+>
+> 2.  **Evaluate $\pi$** — repeat until $\Delta<\varepsilon$:
+>
+>     - $\Delta\leftarrow 0$.
+>
+>     - For each non-terminal $s$:
+>
+>       - $v\leftarrow V(s)$.
+>
+>       - $a\leftarrow\pi(s)$.
+>
+>       - $V(s)\leftarrow\sum_{s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
+>
+>       - $\Delta\leftarrow\max(\Delta,|v-V(s)|)$.
+>
+> 3.  **Improve** — for each non-terminal $s$:
+>
+>     - $\textit{old}\leftarrow\pi(s)$.
+>
+>     - $\pi(s)\leftarrow\arg\max_a\sum_{s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
+>
+>     - If $\pi(s)\neq\textit{old}$ for any $s$, go to step 2 (re-evaluate under the new $\pi$).
+>
+> 4.  Otherwise $\pi$ is unchanged: return $V$ and $\pi$ ($V\approx V^*$, $\pi\approx\pi^*$).
 
-Input: model $P(s',r\mid s,a)$ and tolerance $\varepsilon>0$.
-
-Output: $V\approx V^*$ and $\pi\approx\pi^*$.
-
-1.  Choose any initial $\pi(s)$ on non-terminals. Set $V(s)\leftarrow 0$ for terminals (leave fixed). Non-terminal $V$ may start arbitrarily.
-
-2.  **Evaluate $\pi$** — repeat until $\Delta<\varepsilon$:
-
-    - $\Delta\leftarrow 0$.
-
-    - For each non-terminal $s$:
-
-      - $v\leftarrow V(s)$.
-
-      - $a\leftarrow\pi(s)$.
-
-      - $V(s)\leftarrow\sum_{s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
-
-      - $\Delta\leftarrow\max(\Delta,|v-V(s)|)$.
-
-3.  **Improve** — for each non-terminal $s$:
-
-    - $\textit{old}\leftarrow\pi(s)$.
-
-    - $\pi(s)\leftarrow\arg\max_a\sum_{s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
-
-    - If $\pi(s)\neq\textit{old}$ for any $s$, go to step 2 (re-evaluate under the new $\pi$).
-
-4.  Otherwise $\pi$ is unchanged: return $V$ and $\pi$ ($V\approx V^*$, $\pi\approx\pi^*$).
-
-</div>
-
-``` python
+```python
 import numpy as np
 
 def policy_evaluation(P_model, policy, V, n_states, terminals, gamma=0.99, eps=1e-8):

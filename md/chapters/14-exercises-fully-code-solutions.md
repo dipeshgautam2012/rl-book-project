@@ -11,10 +11,13 @@ States $0,\ldots,15$ on a $4\times 4$ grid; $0$ is the start, $15$ is the goal (
 
 The object to learn is a policy $\pi$, not a list of moves and not the training loop. Value-iteration sweeps and the MC, SARSA, and Q-learning episodes only **compute** $\pi$ (or $Q$, then $\pi(s)=\arg\max_a Q(s,a)$). After that, given a start state, take $\pi(s)$ at the current cell, observe $s'$, and repeat until $15$. Because $P$ is deterministic and every non-goal step costs $-1$, that walk is an **optimal trajectory** (a shortest path) from the given start to $15$. You do not re-run the backups to produce the path.
 
-<figure id="fig-14-1" data-latex-placement="ht">
+<div class="book-figure" align="center" markdown="1" id="fig-14-1">
+
 <img src="../../figures/gridworld_4x4.png" style="width:42.0%" />
-<figcaption>GridWorld: start <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>, goal <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math> (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">r=0</annotation></semantics></math>); every other step <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>=</mo><mi>−</mi><mn>1</mn></mrow><annotation encoding="application/x-tex">r=-1</annotation></semantics></math>. Wall: stay in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>. Actions: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> up, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> right, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math> down, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math> left.</figcaption>
-</figure>
+
+**Figure 14.1.** GridWorld: start $0$, goal $15$ ($r=0$); every other step $r=-1$. Wall: stay in $s$. Actions: $0$ up, $1$ right, $2$ down, $3$ left.
+
+</div>
 
 The GridWorld **is** an MDP in every case. The four approaches only differ in how they compute $\pi$:
 
@@ -28,7 +31,7 @@ The GridWorld **is** an MDP in every case. The four approaches only differ in ho
 
 All four return a greedy $\pi(s)=\arg\max_a Q(s,a)$ (value iteration reads it from $V$). Following that $\pi$ from a start cell is the path.
 
-``` python
+```python
 import random
 import numpy as np
 
@@ -204,12 +207,15 @@ The object to learn is $\pi(s)$: which force given $s$. DQN computes $\hat{Q}$, 
 
 A table cannot store $Q(s,a)$ for every $s$. The network $\hat{Q}(s,a;\theta)$, replay $\mathcal{D}$, and frozen $\theta^-$ are the DQN update $y = r + \gamma(1-d)\max_{a'} \hat{Q}(s',a';\theta^-)$. SGD on this task is slow; Adam uses the same gradient with an adaptive step. $\varepsilon$ decays as in (6.8).
 
-<figure data-latex-placement="ht">
-<img src="../../figures/cartpole.jpeg" style="width:72.0%" />
-<figcaption>CartPole balancing task.</figcaption>
-</figure>
+<div class="book-figure" align="center" markdown="1">
 
-``` python
+<img src="../../figures/cartpole.jpeg" style="width:72.0%" />
+
+**Figure 14.2.** CartPole balancing task.
+
+</div>
+
+```python
 import math
 import random
 from collections import deque
@@ -371,10 +377,13 @@ if __name__ == "__main__":
     plt.show()
 ```
 
-<figure id="fig-14-2" data-latex-placement="ht">
+<div class="book-figure" align="center" markdown="1" id="fig-14-2">
+
 <img src="../../figures/cartpole_returns.png" style="width:72.0%;height:42.0%" />
-<figcaption>CartPole DQN, seed <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi>x</mi><msub><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">max</mi></msub></mrow><annotation encoding="application/x-tex">|x|_{\max}</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi>φ</mi><msub><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">max</mi></msub></mrow><annotation encoding="application/x-tex">|\varphi|_{\max}</annotation></semantics></math> vs episode (blue) and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>20</mn><annotation encoding="application/x-tex">20</annotation></semantics></math>-episode mean (orange). Dashed: fail bounds <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2.4</mn><annotation encoding="application/x-tex">2.4</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>12</mn><mo>∘</mo></msup><annotation encoding="application/x-tex">12^\circ</annotation></semantics></math>.</figcaption>
-</figure>
+
+**Figure 14.3.** CartPole DQN, seed $0$: $G$, $|x|_{\max}$, and $|\varphi|_{\max}$ vs episode (blue) and $20$-episode mean (orange). Dashed: fail bounds $2.4$ and $12^\circ$.
+
+</div>
 
 Early $G$ near $20$ means the pole (or cart) failed after that many steps. The rise near episode $100$ is balancing starting to work. Orange $G$ flat at $200$ is the step cutoff, not unbounded gain. Late blue dips in $G$ are leftover $\varepsilon$-greedy failures.
 

@@ -12,8 +12,10 @@ APPENDIX = md/appendix.md $(sort $(wildcard md/appendix/[a-h]*.md))
 REFS = md/references.md
 ALL_MD = $(CHAPTERS) $(APPENDIX) $(REFS)
 
+PREP = python3 scripts/prep_pandoc.py
+
 # Concatenate files with blank lines between them
-CONTENT = awk 'FNR==1 && NR!=1 {print "\n\n"}{print}' $(ALL_MD)
+CONTENT = awk 'FNR==1 && NR!=1 {print "\n\n"}{print}' $(ALL_MD) | $(PREP)
 
 ARGS = --toc --toc-depth=3 --math-method=mathjax --metadata-file $(METADATA) \
        --standalone --to html5
@@ -52,7 +54,7 @@ nested_html:
 	@for f in $(ALL_MD); do \
 		out="$(NESTED_DIR)$$(basename $$f .md).html"; \
 		echo "building $$out..."; \
-		cat $$f | sed 's|\.\./\.\./figures/|../figures/|g' | \
+		cat $$f | $(PREP) | sed 's|\.\./\.\./figures/|../figures/|g' | \
 			$(PANDOC) $(ARGS) --template $(TEMPLATE_CHAPTER) -o $$out; \
 	done
 	cp templates/nav.js templates/book.css $(NESTED_DIR)

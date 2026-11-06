@@ -10,23 +10,17 @@ You are filling a party bowl. Beans must meet hidden requirements (taste, flavor
 
 The jar has infinitely many beans, equally mixed. Drawing one at random, each color has probability $\tfrac14$ on every draw (a finite jar of $100$ with $25$ of each would change those odds after each draw if you do not replace). That unchanging draw distribution is the proposal $q$. It is **not** the bowl composition you want: 
 
-$$
+```math
 q(\mathrm{red})=q(\mathrm{green})=q(\mathrm{blue})=q(\mathrm{yellow})=\tfrac14,
-$$
+```
 
-$$
-p(\mathrm{red})=40\%,\quad
-p(\mathrm{green})=30\%,\quad
-p(\mathrm{blue})=20\%,\quad
-p(\mathrm{yellow})=10\%,
-$$
+```math
+p(\mathrm{red})=40\%,\quadp(\mathrm{green})=30\%,\quadp(\mathrm{blue})=20\%,\quadp(\mathrm{yellow})=10\%,
+```
 
-$$
-a(\mathrm{red})=80\%,\quad
-a(\mathrm{green})=60\%,\quad
-a(\mathrm{blue})=40\%,\quad
-a(\mathrm{yellow})=20\%.
-$$
+```math
+a(\mathrm{red})=80\%,\quada(\mathrm{green})=60\%,\quada(\mathrm{blue})=40\%,\quada(\mathrm{yellow})=20\%.
+```
 
  The die is compared to $a$, not to $p$. $q$ is the jar-draw probability.
 
@@ -41,19 +35,15 @@ Draw again and get **yellow**: guess $20\%$, roll $40$ → $40\%\le 20\%$? **no*
 
 Write $c$ for a color. Draw $N$ beans from the jar. About $N\,q(c)$ of them are color $c$. Of those you keep a fraction $a(c)$, so the count of kept beans of color $c$ is $N\,q(c)\,a(c)$. The bowl only has kept beans. Total kept is the same count, summed over all colors ($c'=$ red, green, blue, yellow): 
 
-$$
-\sum_{c'} N\,q(c')\,a(c')
-=
-N\sum_{c'} q(c')\,a(c').
-$$
+```math
+\sum_{c'} N\,q(c')\,a(c')=N\sum_{c'} q(c')\,a(c').
+```
 
  The fraction of color $c$ in the bowl is (kept $c$) / (total kept): 
 
-$$
-\frac{N\,q(c)\,a(c)}{N\sum_{c'} q(c')\,a(c')}
-=
-\frac{q(c)\,a(c)}{\sum_{c'} q(c')\,a(c')}.
-$$
+```math
+\frac{N\,q(c)\,a(c)}{N\sum_{c'} q(c')\,a(c')}=\frac{q(c)\,a(c)}{\sum_{c'} q(c')\,a(c')}.
+```
 
  $N$ cancels. The denominator is the overall keep rate $P(\mathrm{accept})=\sum_{c'} q(c')\,a(c')$.
 
@@ -61,28 +51,23 @@ $$
 
 You want that bowl fraction to equal the target: 
 
-$$
-\frac{q(c)\,a(c)}{P(\mathrm{accept})}=p(c)
-\qquad\Rightarrow\qquad
-a(c)=\frac{p(c)\,P(\mathrm{accept})}{q(c)}.
-$$
+```math
+\frac{q(c)\,a(c)}{P(\mathrm{accept})}=p(c)\qquad\Rightarrow\qquada(c)=\frac{p(c)\,P(\mathrm{accept})}{q(c)}.
+```
 
  $P(\mathrm{accept})$ is the same for every color. Call it $1/M$ (so $M=1/P(\mathrm{accept})\ge 1$). Then 
 
-$$
+```math
 a(c)=\frac{p(c)}{M\,q(c)}.
-$$
+```
 
  Need $0\le a(c)\le 1$ for every $c$, so $M$ must satisfy $p(c)\le M q(c)$ everywhere; the smallest such choice is $M=\max_c p(c)/q(c)$. Any larger bound also works.
 
 **This example.** $q(c)=\tfrac14$ for every color and $p=(0.40,0.30,0.20,0.10)$, so $\max p/q=0.40/(1/4)=1.6$. Pick $M=2$ (any $M\ge 1.6$ works; $2$ keeps arithmetic simple). Then $M q=\tfrac12$ and 
 
-$$
-a(\mathrm{red})=\frac{0.40}{0.50}=0.80,\;
-a(\mathrm{green})=0.60,\;
-a(\mathrm{blue})=0.40,\;
-a(\mathrm{yellow})=0.20.
-$$
+```math
+a(\mathrm{red})=\frac{0.40}{0.50}=0.80,\;a(\mathrm{green})=0.60,\;a(\mathrm{blue})=0.40,\;a(\mathrm{yellow})=0.20.
+```
 
  Overall keep rate $P(\mathrm{accept})=1/M=\tfrac12$, which matches $\sum q\,a=\tfrac14(0.8+0.6+0.4+0.2)=\tfrac12$. Using the tight $M=1.6$ instead would give $a=(100\%,\,75\%,\,50\%,\,25\%)$.
 
@@ -101,23 +86,21 @@ Same rejection loop, but the keep-chance is only $0$ or $1$: $a(\cdot)\in\{0,1\}
 
 Let $\pi(y\mid x)$ be easy to sample. Filter $f(x,y)\in\{0,1\}$. That filter **is** the keep-chance: $a(y)=f(x,y)$. Copy (H.1) with $q\to\pi(\cdot\mid x)$, $a\to f$, and color $c\to$ reply $y$ (prompt $x$ fixed): 
 
-$$
-p(y\mid x)
-=
-\frac{\pi(y\mid x)\,f(x,y)}{\sum_{y'} \pi(y'\mid x)\,f(x,y')}.
-$$
+```math
+p(y\mid x)=\frac{\pi(y\mid x)\,f(x,y)}{\sum_{y'} \pi(y'\mid x)\,f(x,y')}.
+```
 
  The denominator is the overall keep rate (pass rate). Write $Z(x)$ for it. Because $f$ is $0$ or $1$, that keep rate is just $P(f=1\mid x)$: 
 
-$$
+```math
 Z(x)=\sum_{y'} \pi(y'\mid x)\,f(x,y')=P(f=1\mid x).
-$$
+```
 
  So the same bowl formula is 
 
-$$
+```math
 p(y\mid x)=\frac{\pi(y\mid x)\,f(x,y)}{Z(x)}.
-$$
+```
 
  If $f=0$, the numerator is $0$, so that $y$ is $0\%$ of the bowl. If $f=1$, $p(y\mid x)=\pi(y\mid x)/Z(x)$ --- the same relative mix as $\pi$, among passers only. This is rejection sampling with $a\in\{0,1\}$ and $M=1/Z(x)$. Accepted $y\sim\pi(\cdot\mid x,\,f=1)$.
 
