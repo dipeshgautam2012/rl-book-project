@@ -7,23 +7,11 @@
 Derive the Bellman expectation equations for a fixed policy $\pi$, and also the policy-averaged form of $V^\pi$ used in matrix policy evaluation.
 
 ```math
-V^\pi(s)=\sum_{a}\pi(a \mid s)\sum_{s',r}P(s',r \mid s,a)
-```
-
-[
-
-```math
-r + \gamma V^\pi(s')].
+V^\pi(s)=\sum_{a}\pi(a \mid s)\sum_{s',r}P(s',r \mid s,a) \left[ r + \gamma V^\pi(s') \right].
 ```
 
 ```math
-Q^\pi(s,a)=\sum_{s',r}P(s',r \mid s,a)
-```
-
-[
-
-```math
-r + \gamma \sum_{a'} \pi(a' \mid s') Q^\pi(s',a')].
+Q^\pi(s,a)=\sum_{s',r}P(s',r \mid s,a) \left[ r + \gamma \sum_{a'} \pi(a' \mid s') Q^\pi(s',a') \right].
 ```
 
 ```math
