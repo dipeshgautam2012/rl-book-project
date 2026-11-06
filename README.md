@@ -22,7 +22,6 @@ This book is deliberately designed for:
 * **Complete Mathematical Derivations:** No "hand-waving." Every equation—from Bellman Optimality and the Robbins-Monro convergence criteria to policy gradient updates—is derived step-by-step.
 * **Unified Architectural Pacing:** Progresses logically from basic environments to the complex reward-shaping mechanics underpinning state-of-the-art modern reasoning systems (such as DeepSeek-R1, GRPO, and RLHF frameworks).
 * **Worked Code Examples:** Each algorithm is paired with a small, readable Python/PyTorch implementation on toy environments (e.g., GridWorld, CartPole), so the derivations and the code can be read side by side.
-* **Peer-Vetted Bibliographic Foundation:** Fully cited against core literature, linking structural advancements directly back to seminal papers by Sutton, Barto, Watkins, Williams, and modern open-science preprints.
 
 ---
 
