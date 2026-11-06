@@ -66,13 +66,14 @@ This textbook is an open-access resource licensed under the **Creative Commons A
 To cite this book in your academic work, please use the following BibTeX entry:
 
 ```bibtex
-@misc{gautam2026rl,
-  author       = {Dipesh Gautam},
-  title        = {Reinforcement Learning: Mathematics and algorithms from MDPs to RLHF, InstructGPT, and DeepSeek-R1, with Python},
-  year         = {2026},
-  howpublished = {GitHub Repository},
-  note         = {Open-source textbook and source code},
-  url          = {https://github.com/dipeshgautam2012/rl-book-project}
+@book{gautam2026rl,
+  author    = {Gautam, Dipesh},
+  title     = {Reinforcement Learning: Mathematics and algorithms from MDPs to RLHF, InstructGPT, and DeepSeek-R1, with Python},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.23996511},
+  url       = {https://doi.org/10.5281/zenodo.23996511},
+  note      = {Open-source textbook available at \url{https://github.com/dipeshgautam2012/rl-book-project}}
 }
 ```
 
