@@ -44,7 +44,7 @@ $(BUILD)/html/index.html: $(ALL_MD) $(METADATA) $(TEMPLATE_HTML)
 	$(CONTENT) | sed 's|\.\./\.\./figures/|figures/|g' | \
 		$(PANDOC) $(ARGS) --template $(TEMPLATE_HTML) -o $@
 	cp -r figures $(BUILD)/html/
-	cp templates/nav.js $(BUILD)/html/
+	cp templates/nav.js templates/book.css $(BUILD)/html/
 
 # Per-file nested pages (flat names under c/)
 nested_html:
@@ -55,5 +55,5 @@ nested_html:
 		cat $$f | sed 's|\.\./\.\./figures/|../figures/|g' | \
 			$(PANDOC) $(ARGS) --template $(TEMPLATE_CHAPTER) -o $$out; \
 	done
-	cp templates/nav.js $(NESTED_DIR)nav.js
+	cp templates/nav.js templates/book.css $(NESTED_DIR)
 	@echo "All nested HTML files built"

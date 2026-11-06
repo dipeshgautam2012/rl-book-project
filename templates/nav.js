@@ -62,6 +62,48 @@ class NavigationDropdown extends HTMLElement {
           </ol>
         </div>`).join('');
 
+      // Ordered list of all pages for prev/next navigation
+      const orderedPages = [
+        ['00-preface.html', 'Preface'],
+        ['01-the-rl-problem.html', 'Chapter 1: The RL Problem'],
+        ['02-value-functions-the-bellman-equations.html', 'Chapter 2: Value Functions and the Bellman Equations'],
+        ['03-dynamic-programming.html', 'Chapter 3: Dynamic Programming'],
+        ['04-monte-carlo-methods.html', 'Chapter 4: Monte Carlo Methods'],
+        ['05-temporal-difference-learning.html', 'Chapter 5: Temporal-Difference Learning'],
+        ['06-td-control.html', 'Chapter 6: TD Control'],
+        ['07-function-approximation-the-deadly-triad.html', 'Chapter 7: Function Approximation: The Deadly Triad'],
+        ['08-deep-q-networks-dqn-double-dqn.html', 'Chapter 8: Deep Q-Networks: DQN and Double DQN'],
+        ['09-policy-gradients-reinforce.html', 'Chapter 9: Policy Gradients: REINFORCE'],
+        ['10-actor-critic-methods.html', 'Chapter 10: Actor-Critic Methods'],
+        ['11-reinforcement-learning-from-human-feedback.html', 'Chapter 11: Reinforcement Learning from Human Feedback'],
+        ['12-instructgpt-and-deepseek-r1-style-training.html', 'Chapter 12: InstructGPT and DeepSeek-R1-Style Training'],
+        ['13-summary.html', 'Chapter 13: Summary'],
+        ['14-exercises-fully-code-solutions.html', 'Chapter 14: Exercises and Code Solutions'],
+        ['appendix.html', 'Appendix'],
+        ['a-statistical-concepts.html', 'Appendix A: Statistical Concepts'],
+        ['b-bellman-expectation-derivation.html', 'Appendix B: Bellman Expectation Derivation'],
+        ['c-bellman-optimality-derivation.html', 'Appendix C: Bellman Optimality Derivation'],
+        ['d-robbins-monro-step-size-conditions.html', 'Appendix D: Robbins-Monro Step-Size Conditions'],
+        ['e-policy-gradient-theorem-and-expectations.html', 'Appendix E: Policy Gradient Theorem and Expectations'],
+        ['f-kl-non-negativity.html', 'Appendix F: KL Non-Negativity'],
+        ['g-ppo-derivations.html', 'Appendix G: PPO Derivations'],
+        ['h-rejection-sampling.html', 'Appendix H: Rejection Sampling'],
+        ['references.html', 'References'],
+      ];
+
+      const currentFile = location.pathname.split('/').pop();
+      const idx = orderedPages.findIndex(([file]) => file === currentFile);
+      const prev = idx > 0 ? orderedPages[idx - 1] : null;
+      const next = idx >= 0 && idx < orderedPages.length - 1 ? orderedPages[idx + 1] : null;
+
+      const prevnext = document.getElementById('prevnext');
+      if (prevnext && idx >= 0) {
+        prevnext.innerHTML = `
+          ${prev ? `<a href="${base}${prev[0]}">&larr; ${prev[1]}</a>` : '<span class="spacer"></span>'}
+          ${next ? `<a href="${base}${next[0]}">${next[1]} &rarr;</a>` : ''}
+        `;
+      }
+
       const initialExpanded = this.getAttribute('expanded') === 'true';
 
       this.innerHTML = `
