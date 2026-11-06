@@ -1,4 +1,4 @@
-# The RL Problem: MDPs, Policies, and Returns
+# Chapter 1: The RL Problem: MDPs, Policies, and Returns
 
 [← Previous: Preface](00-preface.md) | [Table of contents](../main.md#chapters) | [Next: Value Functions and the Bellman Equations](02-value-functions-the-bellman-equations.md) →
 
@@ -9,9 +9,9 @@ It does not apply when we must choose actions over time and the data do not incl
 
 A large reward now can still leave the rest of the sequence poor; a reward that looks poor now can be required for a later win. So a single reward is not a grade of the action. The object to judge is the whole trajectory. For example, in chess, a sacrifice on move 10 may yield no immediate reward, yet be the reason for checkmate on move 40. If move 10 were scored only by the material lost that turn, the sacrifice would look like a mistake.
 
-A trajectory is a sequence of choices, so the rule we search for is not one labeled output but a **policy** $\pi$: given the current state, which action to take. What follows is how an agent and an environment interact, the Markov decision process, and the **return** $G_t$ that scores a trajectory from time $t$. Later chapters find a $\pi$ that makes that return large.
+A trajectory is a sequence of choices, so the rule we search for is not one labeled output but a **policy** $\pi$: given the current state, which action to take. What follows is how an agent and an environment interact, the Markov decision process, and the **return** $G_ t$ that scores a trajectory from time $t$. Later chapters find a $\pi$ that makes that return large.
 
-## Interaction and policy
+## 1.1 Interaction and policy
 
 The interaction has two sides. The **agent** chooses actions. The **environment** presents a situation and, after the action, replies with a new situation and a scalar reward.
 
@@ -19,13 +19,13 @@ For example, if a taxi driver must choose a turn at each junction without a labe
 
 The same exchange happens at every junction. Index those steps by a discrete time $t = 0, 1, 2, \dots$:
 
-1.  **State Observation:** Agent observes state $S_t \in \mathcal{S}$.
+1.  **State Observation:** Agent observes state $S_ t \in \mathcal{S}$.
 
-2.  **Action Selection:** Agent executes action $A_t \in \mathcal{A}$.
+2.  **Action Selection:** Agent executes action $A_ t \in \mathcal{A}$.
 
-3.  **Environment Response:** Environment transitions to state $S_{t+1} \in \mathcal{S}$ and emits scalar reward $R_{t+1} \in \mathbb{R}$.
+3.  **Environment Response:** Environment transitions to state $S_ {t+1} \in \mathcal{S}$ and emits scalar reward $R_ {t+1} \in \mathbb{R}$.
 
-4.  **Learning Step:** Agent updates its policy or value estimates based on $(S_t, A_t, R_{t+1}, S_{t+1})$.
+4.  **Learning Step:** Agent updates its policy or value estimates based on $(S_ t, A_ t, R_ {t+1}, S_ {t+1})$.
 
 ```math
 S_t \xrightarrow{A_t} (S_{t+1}, R_{t+1}) \xrightarrow{A_{t+1}} (S_{t+2}, R_{t+2}) \rightarrow \cdots
@@ -49,7 +49,7 @@ a = \pi(s).
 ```
 At a red light that is $\pi(\text{red light})=\text{wait}$ on every visit.
 
-## The Markov decision process
+## 1.2 The Markov decision process
 
 A trajectory is the sequence
 
@@ -80,21 +80,21 @@ $\mathcal{S}$ and $\mathcal{A}$ are the agent’s interface. What remains is $P$
 P(S_{t+1}, R_{t+1} \mid S_t, A_t, S_{t-1}, A_{t-1}, \dots, S_0, A_0).
 ```
 
-Carrying every previous intersection, turn, and fare is unusable. If construction, traffic, and layout at *this* junction already sit in $S_t$, then older decisions add nothing. The same left turn from the same junction has the same distribution over $(S_{t+1}, R_{t+1})$ whether the taxi arrived from the north or the east. That is the **Markov property**. Given the present state and the action just chosen, the future is independent of the past.
+Carrying every previous intersection, turn, and fare is unusable. If construction, traffic, and layout at *this* junction already sit in $S_ t$, then older decisions add nothing. The same left turn from the same junction has the same distribution over $(S_ {t+1}, R_ {t+1})$ whether the taxi arrived from the north or the east. That is the **Markov property**. Given the present state and the action just chosen, the future is independent of the past.
 
 ```math
 P(S_{t+1}, R_{t+1} \mid S_t, A_t, S_{t-1}, A_{t-1}, \dots, S_0, A_0)=P(S_{t+1}, R_{t+1} \mid S_t, A_t). \quad (1.1)
 ```
 
-Under (1.1) the environment depends on the agent only through the current state and action. Write lowercase $s \in \mathcal{S}$, $a \in \mathcal{A}$, $s' \in \mathcal{S}$, and $r \in \mathbb{R}$ for particular values of the random variables $S_t$, $A_t$, $S_{t+1}$, and $R_{t+1}$. The transition probability is therefore
+Under (1.1) the environment depends on the agent only through the current state and action. Write lowercase $s \in \mathcal{S}$, $a \in \mathcal{A}$, $s' \in \mathcal{S}$, and $r \in \mathbb{R}$ for particular values of the random variables $S_ t$, $A_ t$, $S_ {t+1}$, and $R_ {t+1}$. The transition probability is therefore
 
 ```math
 P(s',r \mid s,a)=P\!\left(S_{t+1}=s',\, R_{t+1}=r \mid S_t=s,\, A_t=a\right). \quad (1.2)
 ```
 
-The pair $(s', r)$ is joint because the next state and the immediate reward often come together—arriving at a destination, for example, both changes the state and yields a reward. Together with the policy $\pi(a \mid s)$, (1.2) generates the trajectory: the agent chooses $A_t$ from $\pi$, then the environment draws $(S_{t+1}, R_{t+1})$ from $P$. From here on, statements about the environment use $P(s',r \mid s,a)$.
+The pair $(s', r)$ is joint because the next state and the immediate reward often come together—arriving at a destination, for example, both changes the state and yields a reward. Together with the policy $\pi(a \mid s)$, (1.2) generates the trajectory: the agent chooses $A_ t$ from $\pi$, then the environment draws $(S_ {t+1}, R_ {t+1})$ from $P$. From here on, statements about the environment use $P(s',r \mid s,a)$.
 
-## Rewards and next-state probabilities
+## 1.3 Rewards and next-state probabilities
 
 Equation (1.2) is the joint of one next junction and one fare. From a junction several turns may be legal, and each continuation can yield a different fare; we want the expected fare from that state. The same turn can also lead to different next junctions; we want the probability of arriving at a particular junction. Both of those, and then the same quantities averaged under $\pi$, come from $P(s',r\mid s,a)$. Derivations of the expected-reward identities are in .
 
@@ -132,21 +132,21 @@ P^\pi(s' \mid s)=\sum_a \pi(a \mid s)\, P(s' \mid s,a)\quad\text{[law of total p
 
 So $R^\pi(s)$ is the expected immediate reward from $s$ under $\pi$ (, <a href="#eq:B.12" data-reference-type="eqref" data-reference="eq:B.12">[eq:B.12]</a>), and $P^\pi(s'\mid s)$ is the probability of moving from $s$ to $s'$ under $\pi$. Those quantities are stacked into a vector and a matrix in Chapter 2, for one fixed policy.
 
-## Return and discounting
+## 1.4 Return and discounting
 
-The previous sections stated the goal: find a policy that produces good trajectories. We now say what “good” means. The quality of a trajectory from time $t$ is the **return** $G_t$: a single number that combines all future rewards along that trajectory.
+The previous sections stated the goal: find a policy that produces good trajectories. We now say what “good” means. The quality of a trajectory from time $t$ is the **return** $G_ t$: a single number that combines all future rewards along that trajectory.
 
 Rewards at different times are not treated as equal. A fare collected now is worth more than the same fare many turns later—the taxi may finish the shift, traffic may change, or we simply prefer money sooner. **Discounting** encodes that preference with a factor $\gamma \in [0,1]$. A reward $k$ steps ahead is scaled by $\gamma^k$, so later rewards shrink (unless $\gamma=1$).
 
-Without discounting, the infinite sum $\sum_{k=0}^\infty R_{t+k+1}$ can diverge even when every reward is bounded. With $\gamma \in [0,1)$, the geometric weights force the sum to converge, and they also express “sooner is better”:
+Without discounting, the infinite sum $\sum_ {k=0}^\infty R_ {t+k+1}$ can diverge even when every reward is bounded. With $\gamma \in [0,1)$, the geometric weights force the sum to converge, and they also express “sooner is better”:
 
 ```math
 G_t=\sum_{k=0}^{\infty} \gamma^k R_{t+k+1}=R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \cdots.\quad (1.8)
 ```
 
-So $R_{t+1}$ enters at full weight, $R_{t+2}$ at weight $\gamma$, $R_{t+3}$ at $\gamma^2$, and so on.
+So $R_ {t+1}$ enters at full weight, $R_ {t+2}$ at weight $\gamma$, $R_ {t+3}$ at $\gamma^2$, and so on.
 
-- If $\gamma=0$, only the immediate reward matters: $G_t=R_{t+1}$.
+- If $\gamma=0$, only the immediate reward matters: $G_ t=R_ {t+1}$.
 
 - If $\gamma$ is close to $1$, distant rewards still count almost as much as near ones.
 

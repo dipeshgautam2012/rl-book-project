@@ -1,10 +1,10 @@
 [← Previous: Bellman Expectation Derivation](b-bellman-expectation-derivation.md) | [Table of contents](../main.md#chapters) | [Next: Robbins--Monro Step-Size Conditions](d-robbins-monro-step-size-conditions.md) →
 
-# Bellman Optimality Derivation
+# Appendix C: Bellman Optimality Derivation
 
 The goal is to derive the Bellman optimality equations (C.2) and (C.5).
 
-## Definitions
+## C.1 Definitions
 
 ```math
 V^*(s) = \max_\pi V^\pi(s),\qquad Q^*(s,a) = \max_\pi Q^\pi(s,a).
@@ -18,9 +18,9 @@ V^*(s)=\max_\pi\mathbb{E}_\pi[G_t \mid S_t=s],\qquad Q^*(s,a)=\max_\pi\mathbb{E}
 
 We expand $V^*$ first, then $Q^*$.
 
-## State-value $V^*$
+## C.2 State-value $V^*$
 
-From (C.1), $V^*(s)=\max_\pi V^\pi(s)$. From (B.1),
+From (C.1), $V^*(s)=\max_ \pi V^\pi(s)$. From (B.1),
 
 ```math
 V^\pi(s)=\sum_a \pi(a \mid s)\sum_{s',r}P(s',r \mid s,a)
@@ -92,7 +92,7 @@ Therefore
 r + \gamma V^*(s')].
 ```
 
-In the inner $\max_a$, the action is already fixed to the one that maximizes $\sum_{s',r}P(s',r\mid s,a)[r+\gamma V^*(s')]$. That choice does not change as the outer sum runs over the possible values of $a$ under $\pi$, so the inner max can be taken outside the outer sum. Then use $\sum_a \pi(a \mid s)=1$:
+In the inner $\max_ a$, the action is already fixed to the one that maximizes $\sum_ {s',r}P(s',r\mid s,a)[r+\gamma V^*(s')]$. That choice does not change as the outer sum runs over the possible values of $a$ under $\pi$, so the inner max can be taken outside the outer sum. Then use $\sum_ a \pi(a \mid s)=1$:
 
 ```math
 \begin{aligned}V^*(s)&\le\max_\pi\max_a\sum_{s',r}P(s',r \mid s,a)\end{aligned}
@@ -116,7 +116,7 @@ In the inner $\max_a$, the action is already fixed to the one that maximizes $\s
 r + \gamma V^*(s')]\quad\text{[inner sum does not depend on }\pi\text{]}.
 ```
 
-For the other direction: by definition $V^*(s)=\max_\pi(\cdots)$, so for any other policy $\hat{\pi}$ --- whether optimal or not ---
+For the other direction: by definition $V^*(s)=\max_ \pi(\cdots)$, so for any other policy $\hat{\pi}$ --- whether optimal or not ---
 
 ```math
 V^*(s)\ge\sum_a \hat{\pi}(a \mid s)\sum_{s',r}P(s',r \mid s,a)
@@ -176,9 +176,9 @@ V^*(s)=\max_a\sum_{s',r}P(s',r \mid s,a)
 r + \gamma V^*(s')].
 ```
 
-## Action-value $Q^*$
+## C.3 Action-value $Q^*$
 
-From (C.1), $Q^*(s,a)=\max_\pi Q^\pi(s,a)$. From (B.17),
+From (C.1), $Q^*(s,a)=\max_ \pi Q^\pi(s,a)$. From (B.17),
 
 ```math
 Q^\pi(s,a)=\sum_{s',r}P(s',r \mid s,a)
@@ -214,13 +214,13 @@ Q^*(s,a)=\sum_{s',r}P(s',r \mid s,a)
 r + \gamma V^*(s')].
 ```
 
-Compare with (C.2): the right-hand side of (C.2) is $\max_a$ of this same sum. Therefore
+Compare with (C.2): the right-hand side of (C.2) is $\max_ a$ of this same sum. Therefore
 
 ```math
 V^*(s) = \max_a Q^*(s,a).
 ```
 
-At the next state this is $V^*(s')=\max_{a'} Q^*(s',a')$ by (C.4). Substitute into (C.3):
+At the next state this is $V^*(s')=\max_ {a'} Q^*(s',a')$ by (C.4). Substitute into (C.3):
 
 ```math
 Q^*(s,a)=\sum_{s',r}P(s',r \mid s,a)
@@ -232,7 +232,7 @@ Q^*(s,a)=\sum_{s',r}P(s',r \mid s,a)
 r + \gamma \max_{a'} Q^*(s',a')].
 ```
 
-## Optimal policy
+## C.4 Optimal policy
 
 We want a policy $\pi^*$ that attains the optimum. (C.2) and (C.5) already give that optimum as a maximum over actions, so $\pi^*$ is obtained by choosing actions that attain those maxima.
 

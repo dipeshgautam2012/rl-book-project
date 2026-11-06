@@ -1,11 +1,11 @@
-# Value Functions and the Bellman Equations
+# Chapter 2: Value Functions and the Bellman Equations
 
 [← Previous: The RL Problem: MDPs, Policies, and Returns](01-the-rl-problem.md) | [Table of contents](../main.md#chapters) | [Next: Dynamic Programming](03-dynamic-programming.md) →
 
 
-The return $G_t$ scores a trajectory. The interaction is an MDP: the policy $\pi$ selects the action; the environment replies with $(s',r)$ from $P$. That return is one number for one realized sequence. Take the taxi introduced in Chapter 1: from a junction it still faces many possible futures. The policy $\pi$ may leave more than one turn possible, and $P$ may send it to different streets with different fares. Two trips that start at the same junction can therefore finish with different returns: $G_t$ from that junction is a random variable. One realized return does not tell how good the junction is.
+The return $G_ t$ scores a trajectory. The interaction is an MDP: the policy $\pi$ selects the action; the environment replies with $(s',r)$ from $P$. That return is one number for one realized sequence. Take the taxi introduced in Chapter 1: from a junction it still faces many possible futures. The policy $\pi$ may leave more than one turn possible, and $P$ may send it to different streets with different fares. Two trips that start at the same junction can therefore finish with different returns: $G_ t$ from that junction is a random variable. One realized return does not tell how good the junction is.
 
-To say how good that junction is under a fixed $\pi$, take the expected return from there: the **state-value** $V^\pi$. To say how good a particular turn is, take the expected return after that turn: the **action-value** $Q^\pi$. Both are rewritten as **Bellman equations** () that use only the immediate reward and the value at the next state. Averaging over $\pi$ **evaluates** that policy. Replacing the average by $\max_a$ is optimality: the rewrite that **improves** $\pi$.
+To say how good that junction is under a fixed $\pi$, take the expected return from there: the **state-value** $V^\pi$. To say how good a particular turn is, take the expected return after that turn: the **action-value** $Q^\pi$. Both are rewritten as **Bellman equations** () that use only the immediate reward and the value at the next state. Averaging over $\pi$ **evaluates** that policy. Replacing the average by $\max_ a$ is optimality: the rewrite that **improves** $\pi$.
 
 The expected return from $s$ when actions afterward follow $\pi$ is the **state-value** $V^\pi(s)$.
 
@@ -13,15 +13,15 @@ The expected return from $s$ when actions afterward follow $\pi$ is the **state-
 V^\pi(s) = \mathbb{E}_\pi [G_t \mid S_t = s].\quad (2.1)
 ```
 
-We also care how good a particular turn $a$ is at that junction. Fix $A_t=a$, then follow $\pi$ from the next state on: the expected return is the **action-value** $Q^\pi(s,a)$.
+We also care how good a particular turn $a$ is at that junction. Fix $A_ t=a$, then follow $\pi$ from the next state on: the expected return is the **action-value** $Q^\pi(s,a)$.
 
 ```math
 Q^\pi(s,a) = \mathbb{E}_\pi [G_t \mid S_t = s, A_t = a].\quad (2.2)
 ```
 
-## Bellman expectation equations
+## 2.1 Bellman expectation equations
 
-$V^\pi(s)$ is an expected return, and the return is an infinite discounted sum of future rewards. Computing that expectation by listing every possible future under $\pi$ and $P$ is not practical. Using $G_t=R_{t+1}+\gamma G_{t+1}$ in the definition of $V^\pi$, the Bellman expectation equation is obtained as follows.
+$V^\pi(s)$ is an expected return, and the return is an infinite discounted sum of future rewards. Computing that expectation by listing every possible future under $\pi$ and $P$ is not practical. Using $G_ t=R_ {t+1}+\gamma G_ {t+1}$ in the definition of $V^\pi$, the Bellman expectation equation is obtained as follows.
 
 ```math
 \begin{aligned}V^\pi(s)&= \mathbb{E}_\pi [G_t \mid S_t = s] \\&= \mathbb{E}_\pi [R_{t+1} + \gamma G_{t+1} \mid S_t = s] \\&= \mathbb{E}_\pi [R_{t+1} \mid S_t = s] + \gamma \mathbb{E}_\pi [G_{t+1} \mid S_t = s].\end{aligned}
@@ -39,7 +39,7 @@ The first term is the expected immediate reward from $s$ under $\pi$. The second
 V^\pi(s) = \sum_{a \in \mathcal{A}} \pi(a \mid s) \sum_{s', r} P(s',r \mid s,a) \left[ r + \gamma V^\pi(s') \right].\quad (2.4)
 ```
 
-The inner piece $r+\gamma V^\pi(s')$ looks only one step ahead: $r$ is the immediate reward on the transition to $s'$ (a value of $R_{t+1}$), and $V^\pi(s')$ is the value at the next state. That one-step rewrite is a **backup**.
+The inner piece $r+\gamma V^\pi(s')$ looks only one step ahead: $r$ is the immediate reward on the transition to $s'$ (a value of $R_ {t+1}$), and $V^\pi(s')$ is the value at the next state. That one-step rewrite is a **backup**.
 
 Equation (2.4) nests two averages—over actions under $\pi$, then over transitions under $P$. These are the same as $V^\pi$ through $Q^\pi$ (, <a href="#eq:B.14" data-reference-type="eqref" data-reference="eq:B.14">[eq:B.14]</a> and <a href="#eq:B.17" data-reference-type="eqref" data-reference="eq:B.17">[eq:B.17]</a>):
 
@@ -55,7 +55,7 @@ Starting from $Q^\pi(s,a)$ and eliminating $V^\pi$ at the next state (, <a href=
 Q^\pi(s,a) = \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma \sum_{a'} \pi(a' \mid s') Q^\pi(s',a') \right].\quad (2.5)
 ```
 
-### Matrix form
+### 2.1.1 Matrix form
 
 The policy-averaged form of $V^\pi$ (, <a href="#eq:B.3" data-reference-type="eqref" data-reference="eq:B.3">[eq:B.3]</a>) is
 
@@ -99,7 +99,7 @@ For $\gamma\in[0,1)$, $I-\gamma\mathbf{P}^\pi$ is invertible, so evaluating $\pi
 >
 > So $V^\pi(D)=2/5$ and $V^\pi(S)=4/5$. Substituting back into $\mathbf{R}^\pi+\gamma\mathbf{P}^\pi\mathbf{V}^\pi$ recovers the same vector.
 
-## Bellman optimality equations
+## 2.2 Bellman optimality equations
 
 The Bellman expectation equations are for one fixed $\pi$. We now want values that are best in every state: the **optimal** state-value and action-value
 

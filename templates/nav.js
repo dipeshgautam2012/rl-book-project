@@ -100,6 +100,7 @@ class NavigationDropdown extends HTMLElement {
       if (prevnext && idx >= 0) {
         prevnext.innerHTML = `
           ${prev ? `<a href="${base}${prev[0]}">&larr; ${prev[1]}</a>` : '<span class="spacer"></span>'}
+          <a href="#TOC" class="toc-link">Contents</a>
           ${next ? `<a href="${base}${next[0]}">${next[1]} &rarr;</a>` : ''}
         `;
       }

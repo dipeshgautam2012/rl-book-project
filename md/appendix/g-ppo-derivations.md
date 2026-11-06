@@ -1,16 +1,16 @@
 [← Previous: KL Non-Negativity](f-kl-non-negativity.md) | [Table of contents](../main.md#chapters) | [Next: Rejection Sampling](h-rejection-sampling.md) →
 
-# PPO Derivations
+# Appendix G: PPO Derivations
 
-Details for Section 11.6 that are not repeated there: the autodiff check that $\nabla_\theta L^{\mathrm{IS}}$ matches (11.8), the clip cases and tables for (11.9), and the clip-versus-KL contrast (Schulman et al., 2017).
+Details for Section 11.6 that are not repeated there: the autodiff check that $\nabla_ \theta L^{\mathrm{IS}}$ matches (11.8), the clip cases and tables for (11.9), and the clip-versus-KL contrast (Schulman et al., 2017).
 
-## Gradient of $L^{\mathrm{IS}}$
+## G.1 Gradient of $L^{\mathrm{IS}}$
 
 Section 11.6 uses
 
 <img src="../../figures/equations/ppo.svg" alt="PPO objective and importance sampling objective" style="width:100%; max-width:980px; display:block; margin:1em auto;" />
 
-with $A_k$ and $\pi_{\theta_{\mathrm{old}}}$ fixed. Differentiating,
+with $A_ k$ and $\pi_ {\theta_ {\mathrm{old}}}$ fixed. Differentiating,
 
 ```math
 \nabla_\theta L^{\mathrm{IS}}=-\frac{1}{K}\sum_{k=1}^{K}A_k\,\nabla_\theta\rho_k(\theta).
@@ -22,15 +22,15 @@ For each $k$,
 \nabla_\theta\rho_k=\frac{\nabla_\theta\pi_\theta(y_k\mid x)}{\pi_{\theta_{\mathrm{old}}}(y_k\mid x)}=\rho_k(\theta)\,\nabla_\theta\log\pi_\theta(y_k\mid x),
 ```
 
-using $\nabla_\theta\pi_\theta=\pi_\theta\,\nabla_\theta\log\pi_\theta$. Therefore
+using $\nabla_ \theta\pi_ \theta=\pi_ \theta\,\nabla_ \theta\log\pi_ \theta$. Therefore
 
 ```math
 \nabla_\theta L^{\mathrm{IS}}=-\frac{1}{K}\sum_{k=1}^{K}\rho_k(\theta)\,A_k\,\nabla_\theta\log\pi_\theta(y_k\mid x),
 ```
 
-which is the sample estimate of $\nabla_\theta L$ in Section 11.6. Descent on $L^{\mathrm{IS}}$ implements (11.8). When $\theta=\theta_{\mathrm{old}}$, every $\rho_k=1$ and the display reduces to (11.6).
+which is the sample estimate of $\nabla_ \theta L$ in Section 11.6. Descent on $L^{\mathrm{IS}}$ implements (11.8). When $\theta=\theta_ {\mathrm{old}}$, every $\rho_ k=1$ and the display reduces to (11.6).
 
-## Clip cases and tables
+## G.2 Clip cases and tables
 
 Section 11.6 minimizes the PPO objective shown above. The clipping rule is
 
@@ -79,12 +79,12 @@ From $\rho=1$ to $1.2$ the score rises; past $1.2$ the $\min$ stays at $2.4$.
 
 From $\rho=1$ to $0.8$ the score improves; below $0.8$ the $\min$ stays at $-1.6$. If instead $\rho$ rises with $A<0$, $\min$ follows $\rho A\to-\infty$ (e.g. $\rho=2$ gives $\min(-4,-2.4)=-4$), so there is no protection against making a bad reply more likely.
 
-## Clip versus KL to $\pi_{\mathrm{ref}}$
+## G.3 Clip versus KL to $\pi_ {\mathrm{ref}}$
 
 |  | Clip in (11.9) | KL in Section 11.4 |
 | --- | --- | --- |
-| Compares | $\pi_\theta$ to $\pi_{\theta_{\mathrm{old}}}$ (who generated this batch) | $\pi_\theta$ to $\pi_{\mathrm{ref}}$ (trusted SFT model) |
+| Compares | $\pi_ \theta$ to $\pi_ {\theta_ {\mathrm{old}}}$ (who generated this batch) | $\pi_ \theta$ to $\pi_ {\mathrm{ref}}$ (trusted SFT model) |
 | Fixes | unstable **reuse** of one batch | drift or reward hacking over training |
-| Resets | every time $\theta_{\mathrm{old}}\to\theta$ | $\pi_{\mathrm{ref}}$ stays fixed |
+| Resets | every time $\theta_ {\mathrm{old}}\to\theta$ | $\pi_ {\mathrm{ref}}$ stays fixed |
 
-Both can appear together: $R_k$ may include a KL penalty to $\pi_{\mathrm{ref}}$ as in (11.4), while (11.9) still clips $\rho_k$ against $\pi_{\theta_{\mathrm{old}}}$.
+Both can appear together: $R_ k$ may include a KL penalty to $\pi_ {\mathrm{ref}}$ as in (11.4), while (11.9) still clips $\rho_ k$ against $\pi_ {\theta_ {\mathrm{old}}}$.
