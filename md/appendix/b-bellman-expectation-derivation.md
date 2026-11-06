@@ -58,7 +58,7 @@ S_t \xrightarrow{A_t} (S_{t+1}, R_{t+1}) \xrightarrow{A_{t+1}} (S_{t+2}, R_{t+2}
 
 - **State $S_ t = s$**: The agent starts at time step $t$ in state $s$.
 - **Action $A_ t = a$**: The probability of selecting action $A_ t = a$ in state $S_ t = s$ is $P(A_ t = a \mid S_ t = s)$, also called the policy and written as $\pi(a \mid s)$.
-- **Transition \& Reward $(S_ {t+1** = s', R_ {t+1} = r)$}: Given state $S_ t = s$ and action $A_ t = a$, the environment transitions to next state $S_ {t+1} = s'$ and gives reward $R_ {t+1} = r$ with joint probability $P(s', r \mid s, a) = P(S_ {t+1} = s', R_ {t+1} = r \mid S_ t = s, A_ t = a)$. *Note: Due to environmental stochasticity, both state transitions and reward outcomes are probabilistic; even when transitioning from state $s$ to the exact same next state $s'$ via action $a$, the immediate reward $R_ {t+1*$ can vary according to this distribution.}
+- **Transition \& Reward $(S_ {t+1} = s', R_ {t+1} = r)$**: Given state $S_ t = s$ and action $A_ t = a$, the environment transitions to next state $S_ {t+1} = s'$ and gives reward $R_ {t+1} = r$ with joint probability $P(s', r \mid s, a) = P(S_ {t+1} = s', R_ {t+1} = r \mid S_ t = s, A_ t = a)$. *Note: Due to environmental stochasticity, both state transitions and reward outcomes are probabilistic; even when transitioning from state $s$ to the exact same next state $s'$ via action $a$, the immediate reward $R_ {t+1}$ can vary according to this distribution.*
 
 ### B.3.1 Return $G_ t$
 
