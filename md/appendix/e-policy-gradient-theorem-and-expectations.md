@@ -199,3 +199,5 @@ Sampling a trajectory from $\pi_ \theta$ starting at $s_ 0$ produces pairs $(S_ 
 ```
 
  Replacing $Q^{\pi_ \theta}(S_ t,A_ t)$ by the sample return $G_ t$ gives (9.7). Replacing $Q$ by the advantage $A^{\pi_ \theta}=Q^{\pi_ \theta}-V^{\pi_ \theta}$ is valid by (E.3) and yields (10.6).
+
+[← Previous: Robbins--Monro Step-Size Conditions](d-robbins-monro-step-size-conditions.md) | [Table of contents](../main.md#chapters) | [Next: KL Non-Negativity](f-kl-non-negativity.md) →

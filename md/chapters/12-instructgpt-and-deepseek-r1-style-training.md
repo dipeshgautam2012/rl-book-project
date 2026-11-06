@@ -331,3 +331,5 @@ def distill(pi_base, d_sft, alpha=0.05, epochs=20):
     return sft(pi_base, d_sft, alpha=alpha, epochs=epochs)
    
 ```
+
+[← Previous: Reinforcement Learning from Human Feedback](11-reinforcement-learning-from-human-feedback.md) | [Table of contents](../main.md#chapters) | [Next: Summary](13-summary.md) →

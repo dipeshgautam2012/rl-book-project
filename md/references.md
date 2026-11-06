@@ -77,3 +77,5 @@ Williams, R. J. (1992). Simple statistical gradient-following algorithms for con
 Ziegler, D. M., Stiennon, N., Wu, J., Brown, T. B., Radford, A., Amodei, D., Christiano, P., and Irving, G. (2019). Fine-tuning language models from human preferences. arXiv:1909.08593.
 
 </div>
+
+[← Previous: Rejection Sampling](appendix/h-rejection-sampling.md) | [Table of contents](main.md#chapters) | [End of book](main.md)

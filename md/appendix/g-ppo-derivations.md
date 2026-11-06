@@ -88,3 +88,5 @@ From $\rho=1$ to $0.8$ the score improves; below $0.8$ the $\min$ stays at $-1.6
 | Resets | every time $\theta_ {\mathrm{old}}\to\theta$ | $\pi_ {\mathrm{ref}}$ stays fixed |
 
 Both can appear together: $R_ k$ may include a KL penalty to $\pi_ {\mathrm{ref}}$ as in (11.4), while (11.9) still clips $\rho_ k$ against $\pi_ {\theta_ {\mathrm{old}}}$.
+
+[← Previous: KL Non-Negativity](f-kl-non-negativity.md) | [Table of contents](../main.md#chapters) | [Next: Rejection Sampling](h-rejection-sampling.md) →

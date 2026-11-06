@@ -169,3 +169,5 @@ G_t = R_{t+1} + \gamma G_{t+1}.\quad (1.10)
 ```
 
 So the return is the immediate reward plus a discounted copy of the return from the next time. That identity is what value functions will average in the next chapter.
+
+[← Previous: Preface](00-preface.md) | [Table of contents](../main.md#chapters) | [Next: Value Functions and the Bellman Equations](02-value-functions-the-bellman-equations.md) →

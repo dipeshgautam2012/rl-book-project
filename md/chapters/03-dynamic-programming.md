@@ -277,3 +277,5 @@ if __name__ == "__main__":
     print("Optimal State Values:", V_opt)
     print("Optimal Policy Actions:", policy_opt)
 ```
+
+[← Previous: Value Functions and the Bellman Equations](02-value-functions-the-bellman-equations.md) | [Table of contents](../main.md#chapters) | [Next: Monte Carlo Methods](04-monte-carlo-methods.md) →

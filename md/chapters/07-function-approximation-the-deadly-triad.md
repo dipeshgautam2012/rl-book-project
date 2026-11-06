@@ -373,3 +373,5 @@ Under standard conditions (linear features of full rank under $\pi$, bounded rew
 </div>
 
 Chapter 7 used **linear** FA. Neural networks and other nonlinear approximators are taken up next: they still face the triad when paired with an off-policy bootstrap, and need practical stabilizers.
+
+[← Previous: TD Control: SARSA, Q-Learning, and Exploration](06-td-control.md) | [Table of contents](../main.md#chapters) | [Next: Deep Q-Networks and Double DQN](08-deep-q-networks-dqn-double-dqn.md) →

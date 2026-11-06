@@ -332,3 +332,5 @@ if __name__ == "__main__":
 ```
 
 SARSA, Q-learning, (6.7), and (6.9) all use a table of $Q(s,a)$: one entry per pair, updated only when that pair is taken. That table works because $\mathcal{S}$ so far is a small fixed set. The same $s$ returns, and the same cell is updated. When $\mathcal{S}$ is large or continuous, it runs into two problems: the table does not fit, and a later observed state is almost never that same $s$, so the stored number is not used again. Chapter 7 replaces the table by a function $\hat{Q}(s,a;\mathbf{w})$ of a weight vector $\mathbf{w}$. Only those weights are stored and updated. SARSA and Q-learning keep the same backups, and (6.7) and (6.9) still choose $A_ t$, now from $\hat{Q}$.
+
+[← Previous: Temporal-Difference Learning](05-temporal-difference-learning.md) | [Table of contents](../main.md#chapters) | [Next: Function Approximation and the Deadly Triad](07-function-approximation-the-deadly-triad.md) →

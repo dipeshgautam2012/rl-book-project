@@ -401,3 +401,5 @@ if __name__ == "__main__":
     print("TD(?):", td_lambda_prediction(pi, lam=0.5, alpha=0.1, gamma=0.9))
     print("TD(1):", td_lambda_prediction(pi, lam=1.0, alpha=0.1, gamma=0.9))
 ```
+
+[← Previous: Monte Carlo Methods](04-monte-carlo-methods.md) | [Table of contents](../main.md#chapters) | [Next: TD Control: SARSA, Q-Learning, and Exploration](06-td-control.md) →

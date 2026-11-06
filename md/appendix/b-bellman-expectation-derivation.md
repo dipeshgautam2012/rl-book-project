@@ -380,3 +380,4 @@ The same pattern with only state-values or only action-values is (B.11) and (B.1
 V^\pi(s)=\mathbb{E}_\pi\bigl[R_{t+1}+\gamma V^\pi(S_{t+1})\mid S_t=s\bigr],\qquad Q^\pi(s,a)=\mathbb{E}_\pi\bigl[R_{t+1}+\gamma Q^\pi(S_{t+1},A_{t+1})\mid S_t=s,A_t=a\bigr].
 ```
 
+[← Previous: Statistical Concepts](a-statistical-concepts.md) | [Table of contents](../main.md#chapters) | [Next: Bellman Optimality Derivation](c-bellman-optimality-derivation.md) →

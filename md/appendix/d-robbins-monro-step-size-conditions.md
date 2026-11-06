@@ -172,3 +172,5 @@ The sample errors $\xi_ k$ never stop, but because $\sum\alpha_ k^2<\infty$, the
 The two conditions are
 
 <img src="../../figures/equations/rm.svg" alt="Robbins-Monro step-size conditions" style="width:100%; max-width:820px; display:block; margin:1em auto;" />
+
+[← Previous: Bellman Optimality Derivation](c-bellman-optimality-derivation.md) | [Table of contents](../main.md#chapters) | [Next: Policy Gradient Theorem and Expectations](e-policy-gradient-theorem-and-expectations.md) →

@@ -45,3 +45,5 @@ In Section 11.4, $p=\pi_ \theta(\cdot\mid x)$ and $q=\pi_ {\text{ref}}(\cdot\mid
 ```
 
  with equality only when the two distributions agree.
+
+[← Previous: Policy Gradient Theorem and Expectations](e-policy-gradient-theorem-and-expectations.md) | [Table of contents](../main.md#chapters) | [Next: PPO Derivations](g-ppo-derivations.md) →

@@ -361,3 +361,5 @@ if __name__ == "__main__":
     print("pi_theta(*|A):", [round(p, 3) for p in pi_theta(h, "A").probs.tolist()])
     print("V(A):", round(v_hat(v, "A").item(), 3))
 ```
+
+[← Previous: Policy Gradients and REINFORCE](09-policy-gradients-reinforce.md) | [Table of contents](../main.md#chapters) | [Next: Reinforcement Learning from Human Feedback](11-reinforcement-learning-from-human-feedback.md) →

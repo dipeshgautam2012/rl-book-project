@@ -258,3 +258,5 @@ From (C.4), the same policy is
 
 - **Greedy.** Put probability $1$ on one maximizing action. If only one action maximizes, this is the only optimal choice at $s$. If several do, any one of them may be chosen with probability $1$.
 - **Randomized among maximizers.** If several actions maximize, $\pi^*$ may put any probabilities on those actions only. All other actions get probability $0$. This is still optimal: every action that can be chosen still attains the $\max$.
+
+[← Previous: Bellman Expectation Derivation](b-bellman-expectation-derivation.md) | [Table of contents](../main.md#chapters) | [Next: Robbins--Monro Step-Size Conditions](d-robbins-monro-step-size-conditions.md) →

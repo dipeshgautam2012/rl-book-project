@@ -107,3 +107,5 @@ p(y\mid x)=\frac{\pi(y\mid x)\,f(x,y)}{Z(x)}.
 Toy: four replies, $\pi=(0.40,0.10,0.30,0.20)$, $f=(1,1,0,0)$. Denominator $Z=0.40+0.10+0+0=0.50$. Then $p=(0.80,0.20,0,0)$. Same shape as $N=100$ beans: keep $40$ and $10$, drop $30$ and $20$, bowl size $50$, fractions $40/50$ and $10/50$.
 
 The loop **never uses** $Z$. The die is compared to $a$, not to the overall keep rate; $Z$ is that overall keep rate, so it is not the cutoff. Here $a=f\in\lbrace0,1\rbrace$, so you skip the die ($f=1$ always keep, $f=0$ always drop). The steps only sample from $\pi$ and check $f$.
+
+[← Previous: PPO Derivations](g-ppo-derivations.md) | [Table of contents](../main.md#chapters) | [Next: References](../references.md) →

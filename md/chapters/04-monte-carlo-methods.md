@@ -862,3 +862,5 @@ Write $V_ N(s)$ for the weighted estimate (4.16). When visit $N{+}1$ brings $G^{
 ```math
 V_{N+1}(s)=V_N(s)+\frac{\rho^{(N+1)}}{\sum_{i=1}^{N+1} \rho^{(i)}}\Bigl(G^{(N+1)}(s) - V_N(s)\Bigr).\quad (4.17)
 ```
+
+[← Previous: Dynamic Programming](03-dynamic-programming.md) | [Table of contents](../main.md#chapters) | [Next: Temporal-Difference Learning](05-temporal-difference-learning.md) →

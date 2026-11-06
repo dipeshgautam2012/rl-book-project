@@ -270,3 +270,5 @@ In the program of Section 8.4, replace the `with torch.no_grad():` block by
 ```
 
 DQN (and Double DQN) stay **value-based**. They learn $\hat{Q}$ and choose actions from it. Chapter 9 instead parameterizes $\pi_ \theta(a\mid s)$ directly and optimizes expected return by policy gradients.
+
+[← Previous: Function Approximation and the Deadly Triad](07-function-approximation-the-deadly-triad.md) | [Table of contents](../main.md#chapters) | [Next: Policy Gradients and REINFORCE](09-policy-gradients-reinforce.md) →

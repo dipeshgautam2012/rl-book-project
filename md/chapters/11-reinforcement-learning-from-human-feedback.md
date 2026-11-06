@@ -593,3 +593,5 @@ def rlhf(pi_ref, r, beta=0.1, K=4, alpha_theta=0.05, max_iters=1000, E=4, eps=0.
 ```
 
 The objects in this chapter are the RLHF core: $\pi_ \theta$, $r_ \phi$, $\pi_ {\mathrm{ref}}$, RLOO, PPO. Named systems that **wire** those objects (and, when the score is a program, replace $r_ \phi$) are Chapter 12.
+
+[← Previous: Actor-Critic Methods](10-actor-critic-methods.md) | [Table of contents](../main.md#chapters) | [Next: InstructGPT and DeepSeek-R1-Style Training](12-instructgpt-and-deepseek-r1-style-training.md) →

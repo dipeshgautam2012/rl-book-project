@@ -134,3 +134,5 @@ That choice uses $P$ even after $V^*$ is known. Computing $Q^*$ from (2.9) also 
 The $\arg\max$ can contain more than one action: two turns with the same score. A greedy $\pi^*$ always takes one of them. Randomizing between those two is also optimal. Taking a turn whose score is strictly smaller is not (, [C.4](#app:C.4)).
 
 Equations (2.4)–(2.6) are linear in $V^\pi$, so a fixed policy is one matrix solve; (2.8)–(2.9) contain a $\max$, so that solve no longer applies and $V^*$ needs iteration (Chapter 3).
+
+[← Previous: The RL Problem: MDPs, Policies, and Returns](01-the-rl-problem.md) | [Table of contents](../main.md#chapters) | [Next: Dynamic Programming](03-dynamic-programming.md) →
