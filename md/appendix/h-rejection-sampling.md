@@ -45,7 +45,7 @@ Write $c$ for a color. Draw $N$ beans from the jar. About $N\,q(c)$ of them are 
 \frac{N\,q(c)\,a(c)}{N\sum_{c'} q(c')\,a(c')}=\frac{q(c)\,a(c)}{\sum_{c'} q(c')\,a(c')}.
 ```
 
- $N$ cancels. The denominator is the overall keep rate $P(\mathrm{accept})=\sum_ {c'} q(c')\,a(c')$.
+ $N$ cancels. The denominator is the overall keep rate $P(\mathrm{accept})=\sum_{c'} q(c')\,a(c')$.
 
 **This example, $N=100$.** Jar equal mix: about $25$ of each color. Keep $25\times 80\%=20$ red, $15$ green, $10$ blue, $5$ yellow. Bowl size $50$. Fraction red $=20/50=40\%$, which is $p(\mathrm{red})$. Same pattern for the others.
 
@@ -61,7 +61,7 @@ You want that bowl fraction to equal the target:
 a(c)=\frac{p(c)}{M\,q(c)}.
 ```
 
- Need $0\le a(c)\le 1$ for every $c$, so $M$ must satisfy $p(c)\le M q(c)$ everywhere; the smallest such choice is $M=\max_ c p(c)/q(c)$. Any larger bound also works.
+ Need $0\le a(c)\le 1$ for every $c$, so $M$ must satisfy $p(c)\le M q(c)$ everywhere; the smallest such choice is $M=\max_c p(c)/q(c)$. Any larger bound also works.
 
 **This example.** $q(c)=\tfrac14$ for every color and $p=(0.40,0.30,0.20,0.10)$, so $\max p/q=0.40/(1/4)=1.6$. Pick $M=2$ (any $M\ge 1.6$ works; $2$ keeps arithmetic simple). Then $M q=\tfrac12$ and 
 
@@ -73,7 +73,7 @@ a(\mathrm{red})=\frac{0.40}{0.50}=0.80,\;a(\mathrm{green})=0.60,\;a(\mathrm{blue
 
 **Loop.** Given a way to evaluate $p(x)$ and $q(x)$, sample $X\sim q$, and sample $U\sim\mathrm{Unif}(0,1)$ (the die --- not a draw from $a$ itself):
 
-- Compute $M=\max_ x p(x)/q(x)$ (or any larger bound), then $a(x)=p(x)/(M q(x))$ as in (H.2).
+- Compute $M=\max_x p(x)/q(x)$ (or any larger bound), then $a(x)=p(x)/(M q(x))$ as in (H.2).
 - Sample $X\sim q$.
 - Sample $U\sim\mathrm{Unif}(0,1)$.
 - Accept if $U\le a(X)$; else retry.

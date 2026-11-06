@@ -19,7 +19,7 @@ In linear FA, a fixed map produces a feature vector $\mathbf{x}(s,a)\in\mathbb{R
 \hat{Q}(s,a;\mathbf{w})=\mathbf{w}^\top\mathbf{x}(s,a).
 ```
 
-Only $\mathbf{w}$ is learned. A neural network estimates the same $Q(s,a)$, but the features are no longer a fixed $\mathbf{x}$. They are computed inside the network from parameters $\theta$. Write the result as $\hat{Q}(s,a;\theta)$. When $\mathcal{A}$ is discrete and small, the network often maps the state $s$ to a vector of scores, one entry per action. Action choice is unchanged from Chapter 6: pick $A_ t$ by $\varepsilon$-greedy or softmax on those scores.
+Only $\mathbf{w}$ is learned. A neural network estimates the same $Q(s,a)$, but the features are no longer a fixed $\mathbf{x}$. They are computed inside the network from parameters $\theta$. Write the result as $\hat{Q}(s,a;\theta)$. When $\mathcal{A}$ is discrete and small, the network often maps the state $s$ to a vector of scores, one entry per action. Action choice is unchanged from Chapter 6: pick $A_t$ by $\varepsilon$-greedy or softmax on those scores.
 
 The semi-gradient Q-learning update (7.3) lifts to
 
@@ -27,17 +27,17 @@ The semi-gradient Q-learning update (7.3) lifts to
 \theta\leftarrow\theta+\alpha\bigl(R_{t+1}+\gamma\max_{a'}\hat{Q}(S_{t+1},a';\theta)-\hat{Q}(S_t,A_t;\theta)\bigr)\nabla_\theta\hat{Q}(S_t,A_t;\theta).\quad (8.1)
 ```
 
-The parameters $\theta$ play the same role as $\mathbf{w}$ in linear FA: they are the weights of $\hat{Q}$, updated by a semi-gradient step on the TD error. The difference is only the form of $\hat{Q}$—linear in $\mathbf{w}$, nonlinear in $\theta$—so the factor after the TD error is $\nabla_ \theta\hat{Q}$ from backpropagation instead of $\mathbf{x}_ t$.
+The parameters $\theta$ play the same role as $\mathbf{w}$ in linear FA: they are the weights of $\hat{Q}$, updated by a semi-gradient step on the TD error. The difference is only the form of $\hat{Q}$—linear in $\mathbf{w}$, nonlinear in $\theta$—so the factor after the TD error is $\nabla_\theta\hat{Q}$ from backpropagation instead of $\mathbf{x}_t$.
 
 ## 8.2 Experience replay
 
-Equation (8.1) updates $\theta$ from one transition $(S_ t,A_ t,R_ {t+1},S_ {t+1})$. Call that an **experience**. In the buffer we also store a done flag $d$: $d=1$ if $S_ {t+1}$ is terminal (episode ended), and $d=0$ otherwise. So each stored experience is a tuple $(s,a,r,s',d)$.
+Equation (8.1) updates $\theta$ from one transition $(S_t,A_t,R_{t+1},S_{t+1})$. Call that an **experience**. In the buffer we also store a done flag $d$: $d=1$ if $S_{t+1}$ is terminal (episode ended), and $d=0$ otherwise. So each stored experience is a tuple $(s,a,r,s',d)$.
 
 In ordinary online TD-style learning, each new experience is used once in the update and then discarded. Successive experiences on a trajectory are strongly correlated, so successive gradient steps pull $\theta$ in similar directions. Rare experiences never return.
 
 **Experience replay** does two things. First, **store** experiences in a buffer $\mathcal{D}$ instead of discarding them (a fixed-capacity queue of past $(s,a,r,s',d)$ tuples). Second, **replay** samples experiences from $\mathcal{D}$ after many steps (usually a random minibatch) and uses those samples in the learning update (8.1), rather than only the newest online transition.
 
-Random replay mixes old and new experiences, so learning batches are less correlated than a raw online stream. The same experience can also be used in many updates. The backup is still $\max_ {a'}$, so the method remains off-policy; replay only changes how data are stored and reused. Section 8.3 turns to a second issue: the bootstrap target in (8.1) still depends on the same $\theta$ being updated.
+Random replay mixes old and new experiences, so learning batches are less correlated than a raw online stream. The same experience can also be used in many updates. The backup is still $\max_{a'}$, so the method remains off-policy; replay only changes how data are stored and reused. Section 8.3 turns to a second issue: the bootstrap target in (8.1) still depends on the same $\theta$ being updated.
 
 ## 8.3 Target network
 
@@ -47,9 +47,9 @@ Replay (Section 8.2) changes **which** experiences enter the update: sample from
 U_t=R_{t+1}+\gamma\max_{a'}\hat{Q}(S_{t+1},a';\theta)
 ```
 
-(with $U_ t=R_ {t+1}$ if $S_ {t+1}$ is terminal). Both the prediction $\hat{Q}(S_ t,A_ t;\theta)$ and the bootstrap $\max_ {a'}\hat{Q}(S_ {t+1},a';\theta)$ depend on the same online weights $\theta$.
+(with $U_t=R_{t+1}$ if $S_{t+1}$ is terminal). Both the prediction $\hat{Q}(S_t,A_t;\theta)$ and the bootstrap $\max_{a'}\hat{Q}(S_{t+1},a';\theta)$ depend on the same online weights $\theta$.
 
-That shared dependence is unstable. Semi-gradient already treats $U_ t$ as independent of $\theta$ when differentiating (Chapter 7), but after each update $\theta$ has changed, so the next target is recomputed from the new weights. With a nonlinear $\hat{Q}$, those successive targets can change abruptly: every step that improves the prediction also moves the bootstrap that defines the target. Replay does not fix this; it only supplies different experiences $(s,a,r,s',d)$ to the same update whose target still tracks $\theta$.
+That shared dependence is unstable. Semi-gradient already treats $U_t$ as independent of $\theta$ when differentiating (Chapter 7), but after each update $\theta$ has changed, so the next target is recomputed from the new weights. With a nonlinear $\hat{Q}$, those successive targets can change abruptly: every step that improves the prediction also moves the bootstrap that defines the target. Replay does not fix this; it only supplies different experiences $(s,a,r,s',d)$ to the same update whose target still tracks $\theta$.
 
 A **target network** removes the shared dependence. Keep a second parameter vector $\theta^-$ used only in the bootstrap $\max$. Update the online weights $\theta$ as usual; leave $\theta^-$ fixed for $C$ environment steps, then set $\theta^-\leftarrow\theta$ (or move $\theta^-$ slowly toward $\theta$). Between copies, replayed updates move $\hat{Q}(\cdot;\theta)$ toward a bootstrap that does not change with every gradient step. So $\theta^-$ is not a second learner: it is a periodically refreshed copy of $\theta$, introduced so the target stays fixed while $\theta$ is trained.
 
@@ -59,21 +59,21 @@ For a replayed experience $(s,a,r,s',d)$, replace $\theta$ by $\theta^-$ in the 
 y=r+\gamma(1-d)\max_{a'}\hat{Q}(s',a';\theta^-).\quad (8.2)
 ```
 
-When $d=1$ (terminal $s'$), the factor $(1-d)$ is $0$, so the $\max\hat{Q}$ term drops out and $y=r$: there is no bootstrap return from a terminal state. When $d=0$, (8.2) is $r+\gamma\max_ {a'}\hat{Q}(s',a';\theta^-)$. So (8.2) is $U_ t$ from (8.1), with $\theta^-$ in the bootstrap and $(1-d)$ writing the terminal case.
+When $d=1$ (terminal $s'$), the factor $(1-d)$ is $0$, so the $\max\hat{Q}$ term drops out and $y=r$: there is no bootstrap return from a terminal state. When $d=0$, (8.2) is $r+\gamma\max_{a'}\hat{Q}(s',a';\theta^-)$. So (8.2) is $U_t$ from (8.1), with $\theta^-$ in the bootstrap and $(1-d)$ writing the terminal case.
 
-DQN samples a minibatch of $B$ experiences $\lbrace(s_ j,a_ j,r_ j,s'_ j,d_ j)\rbrace_ {j=1}^{B}$ from $\mathcal{D}$ and applies (8.2) to each:
+DQN samples a minibatch of $B$ experiences $\lbrace(s_j,a_j,r_j,s'_j,d_j)\rbrace_{j=1}^{B}$ from $\mathcal{D}$ and applies (8.2) to each:
 
 ```math
 y_j=r_j+\gamma(1-d_j)\max_{a'}\hat{Q}(s'_j,a';\theta^-),\qquad j=1,\ldots,B.\quad (8.3)
 ```
 
-Neither side of that difference is the true $Q^*$: $y_ j$ is a bootstrap TD target from (8.2), and $\hat{Q}(s_ j,a_ j;\theta)$ is the online prediction. The one-step error on sample $j$ is still written $y_ j-\hat{Q}(s_ j,a_ j;\theta)$, treating $y_ j$ as the regression target. Averaging the squared errors gives the minibatch objective
+Neither side of that difference is the true $Q^*$: $y_j$ is a bootstrap TD target from (8.2), and $\hat{Q}(s_j,a_j;\theta)$ is the online prediction. The one-step error on sample $j$ is still written $y_j-\hat{Q}(s_j,a_j;\theta)$, treating $y_j$ as the regression target. Averaging the squared errors gives the minibatch objective
 
 ```math
 J(\theta)=\frac{1}{2B}\sum_{j=1}^{B}\bigl(y_j-\hat{Q}(s_j,a_j;\theta)\bigr)^2.\quad (8.4)
 ```
 
-Each $y_ j$ depends on $\theta^-$ (held fixed for the copy period), not on the online $\theta$ being differentiated. The **semi-gradient** of (8.4) therefore treats every $y_ j$ as constant:
+Each $y_j$ depends on $\theta^-$ (held fixed for the copy period), not on the online $\theta$ being differentiated. The **semi-gradient** of (8.4) therefore treats every $y_j$ as constant:
 
 ```math
 \nabla_\theta J(\theta)=-\frac{1}{B}\sum_{j=1}^{B}\bigl(y_j-\hat{Q}(s_j,a_j;\theta)\bigr)\nabla_\theta\hat{Q}(s_j,a_j;\theta).\quad (8.5)
@@ -85,7 +85,7 @@ Gradient descent on $J$ is then
 \theta\leftarrow\theta-\alpha\,\nabla_\theta J(\theta)=\theta+\frac{\alpha}{B}\sum_{j=1}^{B}\bigl(y_j-\hat{Q}(s_j,a_j;\theta)\bigr)\nabla_\theta\hat{Q}(s_j,a_j;\theta).\quad (8.6)
 ```
 
-Compared with (8.1), the experiences come from replay and the bootstrap uses $\theta^-$ through the $y_ j$. When $B=1$, (8.3)–(8.6) reduce to a single replayed transition.
+Compared with (8.1), the experiences come from replay and the bootstrap uses $\theta^-$ through the $y_j$. When $B=1$, (8.3)–(8.6) reduce to a single replayed transition.
 
 ## 8.4 DQN
 
@@ -93,7 +93,7 @@ Compared with (8.1), the experiences come from replay and the bootstrap uses $\t
 >
 > Input: network architecture for $\hat{Q}(s,a;\theta)$; replay capacity $N$; batch size $B$; discount $\gamma$; target-copy period $C$; step size $\alpha$ (or optimizer); exploration $\varepsilon$ (possibly scheduled); number of episodes $M$.
 >
-> Output: online weights $\theta$; greedy policy $\pi(s)=\arg\max_ a\hat{Q}(s,a;\theta)$.
+> Output: online weights $\theta$; greedy policy $\pi(s)=\arg\max_a\hat{Q}(s,a;\theta)$.
 >
 > 1.  Initialize online weights $\theta$ (e.g. randomly), set target weights to a copy $\theta^-\leftarrow\theta$, empty the replay buffer $\mathcal{D}$ (capacity $N$), and set the global step counter $k\leftarrow 0$.
 >
@@ -111,13 +111,13 @@ Compared with (8.1), the experiences come from replay and the bootstrap uses $\t
 >
 >       - If $|\mathcal{D}|\geq B$:
 >
->         - Sample a minibatch of $B$ experiences $\lbrace(s_ j,a_ j,r_ j,s'_ j,d_ j)\rbrace_ {j=1}^{B}$ uniformly from $\mathcal{D}$.
+>         - Sample a minibatch of $B$ experiences $\lbrace(s_j,a_j,r_j,s'_j,d_j)\rbrace_{j=1}^{B}$ uniformly from $\mathcal{D}$.
 >
 >         - For each $j=1,\ldots,B$:
 >
->           - $y_ j\leftarrow r_ j+\gamma(1-d_ j)\max_ {a'}\hat{Q}(s'_ j,a';\theta^-)$.
+>           - $y_j\leftarrow r_j+\gamma(1-d_j)\max_{a'}\hat{Q}(s'_j,a';\theta^-)$.
 >
->         - $\theta\leftarrow\theta+\dfrac{\alpha}{B}\sum_ {j=1}^{B}\bigl(y_ j-\hat{Q}(s_ j,a_ j;\theta)\bigr)\nabla_ \theta\hat{Q}(s_ j,a_ j;\theta)$.
+>         - $\theta\leftarrow\theta+\dfrac{\alpha}{B}\sum_{j=1}^{B}\bigl(y_j-\hat{Q}(s_j,a_j;\theta)\bigr)\nabla_\theta\hat{Q}(s_j,a_j;\theta)$.
 >
 >       - $k\leftarrow k+1$.
 >
@@ -125,7 +125,7 @@ Compared with (8.1), the experiences come from replay and the bootstrap uses $\t
 >
 >       - $S\leftarrow S'$.
 >
-> 3.  Return $\theta$ and $\pi(s)=\arg\max_ a\hat{Q}(s,a;\theta)$.
+> 3.  Return $\theta$ and $\pi(s)=\arg\max_a\hat{Q}(s,a;\theta)$.
 
 ```python
 import random
@@ -269,6 +269,6 @@ In the program of Section 8.4, replace the `with torch.no_grad():` block by
     y = rewards + gamma * (1.0 - dones) * theta_(next_states)[range(batch_size), best]
 ```
 
-DQN (and Double DQN) stay **value-based**. They learn $\hat{Q}$ and choose actions from it. Chapter 9 instead parameterizes $\pi_ \theta(a\mid s)$ directly and optimizes expected return by policy gradients.
+DQN (and Double DQN) stay **value-based**. They learn $\hat{Q}$ and choose actions from it. Chapter 9 instead parameterizes $\pi_\theta(a\mid s)$ directly and optimizes expected return by policy gradients.
 
 [← Previous: Function Approximation and the Deadly Triad](07-function-approximation-the-deadly-triad.md) | [Table of contents](../main.md#chapters) | [Next: Policy Gradients and REINFORCE](09-policy-gradients-reinforce.md) →

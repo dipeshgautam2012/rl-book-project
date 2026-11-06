@@ -27,13 +27,13 @@ Both need the model $P$. If $P$ is unknown, DP does not apply; later chapters us
 
 ## 3.1 Value Iteration
 
-Value iteration computes $V^*$ by repeatedly applying (2.8), then a greedy $\pi^*$. On non-terminal states the starting table $V_ 0$ may be any guess; the updates still converge. After a terminal state there are no further rewards, so the return from there is $0$. Those entries stay at $V(\text{terminal})=0$ and are not updated. Each round then updates every non-terminal value by (2.8) on the current table $V_ k$. The policy at $s$ is (2.10) on that same table:
+Value iteration computes $V^*$ by repeatedly applying (2.8), then a greedy $\pi^*$. On non-terminal states the starting table $V_0$ may be any guess; the updates still converge. After a terminal state there are no further rewards, so the return from there is $0$. Those entries stay at $V(\text{terminal})=0$ and are not updated. Each round then updates every non-terminal value by (2.8) on the current table $V_k$. The policy at $s$ is (2.10) on that same table:
 
 ```math
 \begin{aligned}V_{k+1}(s)&\leftarrow\max_{a} \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma V_k(s') \right],\\\pi_{k+1}(s)&\leftarrow\arg\max_{a} \sum_{s',r} P(s',r \mid s,a) \left[ r + \gamma V_k(s') \right].\end{aligned}\quad (3.1)
 ```
 
-Equation (3.1) uses the previous-round table $V_ k$ at every next state $s'$, for both $V_ {k+1}$ and $\pi_ {k+1}$. The algorithm below writes the new number into $V(s)$ before moving to the next state in the loop, so a later state’s value and action may already read that new $V(s)$. Repeating this backup still improves the table: an early $V_ k$ is only a guess, a later $V_ k$ is closer to $V^*$. For $\gamma\in[0,1)$, $V_ k$ converges to $V^*$, and the greedy $\pi_ k$ at that limit is an approximate $\pi^*$. Exact $V^*$ is a limit of infinitely many sweeps. In practice one sweep records $\Delta$, the largest $|V(s)-v|$ over the non-terminals just updated, and stops when $\Delta<\varepsilon$ for a chosen tolerance $\varepsilon>0$.
+Equation (3.1) uses the previous-round table $V_k$ at every next state $s'$, for both $V_{k+1}$ and $\pi_{k+1}$. The algorithm below writes the new number into $V(s)$ before moving to the next state in the loop, so a later state’s value and action may already read that new $V(s)$. Repeating this backup still improves the table: an early $V_k$ is only a guess, a later $V_k$ is closer to $V^*$. For $\gamma\in[0,1)$, $V_k$ converges to $V^*$, and the greedy $\pi_k$ at that limit is an approximate $\pi^*$. Exact $V^*$ is a limit of infinitely many sweeps. In practice one sweep records $\Delta$, the largest $|V(s)-v|$ over the non-terminals just updated, and stops when $\Delta<\varepsilon$ for a chosen tolerance $\varepsilon>0$.
 
 <div class="book-figure" align="center" markdown="1" id="fig-5-1">
 
@@ -57,9 +57,9 @@ Equation (3.1) uses the previous-round table $V_ k$ at every next state $s'$, fo
 >
 >       - $v\leftarrow V(s)$.
 >
->       - $V(s)\leftarrow\max_ a\sum_ {s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
+>       - $V(s)\leftarrow\max_a\sum_{s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
 >
->       - $\pi(s)\leftarrow\arg\max_ a\sum_ {s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
+>       - $\pi(s)\leftarrow\arg\max_a\sum_{s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
 >
 >       - $\Delta\leftarrow\max(\Delta,|v-V(s)|)$.
 >
@@ -187,7 +187,7 @@ Value iteration (3.1) mixes $\max$ into every value sweep. Policy iteration full
 >
 >       - $a\leftarrow\pi(s)$.
 >
->       - $V(s)\leftarrow\sum_ {s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
+>       - $V(s)\leftarrow\sum_{s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
 >
 >       - $\Delta\leftarrow\max(\Delta,|v-V(s)|)$.
 >
@@ -195,7 +195,7 @@ Value iteration (3.1) mixes $\max$ into every value sweep. Policy iteration full
 >
 >     - $\textit{old}\leftarrow\pi(s)$.
 >
->     - $\pi(s)\leftarrow\arg\max_ a\sum_ {s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
+>     - $\pi(s)\leftarrow\arg\max_a\sum_{s',r} P(s',r\mid s,a)\,[r+\gamma V(s')]$.
 >
 >     - If $\pi(s)\neq\textit{old}$ for any $s$, go to step 2 (re-evaluate under the new $\pi$).
 >
