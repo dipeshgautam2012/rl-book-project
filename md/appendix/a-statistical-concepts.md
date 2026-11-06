@@ -1,4 +1,4 @@
-[← Previous: Exercises and Code Solutions](../chapters/14-exercises-fully-code-solutions.md) | [Table of contents](../main.md#chapters) | [Next: Bellman Expectation Derivation](b-bellman-expectation-derivation.md) →
+[← Previous: Appendix Index](../appendix.md) | [Table of contents](../main.md#chapters) | [Next: Bellman Expectation Derivation](b-bellman-expectation-derivation.md) →
 
 # Appendix A: Statistical Concepts
 
@@ -297,4 +297,4 @@ Given $S_ {t+1}=s'$, the remaining return $G_ {t+1}$ does not depend on $(S_ t,A
 \mathbb{E}_\pi[G_{t+1}\mid S_t=s,A_t=a,S_{t+1}=s']=\mathbb{E}_\pi[G_{t+1}\mid S_{t+1}=s'].
 ```
 
-[← Previous: Exercises and Code Solutions](../chapters/14-exercises-fully-code-solutions.md) | [Table of contents](../main.md#chapters) | [Next: Bellman Expectation Derivation](b-bellman-expectation-derivation.md) →
+[← Previous: Appendix Index](../appendix.md) | [Table of contents](../main.md#chapters) | [Next: Bellman Expectation Derivation](b-bellman-expectation-derivation.md) →

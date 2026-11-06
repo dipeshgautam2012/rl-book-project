@@ -1,6 +1,6 @@
 # Chapter 14: Exercises and Code Solutions
 
-[← Previous: Summary](13-summary.md) | [Table of contents](../main.md#chapters) | [End of book](../main.md)
+[← Previous: Summary](13-summary.md) | [Table of contents](../main.md#chapters) | [Next: Appendix Index](../appendix.md) →
 
 
 Two small environments. The $4\times 4$ GridWorld is tabular: the same $P$, $r$, and goal, four backups. CartPole has a continuous $s$, so a table cannot store $Q(s,a)$; DQN uses $\hat{Q}(s,a;\theta)$.
@@ -389,4 +389,4 @@ Early $G$ near $20$ means the pole (or cart) failed after that many steps. The r
 
 Either bound can fail; the other need not. $|\varphi|_ {\max}$ above $12^\circ$ with $|x|_ {\max}$ still small is a **pole fall**: the episode stops on $\varphi$, so $x$ never reaches $2.4$. That is the early stretch. $|x|_ {\max}$ on $2.4$ with $|\varphi|$ still below $12^\circ$ is a **cart** fail. The dashed lines are the fail check, not a clip: the failing coordinate can step slightly past the bound, then we stop. After learning, both stay below the dashes for $200$ steps except leftover $\varepsilon$-greedy dips.
 
-[← Previous: Summary](13-summary.md) | [Table of contents](../main.md#chapters) | [End of book](../main.md)
+[← Previous: Summary](13-summary.md) | [Table of contents](../main.md#chapters) | [Next: Appendix Index](../appendix.md) →
