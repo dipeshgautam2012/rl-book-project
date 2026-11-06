@@ -199,7 +199,7 @@ Each kept return is folded into $V$ inside the loop via (4.2): increment $N(s)$ 
 >
 >       - $G\leftarrow R_{t+1}+\gamma G$.
 >
->       - If $S_t\notin\lbraceS_0,\ldots,S_{t-1}\rbrace$ (first visit):
+>       - If $S_t\notin\lbrace S_0,\ldots,S_{t-1}\rbrace$ (first visit):
 >
 >         - $N(S_t)\leftarrow N(S_t)+1$,
 >

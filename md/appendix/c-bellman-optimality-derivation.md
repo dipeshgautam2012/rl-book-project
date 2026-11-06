@@ -113,7 +113,7 @@ In the inner $\max_a$, the action is already fixed to the one that maximizes $\s
 [
 
 ```math
-r + \gamma V^*(s')]\quad\text{[inner sum does not depend on $\pi$]}.
+r + \gamma V^*(s')]\quad\text{[inner sum does not depend on }\pi\text{]}.
 ```
 
 For the other direction: by definition $V^*(s)=\max_\pi(\cdots)$, so for any other policy $\hat{\pi}$ --- whether optimal or not ---

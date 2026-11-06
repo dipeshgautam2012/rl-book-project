@@ -35,7 +35,7 @@ B.3 derives (B.1) and (B.3), with compact form (B.11). B.4 derives (B.2), with c
 ## Expected rewards
 
 ```math
-R(s,a,s')=\mathbb{E}[R_{t+1}\mid S_t=s,A_t=a,S_{t+1}=s'];\quad\text{expected reward from taking $a$ in $s$ and arriving at $s'$}.
+R(s,a,s')=\mathbb{E}[R_{t+1}\mid S_t=s,A_t=a,S_{t+1}=s'];\quad\text{expected reward from taking }a\text{ in }s\text{ and arriving at }s'.
 ```
 
 ```math
@@ -47,7 +47,7 @@ R(s,a,s')=\sum_r r\, \frac{P(s',r\mid s,a)}{P(s'\mid s,a)}.
 ```
 
 ```math
-R(s,a)=\mathbb{E}[R_{t+1}\mid S_t=s,A_t=a];\quad\text{expected reward from taking $a$ in $s$}.
+R(s,a)=\mathbb{E}[R_{t+1}\mid S_t=s,A_t=a];\quad\text{expected reward from taking }a\text{ in }s.
 ```
 
 Expand over the next state by (A.7), then substitute (B.4):
@@ -217,7 +217,7 @@ P^\pi(s'\mid s)=\sum_a\pi(a\mid s)\, P(s'\mid s,a).
 Start from the compact form (B.11). Apply linearity (A.5), then write the two expectations with (B.12) and the definition of $P^\pi$:
 
 ```math
-\begin{aligned}V^\pi(s)&=\mathbb{E}_\pi\bigl[R_{t+1}+\gamma V^\pi(S_{t+1})\mid S_t=s\bigr]\quad\text{[(B.11)]}\\&=\mathbb{E}_\pi[R_{t+1}\mid S_t=s]+\gamma\mathbb{E}_\pi\bigl[V^\pi(S_{t+1})\mid S_t=s\bigr]\quad\text{[A.5; linearity]}\\&=R^\pi(s)+\gamma\sum_{s'}V^\pi(s')\, P^\pi(s'\mid s)\quad\text{[(B.12); definition of $P^\pi$]}.\end{aligned}
+\begin{aligned}V^\pi(s)&=\mathbb{E}_\pi\bigl[R_{t+1}+\gamma V^\pi(S_{t+1})\mid S_t=s\bigr]\quad\text{[(B.11)]}\\&=\mathbb{E}_\pi[R_{t+1}\mid S_t=s]+\gamma\mathbb{E}_\pi\bigl[V^\pi(S_{t+1})\mid S_t=s\bigr]\quad\text{[A.5; linearity]}\\&=R^\pi(s)+\gamma\sum_{s'}V^\pi(s')\, P^\pi(s'\mid s)\quad\text{[(B.12); definition of }P^\pi\text{]}.\end{aligned}
 ```
 
 ```math

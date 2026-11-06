@@ -21,7 +21,7 @@ The probabilities sum to $1$ for every $\theta$, so a change in $\theta$ only mo
 Let $H_t=(S_0,A_0,R_1,\ldots,R_t,S_t)$ be the history up to $S_t$. For $k<t$, the reward $R_{k+1}$ is part of $H_t$, so it is a fixed number once $H_t$ is given. Given $H_t$, the agent draws $A_t$ from $\pi_\theta(\cdot\mid S_t)$, so $\mathbb{E}\bigl[\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigm|H_t\bigr]=0$ by (E.1). Then
 
 ```math
-\begin{aligned}\mathbb{E}\bigl[R_{k+1}\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigr]&=\mathbb{E}\Bigl[\mathbb{E}\bigl[R_{k+1}\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigm|H_t\bigr]\Bigr]\quad\text{[A.8]}\\&=\mathbb{E}\Bigl[R_{k+1}\,\mathbb{E}\bigl[\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigm|H_t\bigr]\Bigr]\quad\text{[A.5; $R_{k+1}$ is fixed given $H_t$]}\\&=\mathbb{E}[R_{k+1}\cdot 0]\quad\text{[E.1]}\\&=0.\end{aligned}
+\begin{aligned}\mathbb{E}\bigl[R_{k+1}\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigr]&=\mathbb{E}\Bigl[\mathbb{E}\bigl[R_{k+1}\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigm|H_t\bigr]\Bigr]\quad\text{[A.8]}\\&=\mathbb{E}\Bigl[R_{k+1}\,\mathbb{E}\bigl[\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigm|H_t\bigr]\Bigr]\quad\text{[A.5; }R_{k+1}\text{ is fixed given }H_t\text{]}\\&=\mathbb{E}[R_{k+1}\cdot 0]\quad\text{[E.1]}\\&=0.\end{aligned}
 ```
 
 ## The baseline term has expectation zero
@@ -35,7 +35,7 @@ The state $S_t$ is random: different episodes reach different states at time $t$
  and $b(S_t)$ takes a different value in each state, so it cannot be taken outside the whole expectation. Within the inner sum the state $s$ is fixed and only the action varies, so $b(s)$ is a constant there. The tower property (A.8) separates the two sums: first fix $S_t$ and average over actions, then average over states. With the same steps as in E.2, conditioning on $S_t$ instead of $H_t$,
 
 ```math
-\begin{aligned}\mathbb{E}\bigl[b(S_t)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigr]&=\mathbb{E}\Bigl[\mathbb{E}\bigl[b(S_t)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigm|S_t\bigr]\Bigr]\quad\text{[A.8]}\\&=\mathbb{E}\Bigl[b(S_t)\,\mathbb{E}\bigl[\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigm|S_t\bigr]\Bigr]\quad\text{[A.5; $b(S_t)$ is fixed given $S_t$]}\\&=\mathbb{E}[b(S_t)\cdot 0]\quad\text{[E.1]}\\&=0.\end{aligned}
+\begin{aligned}\mathbb{E}\bigl[b(S_t)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigr]&=\mathbb{E}\Bigl[\mathbb{E}\bigl[b(S_t)\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigm|S_t\bigr]\Bigr]\quad\text{[A.8]}\\&=\mathbb{E}\Bigl[b(S_t)\,\mathbb{E}\bigl[\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigm|S_t\bigr]\Bigr]\quad\text{[A.5; }b(S_t)\text{ is fixed given }S_t\text{]}\\&=\mathbb{E}[b(S_t)\cdot 0]\quad\text{[E.1]}\\&=0.\end{aligned}
 ```
 
 The second line needs the baseline to be fixed given $S_t$. A weight $b(S_t,A_t)$ that differs between actions cannot be taken outside the expectation over $A_t$, and its product with the score need not have mean zero.

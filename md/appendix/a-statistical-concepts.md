@@ -84,7 +84,7 @@ So
 \mathbb{E}[X]=\mathbb{E}\bigl[\mathbb{E}[X\mid Y]\bigr].
 ```
 
-The same argument with the event $\lbraceZ=z\rbrace$ in place of the unconditional law gives the conditional tower. Apply (A.7) with $A=\lbraceZ=z\rbrace$ and partition by $Y$:
+The same argument with the event $\lbrace Z=z\rbrace$ in place of the unconditional law gives the conditional tower. Apply (A.7) with $A=\lbrace Z=z\rbrace$ and partition by $Y$:
 
 ```math
 \begin{aligned}\mathbb{E}[X\mid Z=z]&=\sum_y \mathbb{E}[X\mid Z=z,Y=y]\, P(Y=y\mid Z=z)\quad\text{[A.7]}\\&=\sum_y \mathbb{E}[X\mid Y=y,Z=z]\, P(Y=y\mid Z=z).\end{aligned}
@@ -129,10 +129,10 @@ P(Y=y)=\sum_{x:\,f(x)=y} P(X=x).\quad\text{[A.1; LOTP]}
 Then
 
 ```math
-\begin{aligned}\mathbb{E}[f(X)]&=\mathbb{E}[Y]=\sum_y y\, P(Y=y)\\&=\sum_y y(\sum_{x:\,f(x)=y} P(X=x))\\&=\sum_y(\sum_{x:\,f(x)=y} y\, P(X=x))\\&=\sum_y(\sum_{x:\,f(x)=y} f(x)\, P(X=x))\quad\text{[$y=f(x)$ on each inner sum]}\\&=\sum_x f(x)\, P(X=x).\end{aligned}
+\begin{aligned}\mathbb{E}[f(X)]&=\mathbb{E}[Y]=\sum_y y\, P(Y=y)\\&=\sum_y y(\sum_{x:\,f(x)=y} P(X=x))\\&=\sum_y(\sum_{x:\,f(x)=y} y\, P(X=x))\\&=\sum_y(\sum_{x:\,f(x)=y} f(x)\, P(X=x))\quad\text{[}y=f(x)\text{ on each inner sum]}\\&=\sum_x f(x)\, P(X=x).\end{aligned}
 ```
 
-The last equality collapses the nested sums. For each fixed $y$, the inner sum runs only over the group $\lbracex:f(x)=y\rbrace$: any $x$ with $f(x)\neq y$ is missing from that group. Because $f$ is a function, every $x$ maps to exactly one $y$, so each $x$ appears in **exactly one** group, and every $x$ appears in **some** group. Summing $f(x)\,P(X=x)$ group by group is therefore the same as summing once over all $x$.
+The last equality collapses the nested sums. For each fixed $y$, the inner sum runs only over the group $\lbrace x:f(x)=y\rbrace$: any $x$ with $f(x)\neq y$ is missing from that group. Because $f$ is a function, every $x$ maps to exactly one $y$, so each $x$ appears in **exactly one** group, and every $x$ appears in **some** group. Summing $f(x)\,P(X=x)$ group by group is therefore the same as summing once over all $x$.
 
 **Example.** Suppose the possible values of $X$ are $\lbrace1,2,3\rbrace$ and $f(1)=f(2)=a$, $f(3)=b$. The double sum is two groups:
 
