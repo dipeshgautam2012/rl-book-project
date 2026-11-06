@@ -44,7 +44,7 @@ The inner piece $r+\gamma V^\pi(s')$ looks only one step ahead: $r$ is the immed
 Equation (2.4) nests two averages—over actions under $\pi$, then over transitions under $P$. These are the same as $V^\pi$ through $Q^\pi$ (, <a href="#eq:B.14" data-reference-type="eqref" data-reference="eq:B.14">[eq:B.14]</a> and <a href="#eq:B.17" data-reference-type="eqref" data-reference="eq:B.17">[eq:B.17]</a>):
 
 ```math
-V^\pi(s)=\sum_{a \in \mathcal{A}}\pi(a \mid s)\, Q^\pi(s,a),\qquadQ^\pi(s,a)=\sum_{s',r}P(s',r \mid s,a)\bigl[r + \gamma V^\pi(s')\bigr].
+V^\pi(s)=\sum_{a \in \mathcal{A}}\pi(a \mid s)\, Q^\pi(s,a),\qquad Q^\pi(s,a)=\sum_{s',r}P(s',r \mid s,a)\bigl[r + \gamma V^\pi(s')\bigr].
 ```
 
 So the outer sum in (2.4) averages over actions under $\pi$, and the inner sum averages over the next state and reward under $P$.
@@ -104,7 +104,7 @@ For $\gamma\in[0,1)$, $I-\gamma\mathbf{P}^\pi$ is invertible, so evaluating $\pi
 The Bellman expectation equations are for one fixed $\pi$. We now want values that are best in every state: the **optimal** state-value and action-value
 
 ```math
-V^*(s) = \max_\pi V^\pi(s),\qquadQ^*(s,a) = \max_\pi Q^\pi(s,a).\quad (2.7)
+V^*(s) = \max_\pi V^\pi(s),\qquad Q^*(s,a) = \max_\pi Q^\pi(s,a).\quad (2.7)
 ```
 
 Under an optimal policy the agent no longer averages actions with $\pi(a\mid s)$; it takes an action that attains the maximum. The same one-step backup as (2.4), with that $\max$ in place of the average over $\pi$, is the **Bellman optimality equation** (, <a href="#eq:C.2" data-reference-type="eqref" data-reference="eq:C.2">[eq:C.2]</a>):

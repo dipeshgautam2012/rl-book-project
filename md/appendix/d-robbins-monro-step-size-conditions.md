@@ -4,7 +4,7 @@
 
 ## Goal
 
-Derive the two conditions on $\{\alpha_n\}$ used in Chapter 4 so that the incremental Monte Carlo update (4.3), for a fixed $\pi$ and a stationary environment $P$, has $V_n\to V^\pi$. First-visit returns from a state $s$ are i.i.d.\ with mean $\mu=V^\pi(s)$ and finite variance, so the sample mean (A.20) is unbiased for $\mu$ by (A.21) and converges by (A.23).
+Derive the two conditions on $\lbrace\alpha_n\rbrace$ used in Chapter 4 so that the incremental Monte Carlo update (4.3), for a fixed $\pi$ and a stationary environment $P$, has $V_n\to V^\pi$. First-visit returns from a state $s$ are i.i.d.\ with mean $\mu=V^\pi(s)$ and finite variance, so the sample mean (A.20) is unbiased for $\mu$ by (A.21) and converges by (A.23).
 
 ## Error, sample error, and unrolling
 

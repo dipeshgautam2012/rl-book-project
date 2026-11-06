@@ -351,7 +351,7 @@ gave a standard example of that failure: an MDP with six states and reward $0$ o
 
 To see the shared-weight mechanism explicitly, reduce to two states (prediction form; $R=0$, $\gamma>1/2$). Set $\hat{V}(s_1)=w$ and $\hat{V}(s_2)=2w$, and update only at $s_1$ while the backup uses $s_2$:
 ```math
-w\leftarroww+\alpha\bigl(\gamma\cdot 2w-w\bigr)=\bigl(1+\alpha(2\gamma-1)\bigr)\,w.
+w\leftarrow w+\alpha\bigl(\gamma\cdot 2w-w\bigr)=\bigl(1+\alpha(2\gamma-1)\bigr)\,w.
 ```
 The factor is strictly larger than $1$, so $|w|\to\infty$. The same kind of mismatch sits inside (7.3) whenever exploring behavior disagrees with the greedy backup. One such instance is enough to show that off-policy linear semi-gradient is **not** generally safe.
 

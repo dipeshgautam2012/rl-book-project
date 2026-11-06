@@ -25,7 +25,7 @@ Raising $J(\theta)$ requires a concrete $\pi_\theta$. From Chapter 1, $\pi(a\mid
 \pi_\theta(a\mid s)=P(A_t=a\mid S_t=s;\,\theta).
 ```
 
-For each $s$, the numbers $\{\pi_\theta(a\mid s)\}_{a\in\mathcal{A}}$ must be nonnegative, sum to $1$, and change with $\theta$. That still needs a map from $(s,\theta)$ to a distribution over $\mathcal{A}$.
+For each $s$, the numbers $\lbrace\pi_\theta(a\mid s)\rbrace_{a\in\mathcal{A}}$ must be nonnegative, sum to $1$, and change with $\theta$. That still needs a map from $(s,\theta)$ to a distribution over $\mathcal{A}$.
 
 The softmax of Chapter 6 (6.9) is such a map: one real score per action becomes a distribution over $\mathcal{A}$. There the scores were action-values $Q(s,a)$. That coupling is the wrong object for policy gradients: $Q$ must track expected return and the Bellman backup, so its scale is tied to rewards and $\gamma$, and $\pi$ is only a byproduct of those values. What is needed instead is a parameterized state–action score whose only job is to set $\pi_\theta$—free to rise or fall as raising $J$ requires. Call that score a **preference** $h(s,a;\theta)$. Learning means updating $\theta$, which changes $h$, which changes $\pi_\theta$. Larger $h$ means larger probability after the softmax. Concretely, $\theta$ may be a table with one entry $\theta_{s,a}$ per pair ($h=\theta_{s,a}$), or the weights of a network that maps $s$ to $|\mathcal{A}|$ scores. For discrete $\mathcal{A}$, the parameterized policy is the softmax of these preferences:
 
@@ -135,7 +135,7 @@ so (9.6) with $R(\tau)=G_0$ is
 ```
 The return $G_0$ multiplies every $\psi_\theta(S_t,A_t)$, and it includes rewards received before $A_t$ was taken. For each $t$, split $G_0$ into the rewards before time $t$ and the rest:
 ```math
-G_0=\sum_{k=0}^{t-1}\gamma^{k}R_{k+1}+\gamma^{t}G_t,\qquadG_t=\sum_{k=t}^{T-1}\gamma^{k-t}R_{k+1},
+G_0=\sum_{k=0}^{t-1}\gamma^{k}R_{k+1}+\gamma^{t}G_t,\qquad G_t=\sum_{k=t}^{T-1}\gamma^{k-t}R_{k+1},
 ```
 where $G_t$ is the return-to-go from time $t$. Substituting the split and applying linearity (A.4) separates the gradient into a past part and a future part:
 ```math

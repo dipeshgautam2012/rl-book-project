@@ -30,7 +30,7 @@ The same two rules apply to action-values: a visit is a pair $(s,a)$, first-visi
 > Two episodes under $\pi$ (state-values only):
 >
 > ```math
-> \begin{align*}\text{Ep.~1:}\quad&S_0{=}A\xrightarrow{R_1{=}1}S_1{=}B\xrightarrow{R_2{=}0}S_2{=}A\xrightarrow{R_3{=}2}S_3{=}C\xrightarrow{R_4{=}3}S_4{=}A\xrightarrow{R_5{=}1}S_5{=}D\quad\text{(end)}.\\[0.5em]\text{Ep.~2:}\quad&S_0{=}A\xrightarrow{R_1{=}1}S_1{=}B\xrightarrow{R_2{=}2}S_2{=}A\xrightarrow{R_3{=}4}S_3{=}D\quad\text{(end)}.\end{align*}
+> \begin{aligned}\text{Ep.~1:}\quad&S_0{=}A\xrightarrow{R_1{=}1}S_1{=}B\xrightarrow{R_2{=}0}S_2{=}A\xrightarrow{R_3{=}2}S_3{=}C\xrightarrow{R_4{=}3}S_4{=}A\xrightarrow{R_5{=}1}S_5{=}D\quad\text{(end)}.\\text{Ep.~2:}\quad&S_0{=}A\xrightarrow{R_1{=}1}S_1{=}B\xrightarrow{R_2{=}2}S_2{=}A\xrightarrow{R_3{=}4}S_3{=}D\quad\text{(end)}.\end{aligned}
 > ```
 >
 > <div class="center" markdown="1">
@@ -130,7 +130,7 @@ The same two rules apply to action-values: a visit is a pair $(s,a)$, first-visi
 For $A$, first-visit keeps one return per episode ($5.4631$ from ep.~1, $6.04$ from ep.~2); every-visit keeps every visit return ($5.4631$, $5.51$, $1$ from ep.~1 and $6.04$, $4$ from ep.~2):
 
 ```math
-\begin{aligned}\text{first-visit:}\quad&N(A)=2,\quadV(A)=\frac{5.4631+6.04}{2}=5.75155\\\text{every-visit:}\quad&N(A)=5,\quadV(A)=\frac{5.4631+5.51+1+6.04+4}{5}=4.40262\end{aligned}
+\begin{aligned}\text{first-visit:}\quad&N(A)=2,\quad V(A)=\frac{5.4631+6.04}{2}=5.75155\\\text{every-visit:}\quad&N(A)=5,\quad V(A)=\frac{5.4631+5.51+1+6.04+4}{5}=4.40262\end{aligned}
 ```
 
 </div>
@@ -154,7 +154,7 @@ We can update this sample mean **without** storing every past return. After $N$ 
 So $V_N(s)$ summarizes the previous $N$ returns; the new return is folded in with weight $1/(N{+}1)$. Writing that weight as a step-size $\alpha$ gives
 
 ```math
-V_{N+1}(S_t)\leftarrowV_N(S_t) + \alpha \bigl( G_t^{(N+1)} - V_N(S_t) \bigr)\quad (4.3)
+V_{N+1}(S_t)\leftarrow V_N(S_t) + \alpha \bigl( G_t^{(N+1)} - V_N(S_t) \bigr)\quad (4.3)
 ```
 
 Here $t$ is the time in that episode, so $G_t=R_{t+1}+\gamma G_{t+1}$ is the return from the visit $S_t$, and $(N{+}1)$ is the next sample for that state.
@@ -162,10 +162,10 @@ Here $t$ is the time in that episode, so $G_t=R_{t+1}+\gamma G_{t+1}$ is the ret
 If the policy $\pi$ and the environment $P$ are stationary, vary the step. After $N$ samples the next one is sample $n=N{+}1$; write $\alpha_{N+1}$ for the step on that sample. Then (4.3) is
 
 ```math
-V_{N+1}(S_t)\leftarrowV_N(S_t) + \alpha_{N+1} \bigl( G_t^{(N+1)} - V_N(S_t) \bigr).
+V_{N+1}(S_t)\leftarrow V_N(S_t) + \alpha_{N+1} \bigl( G_t^{(N+1)} - V_N(S_t) \bigr).
 ```
 
-Choose $\{\alpha_n\}$ so that
+Choose $\lbrace\alpha_n\rbrace$ so that
 
 ```math
 \sum_{n=1}^{\infty}\alpha_n=\infty\qquad\text{and}\qquad\sum_{n=1}^{\infty}\alpha_n^2<\infty,
@@ -199,7 +199,7 @@ Each kept return is folded into $V$ inside the loop via (4.2): increment $N(s)$ 
 >
 >       - $G\leftarrow R_{t+1}+\gamma G$.
 >
->       - If $S_t\notin\{S_0,\ldots,S_{t-1}\}$ (first visit):
+>       - If $S_t\notin\lbraceS_0,\ldots,S_{t-1}\rbrace$ (first visit):
 >
 >         - $N(S_t)\leftarrow N(S_t)+1$,
 >
@@ -323,7 +323,7 @@ Here $N$ counts returns kept for that pair $(s,a)$ (first-visit: at most one per
 With step-size $\alpha$ (the same two choices as after (4.3)), at a visit $(S_t,A_t)$ with return $G_t^{(N+1)}$,
 
 ```math
-Q_{N+1}(S_t,A_t)\leftarrowQ_N(S_t,A_t) + \alpha \bigl( G_t^{(N+1)} - Q_N(S_t,A_t) \bigr).\quad (4.6)
+Q_{N+1}(S_t,A_t)\leftarrow Q_N(S_t,A_t) + \alpha \bigl( G_t^{(N+1)} - Q_N(S_t,A_t) \bigr).\quad (4.6)
 ```
 
 Compact code: $Q(S_t,A_t)\leftarrow Q(S_t,A_t)+\alpha\bigl(G_t-Q(S_t,A_t)\bigr)$.
@@ -677,7 +677,7 @@ In the methods above, the same policy both **acts** and is **evaluated**. Off-po
 The idea of importance sampling (derived in ) is to rewrite an expectation under a target distribution $p$ using samples from a proposal distribution $q$:
 
 ```math
-\mathbb{E}_{x\sim p}[f(x)]=\mathbb{E}_{x\sim q}\bigl[w(x)\, f(x)\bigr],\qquadw(x)=\frac{p(x)}{q(x)}.
+\mathbb{E}_{x\sim p}[f(x)]=\mathbb{E}_{x\sim q}\bigl[w(x)\, f(x)\bigr],\qquad w(x)=\frac{p(x)}{q(x)}.
 ```
 
 Two forms approximate that expectation from draws $x_i\sim q$—**ordinary** and **weighted** importance sampling (see ):

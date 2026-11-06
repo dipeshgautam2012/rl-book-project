@@ -11,7 +11,7 @@ x=\text{2+2}.
 ```
 The model answers with a short token sequence. Several responses are possible:
 ```math
-y^{(1)}=(\text{it},\,\text{is},\,4),\qquady^{(2)}=(\text{it},\,\text{is},\,5),\qquady^{(3)}=(\text{it},\,\text{equals},\,4).
+y^{(1)}=(\text{it},\,\text{is},\,4),\qquad y^{(2)}=(\text{it},\,\text{is},\,5),\qquad y^{(3)}=(\text{it},\,\text{equals},\,4).
 ```
 One reply is “it is 4”, another “it is 5”, and another “it equals 4”. Here $y^{(1)}$ and $y^{(3)}$ are both correct in substance but use different middle tokens; $y^{(2)}$ is wrong. A person comparing a pair marks a preference—e.g. $y^{(1)}$ over $y^{(2)}$, or either of $y^{(1)}$ and $y^{(3)}$ over $y^{(2)}$. There is no environment function that returns a reward after each token—only that kind of judgment on full answers. Asking humans to give an absolute score to every sample is slow and noisy; picking the better of two is easier.
 
@@ -148,7 +148,7 @@ Those steps raise $r_\phi(x,y_w)$ relative to $r_\phi(x,y_l)$. After training, $
 
 > [!NOTE]
 >
-> Input: differentiable score $r_\phi(x,y)$; preference triples $\{(x^{(i)},y_w^{(i)},y_l^{(i)})\}_{i=1}^{N}$; step size $\alpha_\phi$; number of epochs $E$.
+> Input: differentiable score $r_\phi(x,y)$; preference triples $\lbrace(x^{(i)},y_w^{(i)},y_l^{(i)})\rbrace_{i=1}^{N}$; step size $\alpha_\phi$; number of epochs $E$.
 >
 > Output: trained reward model $r_\phi$.
 >
@@ -204,7 +204,7 @@ y_w=(\text{it},\,\text{is},\,4)\succ y_l=(\text{it},\,\text{is},\,5)
 
 For example, a forward pass might return
 ```math
-r_\phi(x,y_w)=0.8,\qquadr_\phi(x,y_l)=-0.5,\qquadr_\phi\bigl(x,(4,\,4,\,4)\bigr)=2.4.
+r_\phi(x,y_w)=0.8,\qquad r_\phi(x,y_l)=-0.5,\qquad r_\phi\bigl(x,(4,\,4,\,4)\bigr)=2.4.
 ```
 The junk reply $(4,\,4,\,4)$ was never preferred, yet its features can still trigger a high $r_\phi$, so the $\theta$-update increases $\pi_\theta\bigl((4,\,4,\,4)\mid x\bigr)$. If instead $r_\phi$ scored that string low (negative), the same update would decrease that probability. Nothing in the naive algorithm stops the high-score case.
 

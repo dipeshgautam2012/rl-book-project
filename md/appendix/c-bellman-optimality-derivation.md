@@ -7,13 +7,13 @@ The goal is to derive the Bellman optimality equations (C.2) and (C.5).
 ## Definitions
 
 ```math
-V^*(s) = \max_\pi V^\pi(s),\qquadQ^*(s,a) = \max_\pi Q^\pi(s,a).
+V^*(s) = \max_\pi V^\pi(s),\qquad Q^*(s,a) = \max_\pi Q^\pi(s,a).
 ```
 
 Equivalently,
 
 ```math
-V^*(s)=\max_\pi\mathbb{E}_\pi[G_t \mid S_t=s],\qquadQ^*(s,a)=\max_\pi\mathbb{E}_\pi[G_t \mid S_t=s, A_t=a].
+V^*(s)=\max_\pi\mathbb{E}_\pi[G_t \mid S_t=s],\qquad Q^*(s,a)=\max_\pi\mathbb{E}_\pi[G_t \mid S_t=s, A_t=a].
 ```
 
 We expand $V^*$ first, then $Q^*$.

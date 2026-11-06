@@ -28,7 +28,7 @@ V^\pi(s)\approx\frac{1}{N}\sum_{i=1}^{N} G^{(i)}(s),
 and the next return is folded in with step-size $\alpha$ as in (4.3)—the **Monte Carlo** update
 
 ```math
-V(S_t)\leftarrowV(S_t)+\alpha\bigl(G_t-V(S_t)\bigr).
+V(S_t)\leftarrow V(S_t)+\alpha\bigl(G_t-V(S_t)\bigr).
 ```
 
 (Here $\alpha=1/(N{+}1)$ recovers an exact sample mean after $N$ prior samples for that state.) Because $G_t$ is built only from observed rewards, there is no sum over $P$ and no lookup of $V(S_{t+1})$. Two difficulties remain. First, $G_t$ stacks many random rewards, so the return from a given state has high variance across visits. Second, $G_t$ is known only when the episode ends, so updates wait for termination: long episodes delay learning, and continuing tasks do not fit.
@@ -58,7 +58,7 @@ The update (5.2) steps $V(S_t)$ toward the backup $R_{t+1}+\gamma V(S_{t+1})$. T
 Equivalently, (5.2) is
 
 ```math
-V(S_t)\leftarrowV(S_t)+\alpha\,\delta_t.
+V(S_t)\leftarrow V(S_t)+\alpha\,\delta_t.
 ```
 
 If $\delta_t>0$, then $R_{t+1}+\gamma V(S_{t+1})>V(S_t)$, so $V(S_t)$ increases; if $\delta_t<0$, it decreases. That push and pull of $V$ by $\delta_t$ is the learning rule. The lookup $V(S_{t+1})$ in the backup is the bootstrap; $V(S_t)$ is only the prediction being corrected. Both come from the table, so $V$ must be initialized before the first step (an arbitrary table; a common choice is $V\equiv 0$). If $S_{t+1}$ is terminal, take $V(S_{t+1})=0$ and the backup is just $R_{t+1}$.

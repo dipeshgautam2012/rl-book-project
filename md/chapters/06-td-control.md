@@ -34,7 +34,7 @@ U_t=R_{t+1}+\gamma Q(S_{t+1},A_{t+1}).
 Stepping $Q(S_t,A_t)$ toward $U_t$ with step-size $\alpha$ is (5.2) on pairs; the expanded and $\delta$ forms are the same update:
 
 ```math
-\begin{aligned}Q(S_t,A_t)&\leftarrowQ(S_t,A_t)+\alpha\bigl[R_{t+1}+\gamma Q(S_{t+1},A_{t+1})-Q(S_t,A_t)\bigr]\\&=Q(S_t,A_t)+\alpha\,\delta_t.\end{aligned}\quad (6.3)
+\begin{aligned}Q(S_t,A_t)&\leftarrow Q(S_t,A_t)+\alpha\bigl[R_{t+1}+\gamma Q(S_{t+1},A_{t+1})-Q(S_t,A_t)\bigr]\\&=Q(S_t,A_t)+\alpha\,\delta_t.\end{aligned}\quad (6.3)
 ```
 
 Because $A_{t+1}$ is chosen the same way as $A_t$, both from the behavior $\pi$, the actions in the backup match how we act, and the table estimates $Q^\pi$ for that same $\pi$. That is what **on-policy** means here. Recall that a **policy** is only the rule for picking an action given the state (Section 1.1), not the $Q$ table itself. Here that rule is $\varepsilon$-greedy in the **current** $Q$. With probability $1-\varepsilon$ take $\arg\max_a Q(s,a)$, otherwise pick uniformly in $\mathcal{A}$. Step 1 sets $Q(s,a)$ arbitrarily; $S_{t+1}$ comes from the environment after we take $A_t$; then $A_{t+1}$ is sampled from that $\varepsilon$-greedy $\pi$. As $Q$ improves, the same $\varepsilon$-greedy rule (now reading the new $Q$) is the updated behavior. That is evaluate–improve as in Monte Carlo control, but with a one-step TD evaluate step. The algorithm also returns $\pi'(s)=\arg\max_a Q(s,a)$. That $\pi'$ is greedy in the finished $Q$, not the $\varepsilon$-greedy $\pi$ used while learning.
@@ -140,7 +140,7 @@ U_t=R_{t+1}+\gamma\max_{a'} Q(S_{t+1},a').
 Stepping $Q(S_t,A_t)$ toward $U_t$ is the same $\alpha$-update as (6.3), with this backup:
 
 ```math
-\begin{aligned}Q(S_t,A_t)&\leftarrowQ(S_t,A_t)+\alpha\bigl[R_{t+1}+\gamma\max_{a'} Q(S_{t+1},a')-Q(S_t,A_t)\bigr]\\&=Q(S_t,A_t)+\alpha\,\delta_t.\end{aligned}\quad (6.6)
+\begin{aligned}Q(S_t,A_t)&\leftarrow Q(S_t,A_t)+\alpha\bigl[R_{t+1}+\gamma\max_{a'} Q(S_{t+1},a')-Q(S_t,A_t)\bigr]\\&=Q(S_t,A_t)+\alpha\,\delta_t.\end{aligned}\quad (6.6)
 ```
 
 Unlike SARSA, where both the current action $A_t$ and the next action $A_{t+1}$ are chosen by the same behavior policy (e.g. $\varepsilon$-greedy in $Q$), Q-learning does not put a behavior-sampled $A_{t+1}$ in the backup. The next action is whichever $a'$ currently maximizes $Q(S_{t+1},a')$. Acting may still use $\varepsilon$-greedy for $A_t$ to explore; only how the backup treats the next action differs. That is why Q-learning is **off-policy**. No importance-sampling weights are needed. The $\max$ already puts the greedy target inside the one-step backup.
@@ -231,7 +231,7 @@ At state $s$, write $A^*=\arg\max_a Q(s,a)$ (break ties by any fixed rule). Beca
 Every other action appears only on the uniform draw, each with probability $\varepsilon/\lvert\mathcal{A}\rvert$. For $\varepsilon\in(0,1]$,
 
 ```math
-\pi(a\mid s)=\begin{cases}1-\varepsilon+\dfrac{\varepsilon}{\lvert\mathcal{A}\rvert},&\text{if }a=A^*,\\[0.75em]\dfrac{\varepsilon}{\lvert\mathcal{A}\rvert},&\text{if }a\neq A^*.\end{cases}\quad (6.7)
+\pi(a\mid s)=\begin{cases}1-\varepsilon+\dfrac{\varepsilon}{\lvert\mathcal{A}\rvert},&\text{if }a=A^*,\\dfrac{\varepsilon}{\lvert\mathcal{A}\rvert},&\text{if }a\neq A^*.\end{cases}\quad (6.7)
 ```
 
 When $\varepsilon=0$, (6.7) is greedy. When $\varepsilon=1$, it is uniform. A fixed $\varepsilon>0$ explores forever, which helps coverage but keeps the behavior away from the greedy $\pi^*$. A common remedy is to shrink $\varepsilon$ over episodes $k=0,1,2,\ldots$ by a geometric factor. Writing $\varepsilon_k=\varepsilon_0^k$ does not work when the start is $\varepsilon_0=1$ (then $1^k=1$ forever), and it ties the starting level to the decay speed. Keep them separate: start at $\varepsilon_0\in(0,1]$ and multiply by $\lambda^k$ with $\lambda\in(0,1)$,

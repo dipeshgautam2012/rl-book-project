@@ -54,7 +54,7 @@ The policy update is the **single-episode** estimate of (10.1), as (9.8) was for
 Comparing (10.2) and (10.3) with gradient descent gives the losses. In $L(\theta)$, both $G_t$ and $\hat{V}(S_t;\mathbf{w})$ are fixed numbers:
 
 ```math
-L(\mathbf{w})=\frac12\sum_{t=0}^{T-1}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)^2,\qquadL(\theta)=-\sum_{t=0}^{T-1}\gamma^{t}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)\,\log\pi_\theta(A_t\mid S_t).\quad (10.4)
+L(\mathbf{w})=\frac12\sum_{t=0}^{T-1}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)^2,\qquad L(\theta)=-\sum_{t=0}^{T-1}\gamma^{t}\bigl(G_t-\hat{V}(S_t;\mathbf{w})\bigr)\,\log\pi_\theta(A_t\mid S_t).\quad (10.4)
 ```
 
 Both updates use the same differences $G_t-\hat{V}(S_t;\mathbf{w})$, with $\hat{V}$ evaluated at the $\mathbf{w}$ from before this episode’s value step. That keeps the baseline a function of $S_t$ alone. If $\mathbf{w}$ were first adjusted to match this episode’s $G_t$ and then $\hat{V}$ were recomputed for (10.3), the baseline would depend on the episode’s actions $A_t$, and $\mathbb{E}\bigl[\hat{V}(S_t;\mathbf{w})\,\nabla_\theta\log\pi_\theta(A_t\mid S_t)\bigr]$ need not be zero. The order of the two parameter steps does not matter once those differences are fixed.
@@ -248,7 +248,7 @@ After each transition, update both with the same $\delta_t$ (evaluated before th
 With $U_t$ and $\delta_t$ treated as fixed numbers, the losses are
 
 ```math
-L(\mathbf{w})=\frac12\bigl(U_t-\hat{V}(S_t;\mathbf{w})\bigr)^2,\qquadL(\theta)=-\gamma^{t}\delta_t\,\log\pi_\theta(A_t\mid S_t).\quad (10.10)
+L(\mathbf{w})=\frac12\bigl(U_t-\hat{V}(S_t;\mathbf{w})\bigr)^2,\qquad L(\theta)=-\gamma^{t}\delta_t\,\log\pi_\theta(A_t\mid S_t).\quad (10.10)
 ```
 
 Compute $\delta_t$ with the current $\mathbf{w}$ before either parameter step. The algorithm below updates $\mathbf{w}$ first, then $\theta$, both with that same $\delta_t$. As in Section 10.1, once $\delta_t$ is fixed the order of the two steps does not matter.

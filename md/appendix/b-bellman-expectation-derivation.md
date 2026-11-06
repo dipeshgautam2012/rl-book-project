@@ -139,13 +139,7 @@ Recall (B.8). Substitute (B.9) and (B.10):
 Factor the common terms:
 
 ```math
-\boxed{V^\pi(s)=\sum_a\pi(a\mid s)\sum_{s',r}P(s',r\mid s,a)
-```
-
-[
-
-```math
-r+\gamma V^\pi(s')]}
+\boxed{V^\pi(s)=\sum_a\pi(a\mid s)\sum_{s',r}P(s',r\mid s,a)\bigl[r+\gamma V^\pi(s')\bigr]}
 ```
 
 This is the **Bellman Expectation Equation** (B.1).
@@ -291,23 +285,11 @@ Expand over $S_{t+1}$ by (A.7). Markov (A.11) drops $(s,a)$ given $s'$; the inne
 Substitute (B.15) and (B.16):
 
 ```math
-\begin{aligned}Q^\pi(s,a)&=\mathbb{E}_\pi[R_{t+1}\mid S_t=s,A_t=a]+\gamma\mathbb{E}_\pi[G_{t+1}\mid S_t=s,A_t=a] \\&=\sum_{s',r}rP(s',r\mid s,a)+\gamma\sum_{s',r}P(s',r\mid s,a)V^\pi(s') \\&=\sum_{s',r}P(s',r\mid s,a)\end{aligned}
-```
-
-[
-
-```math
-r+\gamma V^\pi(s')].
+\begin{aligned}Q^\pi(s,a)&=\mathbb{E}_\pi[R_{t+1}\mid S_t=s,A_t=a]+\gamma\mathbb{E}_\pi[G_{t+1}\mid S_t=s,A_t=a] \\&=\sum_{s',r}rP(s',r\mid s,a)+\gamma\sum_{s',r}P(s',r\mid s,a)V^\pi(s') \\&=\sum_{s',r}P(s',r\mid s,a)\bigl[r+\gamma V^\pi(s')\bigr]\end{aligned}
 ```
 
 ```math
-\boxed{Q^\pi(s,a)=\sum_{s',r}P(s',r\mid s,a)
-```
-
-[
-
-```math
-r+\gamma V^\pi(s')]}
+\boxed{Q^\pi(s,a)=\sum_{s',r}P(s',r\mid s,a)\bigl[r+\gamma V^\pi(s')\bigr]}
 ```
 
 ### Write $V^\pi(s')$ in terms of $Q^\pi$
@@ -321,13 +303,7 @@ V^\pi(s')=\sum_{a'}\pi(a'\mid s')\, Q^\pi(s',a')\quad\text{[(B.14)]}.
 Substitute into (B.17):
 
 ```math
-\boxed{Q^\pi(s,a)=\sum_{s',r}P(s',r\mid s,a)
-```
-
-[
-
-```math
-r+\gamma\sum_{a'}\pi(a'\mid s')Q^\pi(s',a')]}
+\boxed{Q^\pi(s,a)=\sum_{s',r}P(s',r\mid s,a)\bigl[r+\gamma\sum_{a'}\pi(a'\mid s')Q^\pi(s',a')\bigr]}
 ```
 
 ### Compact one-step form
@@ -349,7 +325,7 @@ Expanding the right-hand side over $P$ and $\pi$ recovers (B.2).
 Sections B.3--B.4 expand the Bellman equations as sums over $\pi$ and $P$. Later chapters often need the same links written only with expectations. Recall the definitions (B.7) and (B.13):
 
 ```math
-V^\pi(s)=\mathbb{E}_\pi[G_t\mid S_t=s],\qquadQ^\pi(s,a)=\mathbb{E}_\pi[G_t\mid S_t=s,A_t=a].
+V^\pi(s)=\mathbb{E}_\pi[G_t\mid S_t=s],\qquad Q^\pi(s,a)=\mathbb{E}_\pi[G_t\mid S_t=s,A_t=a].
 ```
 
 ### $V^\pi$ from $Q^\pi$
@@ -401,6 +377,6 @@ Expanding over $P$ recovers (B.17).
 The same pattern with only state-values or only action-values is (B.11) and (B.18):
 
 ```math
-V^\pi(s)=\mathbb{E}_\pi\bigl[R_{t+1}+\gamma V^\pi(S_{t+1})\mid S_t=s\bigr],\qquadQ^\pi(s,a)=\mathbb{E}_\pi\bigl[R_{t+1}+\gamma Q^\pi(S_{t+1},A_{t+1})\mid S_t=s,A_t=a\bigr].
+V^\pi(s)=\mathbb{E}_\pi\bigl[R_{t+1}+\gamma V^\pi(S_{t+1})\mid S_t=s\bigr],\qquad Q^\pi(s,a)=\mathbb{E}_\pi\bigl[R_{t+1}+\gamma Q^\pi(S_{t+1},A_{t+1})\mid S_t=s,A_t=a\bigr].
 ```
 

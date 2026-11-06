@@ -84,7 +84,7 @@ So
 \mathbb{E}[X]=\mathbb{E}\bigl[\mathbb{E}[X\mid Y]\bigr].
 ```
 
-The same argument with the event $\{Z=z\}$ in place of the unconditional law gives the conditional tower. Apply (A.7) with $A=\{Z=z\}$ and partition by $Y$:
+The same argument with the event $\lbraceZ=z\rbrace$ in place of the unconditional law gives the conditional tower. Apply (A.7) with $A=\lbraceZ=z\rbrace$ and partition by $Y$:
 
 ```math
 \begin{aligned}\mathbb{E}[X\mid Z=z]&=\sum_y \mathbb{E}[X\mid Z=z,Y=y]\, P(Y=y\mid Z=z)\quad\text{[A.7]}\\&=\sum_y \mathbb{E}[X\mid Y=y,Z=z]\, P(Y=y\mid Z=z).\end{aligned}
@@ -132,15 +132,15 @@ Then
 \begin{aligned}\mathbb{E}[f(X)]&=\mathbb{E}[Y]=\sum_y y\, P(Y=y)\\&=\sum_y y(\sum_{x:\,f(x)=y} P(X=x))\\&=\sum_y(\sum_{x:\,f(x)=y} y\, P(X=x))\\&=\sum_y(\sum_{x:\,f(x)=y} f(x)\, P(X=x))\quad\text{[$y=f(x)$ on each inner sum]}\\&=\sum_x f(x)\, P(X=x).\end{aligned}
 ```
 
-The last equality collapses the nested sums. For each fixed $y$, the inner sum runs only over the group $\{x:f(x)=y\}$: any $x$ with $f(x)\neq y$ is missing from that group. Because $f$ is a function, every $x$ maps to exactly one $y$, so each $x$ appears in **exactly one** group, and every $x$ appears in **some** group. Summing $f(x)\,P(X=x)$ group by group is therefore the same as summing once over all $x$.
+The last equality collapses the nested sums. For each fixed $y$, the inner sum runs only over the group $\lbracex:f(x)=y\rbrace$: any $x$ with $f(x)\neq y$ is missing from that group. Because $f$ is a function, every $x$ maps to exactly one $y$, so each $x$ appears in **exactly one** group, and every $x$ appears in **some** group. Summing $f(x)\,P(X=x)$ group by group is therefore the same as summing once over all $x$.
 
-**Example.** Suppose the possible values of $X$ are $\{1,2,3\}$ and $f(1)=f(2)=a$, $f(3)=b$. The double sum is two groups:
+**Example.** Suppose the possible values of $X$ are $\lbrace1,2,3\rbrace$ and $f(1)=f(2)=a$, $f(3)=b$. The double sum is two groups:
 
 ```math
 \sum_{x:\,f(x)=a} f(x)\,P(X=x)+\sum_{x:\,f(x)=b} f(x)\,P(X=x)=\bigl(f(1)P(X=1)+f(2)P(X=2)\bigr)+f(3)P(X=3),
 ```
 
-which is exactly $\sum_{x\in\{1,2,3\}} f(x)\,P(X=x)$. In the $a$-group, $x=3$ is missing; in the $b$-group, $x=1$ and $x=2$ are missing; no $x$ appears in both.
+which is exactly $\sum_{x\in\lbrace1,2,3\rbrace} f(x)\,P(X=x)$. In the $a$-group, $x=3$ is missing; in the $b$-group, $x=1$ and $x=2$ are missing; no $x$ appears in both.
 
 (The same steps with $P(\,\cdot\mid A)$ give $\mathbb{E}[f(X)\mid A]=\sum_x f(x)\,P(X=x\mid A)$.)
 
@@ -258,7 +258,7 @@ Expectation is still (A.2): $\mathbb{E}[Y]=\sum_y y\,P(Y=y)$. When $Y=f(X)$ and 
 Often we **cannot** (or do not) sample from $p$. Instead we have samples from a different distribution $q$ (the **proposal** or **behavior** distribution), with $q(x)>0$ whenever $p(x)>0$ and $f(x)\neq 0$. A plain average under $q$ estimates $\mathbb{E}_{x\sim q}[f(x)]$, which is the wrong target. Importance sampling rewrites the $p$-expectation as a $q$-expectation by inserting the ratio $p/q$: 
 
 ```math
-\begin{aligned}\mathbb{E}_{x\sim p}[f(x)]&=\sum_x f(x)\, p(x)\\&=\sum_x f(x)\, \frac{p(x)}{q(x)}\, q(x)\\&=\sum_x w(x)\, f(x)\, q(x)\\&=\mathbb{E}_{x\sim q}\bigl[w(x)\, f(x)\bigr],\qquadw(x)=\frac{p(x)}{q(x)}.\end{aligned}
+\begin{aligned}\mathbb{E}_{x\sim p}[f(x)]&=\sum_x f(x)\, p(x)\\&=\sum_x f(x)\, \frac{p(x)}{q(x)}\, q(x)\\&=\sum_x w(x)\, f(x)\, q(x)\\&=\mathbb{E}_{x\sim q}\bigl[w(x)\, f(x)\bigr],\qquad w(x)=\frac{p(x)}{q(x)}.\end{aligned}
 ```
 
 The weight has mean one under $q$:

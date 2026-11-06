@@ -61,10 +61,10 @@ y=r+\gamma(1-d)\max_{a'}\hat{Q}(s',a';\theta^-).\quad (8.2)
 
 When $d=1$ (terminal $s'$), the factor $(1-d)$ is $0$, so the $\max\hat{Q}$ term drops out and $y=r$: there is no bootstrap return from a terminal state. When $d=0$, (8.2) is $r+\gamma\max_{a'}\hat{Q}(s',a';\theta^-)$. So (8.2) is $U_t$ from (8.1), with $\theta^-$ in the bootstrap and $(1-d)$ writing the terminal case.
 
-DQN samples a minibatch of $B$ experiences $\{(s_j,a_j,r_j,s'_j,d_j)\}_{j=1}^{B}$ from $\mathcal{D}$ and applies (8.2) to each:
+DQN samples a minibatch of $B$ experiences $\lbrace(s_j,a_j,r_j,s'_j,d_j)\rbrace_{j=1}^{B}$ from $\mathcal{D}$ and applies (8.2) to each:
 
 ```math
-y_j=r_j+\gamma(1-d_j)\max_{a'}\hat{Q}(s'_j,a';\theta^-),\qquadj=1,\ldots,B.\quad (8.3)
+y_j=r_j+\gamma(1-d_j)\max_{a'}\hat{Q}(s'_j,a';\theta^-),\qquad j=1,\ldots,B.\quad (8.3)
 ```
 
 Neither side of that difference is the true $Q^*$: $y_j$ is a bootstrap TD target from (8.2), and $\hat{Q}(s_j,a_j;\theta)$ is the online prediction. The one-step error on sample $j$ is still written $y_j-\hat{Q}(s_j,a_j;\theta)$, treating $y_j$ as the regression target. Averaging the squared errors gives the minibatch objective
@@ -111,7 +111,7 @@ Compared with (8.1), the experiences come from replay and the bootstrap uses $\t
 >
 >       - If $|\mathcal{D}|\geq B$:
 >
->         - Sample a minibatch of $B$ experiences $\{(s_j,a_j,r_j,s'_j,d_j)\}_{j=1}^{B}$ uniformly from $\mathcal{D}$.
+>         - Sample a minibatch of $B$ experiences $\lbrace(s_j,a_j,r_j,s'_j,d_j)\rbrace_{j=1}^{B}$ uniformly from $\mathcal{D}$.
 >
 >         - For each $j=1,\ldots,B$:
 >
@@ -243,13 +243,13 @@ y=r+\gamma(1-d)\max_{a'}\hat{Q}(s',a';\theta^-),
 i.e. select and evaluate with $\theta^-$:
 
 ```math
-a^*=\arg\max_{a'}\hat{Q}(s',a';\theta^-),\qquady=r+\gamma(1-d)\,\hat{Q}(s',a^*;\theta^-).
+a^*=\arg\max_{a'}\hat{Q}(s',a';\theta^-),\qquad y=r+\gamma(1-d)\,\hat{Q}(s',a^*;\theta^-).
 ```
 
 Double DQN selects with $\theta$ instead:
 
 ```math
-a^*=\arg\max_{a'}\hat{Q}(s',a';\theta),\qquady=r+\gamma(1-d)\,\hat{Q}(s',a^*;\theta^-).
+a^*=\arg\max_{a'}\hat{Q}(s',a';\theta),\qquad y=r+\gamma(1-d)\,\hat{Q}(s',a^*;\theta^-).
 ```
 
 For a minibatch:

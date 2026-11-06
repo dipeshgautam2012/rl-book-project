@@ -17,7 +17,7 @@ We are not training those published systems (InstructGPT and DeepSeek-R1) in thi
 
 SFT starts from a pretrained checkpoint $\pi_{\mathrm{base}}$ and a dataset of **fixed** prompt–reply pairs
 ```math
-\mathcal{D}_{\mathrm{SFT}}=\bigl\{(x^{(n)}, y^{(n)})\bigr\}_{n=1}^{N}.
+\mathcal{D}_{\mathrm{SFT}}=\bigl\lbrace(x^{(n)}, y^{(n)})\bigr\rbrace_{n=1}^{N}.
 ```
 The replies are written (or already accepted) strings — human demos in InstructGPT, long chain-of-thought traces in a DeepSeek-R1-style cold start. The goal is to raise the probability of those strings: maximize $\pi_\theta(y\mid x)$ on $\mathcal{D}_{\mathrm{SFT}}$. There is no sampler and no reward.
 
@@ -51,7 +51,7 @@ After enough steps, $\pi_\theta(y\mid x)$ is larger than it was under $\pi_{\mat
 
 > [!NOTE]
 >
-> **Input:** pretrained $\pi_{\mathrm{base}}$; $\mathcal{D}_{\mathrm{SFT}}=\{(x^{(n)},y^{(n)})\}$; step size $\alpha$; epochs $E$. **Output:** fine-tuned $\pi_\theta$.
+> **Input:** pretrained $\pi_{\mathrm{base}}$; $\mathcal{D}_{\mathrm{SFT}}=\lbrace(x^{(n)},y^{(n)})\rbrace$; step size $\alpha$; epochs $E$. **Output:** fine-tuned $\pi_\theta$.
 >
 > 1.  Set $\theta\leftarrow\theta_{\mathrm{base}}$.
 >
@@ -121,11 +121,11 @@ r(x,y)=r_{\mathrm{acc}}(x,y)+r_{\mathrm{format}}(y).\quad (12.5)
 ```
 No $\phi$ is trained, and humans do not label each sampled $y$. Each prompt $x$ in $\mathcal{D}$ is stored with a **key** the policy does not see — a gold answer or unit tests — and the verifier uses that key to score $y$. The two terms in (12.5) are $0$–$1$ checkers:
 
-- $r_{\mathrm{format}}(y)\in\{0,1\}$: $1$ if the reply has the required format (for example `<think>…</think>` tags).
+- $r_{\mathrm{format}}(y)\in\lbrace0,1\rbrace$: $1$ if the reply has the required format (for example `<think>…</think>` tags).
 
-- $r_{\mathrm{acc}}(x,y)\in\{0,1\}$: $1$ if the extracted answer matches the key. Math: take only a specified slot such as `\{}boxed{…}` and match gold (numbers as numbers; expressions with a computer-algebra check). Code: run tests. If that slot is missing, $r_{\mathrm{acc}}=0$ even when the digits appear in prose. The chain of thought is not scored.
+- $r_{\mathrm{acc}}(x,y)\in\lbrace0,1\rbrace$: $1$ if the extracted answer matches the key. Math: take only a specified slot such as `\{}boxed{…}` and match gold (numbers as numbers; expressions with a computer-algebra check). Code: run tests. If that slot is missing, $r_{\mathrm{acc}}=0$ even when the digits appear in prose. The chain of thought is not scored.
 
-Adding them gives $r\in\{0,1,2\}$. For example, take $x=$ `2+2` with gold $4$. A tagged reply with `\{}boxed{4}` scores $r=2$; tagged with `\{}boxed{5}` scores $r=1$; untagged `the answer is 4` scores $r=0$ if $r_{\mathrm{acc}}$ looks only in the boxed slot.
+Adding them gives $r\in\lbrace0,1,2\rbrace$. For example, take $x=$ `2+2` with gold $4$. A tagged reply with `\{}boxed{4}` scores $r=2$; tagged with `\{}boxed{5}` scores $r=1$; untagged `the answer is 4` scores $r=0$ if $r_{\mathrm{acc}}$ looks only in the boxed slot.
 
 Those scores are a design choice. If $r_{\mathrm{acc}}$ also accepts the number in prose, the same untagged reply `the answer is 4` scores $r=1$.
 
@@ -139,7 +139,7 @@ We do not implement those papers’ models or training stack. We follow a simila
 
 Fix one prompt $x\in\mathcal{D}$ with a key. Copy $\theta_{\mathrm{old}}\leftarrow\theta$. **Sample** a group of $G$ replies, i.i.d. given that same $x$:
 ```math
-y^{(1)},\ldots,y^{(G)}\sim\pi_{\theta_{\mathrm{old}}}(\cdot\mid x),\qquady^{(i)}=\bigl(y^{(i)}_1,\ldots,y^{(i)}_{T_i}\bigr).
+y^{(1)},\ldots,y^{(G)}\sim\pi_{\theta_{\mathrm{old}}}(\cdot\mid x),\qquad y^{(i)}=\bigl(y^{(i)}_1,\ldots,y^{(i)}_{T_i}\bigr).
 ```
 The sampling condition is only $x$: reply $i$ does not see the other replies. As in (11.1), each $y^{(i)}$ is generated with
 ```math
@@ -250,13 +250,13 @@ def grpo(pi_start, beta=0.1, G=4, alpha=0.05, max_iters=1000, E=4, eps=0.2, delt
 
 GRPO learns from its **own** samples, but a small SFT on **filtered** traces is still useful: keep only replies that pass a checker, then start from $\pi_{\mathrm{base}}$ and run SFT on those keepers to update $\theta$ (Section 12.1).
 
-The keep-chance is a **hard filter** $f(x,y)\in\{0,1\}$: $f=1$ only if $r_{\mathrm{acc}}=1$ and $r_{\mathrm{format}}=1$ (optionally also a readability check). Sample $y\sim\pi(\cdot\mid x)$ from the current rollout policy (usually the actor after GRPO). If $f=1$, keep the pair; if $f=0$, drop it. That is the hard-filter special case of **rejection sampling**, derived in .
+The keep-chance is a **hard filter** $f(x,y)\in\lbrace0,1\rbrace$: $f=1$ only if $r_{\mathrm{acc}}=1$ and $r_{\mathrm{format}}=1$ (optionally also a readability check). Sample $y\sim\pi(\cdot\mid x)$ from the current rollout policy (usually the actor after GRPO). If $f=1$, keep the pair; if $f=0$, drop it. That is the hard-filter special case of **rejection sampling**, derived in .
 
 > [!NOTE]
 >
 > **Kept mix.** A kept reply has distribution
 > ```math
-> p(y\mid x)=\frac{\pi(y\mid x)\,f(x,y)}{Z(x)},\qquadZ(x)=P(f=1\mid x).
+> p(y\mid x)=\frac{\pi(y\mid x)\,f(x,y)}{Z(x)},\qquad Z(x)=P(f=1\mid x).
 > ```
 > This is only the closed form of that mix (). The algorithm never uses it: it samples from $\pi$ and checks $f$.
 >
@@ -266,7 +266,7 @@ Let $\mathcal{D}_{\mathrm{keep}}$ be the kept pairs and $\mathcal{D}_{\mathrm{ge
 
 > [!NOTE]
 >
-> **Input:** rollout $\pi$; prompts $\mathcal{D}$; filter $f\in\{0,1\}$; optional $\mathcal{D}_{\mathrm{gen}}$; $\pi_{\mathrm{base}}$; step size $\alpha$. **Output:** SFT policy $\pi_\theta$.
+> **Input:** rollout $\pi$; prompts $\mathcal{D}$; filter $f\in\lbrace0,1\rbrace$; optional $\mathcal{D}_{\mathrm{gen}}$; $\pi_{\mathrm{base}}$; step size $\alpha$. **Output:** SFT policy $\pi_\theta$.
 >
 > 1.  $\mathcal{D}_{\mathrm{keep}}\leftarrow\emptyset$.
 >

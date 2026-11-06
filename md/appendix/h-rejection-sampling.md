@@ -15,11 +15,11 @@ q(\mathrm{red})=q(\mathrm{green})=q(\mathrm{blue})=q(\mathrm{yellow})=\tfrac14,
 ```
 
 ```math
-p(\mathrm{red})=40\%,\quadp(\mathrm{green})=30\%,\quadp(\mathrm{blue})=20\%,\quadp(\mathrm{yellow})=10\%,
+p(\mathrm{red})=40\%,\quad p(\mathrm{green})=30\%,\quad p(\mathrm{blue})=20\%,\quad p(\mathrm{yellow})=10\%,
 ```
 
 ```math
-a(\mathrm{red})=80\%,\quada(\mathrm{green})=60\%,\quada(\mathrm{blue})=40\%,\quada(\mathrm{yellow})=20\%.
+a(\mathrm{red})=80\%,\quad a(\mathrm{green})=60\%,\quad a(\mathrm{blue})=40\%,\quad a(\mathrm{yellow})=20\%.
 ```
 
  The die is compared to $a$, not to $p$. $q$ is the jar-draw probability.
@@ -52,7 +52,7 @@ Write $c$ for a color. Draw $N$ beans from the jar. About $N\,q(c)$ of them are 
 You want that bowl fraction to equal the target: 
 
 ```math
-\frac{q(c)\,a(c)}{P(\mathrm{accept})}=p(c)\qquad\Rightarrow\qquada(c)=\frac{p(c)\,P(\mathrm{accept})}{q(c)}.
+\frac{q(c)\,a(c)}{P(\mathrm{accept})}=p(c)\qquad\Rightarrow\qquad a(c)=\frac{p(c)\,P(\mathrm{accept})}{q(c)}.
 ```
 
  $P(\mathrm{accept})$ is the same for every color. Call it $1/M$ (so $M=1/P(\mathrm{accept})\ge 1$). Then 
@@ -82,9 +82,9 @@ The accepted $X$ has law $p$.
 
 ## Hard filter
 
-Same rejection loop, but the keep-chance is only $0$ or $1$: $a(\cdot)\in\{0,1\}$. No die and no $U$. Keep for sure or drop for sure.
+Same rejection loop, but the keep-chance is only $0$ or $1$: $a(\cdot)\in\lbrace0,1\rbrace$. No die and no $U$. Keep for sure or drop for sure.
 
-Let $\pi(y\mid x)$ be easy to sample. Filter $f(x,y)\in\{0,1\}$. That filter **is** the keep-chance: $a(y)=f(x,y)$. Copy (H.1) with $q\to\pi(\cdot\mid x)$, $a\to f$, and color $c\to$ reply $y$ (prompt $x$ fixed): 
+Let $\pi(y\mid x)$ be easy to sample. Filter $f(x,y)\in\lbrace0,1\rbrace$. That filter **is** the keep-chance: $a(y)=f(x,y)$. Copy (H.1) with $q\to\pi(\cdot\mid x)$, $a\to f$, and color $c\to$ reply $y$ (prompt $x$ fixed): 
 
 ```math
 p(y\mid x)=\frac{\pi(y\mid x)\,f(x,y)}{\sum_{y'} \pi(y'\mid x)\,f(x,y')}.
@@ -102,8 +102,8 @@ Z(x)=\sum_{y'} \pi(y'\mid x)\,f(x,y')=P(f=1\mid x).
 p(y\mid x)=\frac{\pi(y\mid x)\,f(x,y)}{Z(x)}.
 ```
 
- If $f=0$, the numerator is $0$, so that $y$ is $0\%$ of the bowl. If $f=1$, $p(y\mid x)=\pi(y\mid x)/Z(x)$ --- the same relative mix as $\pi$, among passers only. This is rejection sampling with $a\in\{0,1\}$ and $M=1/Z(x)$. Accepted $y\sim\pi(\cdot\mid x,\,f=1)$.
+ If $f=0$, the numerator is $0$, so that $y$ is $0\%$ of the bowl. If $f=1$, $p(y\mid x)=\pi(y\mid x)/Z(x)$ --- the same relative mix as $\pi$, among passers only. This is rejection sampling with $a\in\lbrace0,1\rbrace$ and $M=1/Z(x)$. Accepted $y\sim\pi(\cdot\mid x,\,f=1)$.
 
 Toy: four replies, $\pi=(0.40,0.10,0.30,0.20)$, $f=(1,1,0,0)$. Denominator $Z=0.40+0.10+0+0=0.50$. Then $p=(0.80,0.20,0,0)$. Same shape as $N=100$ beans: keep $40$ and $10$, drop $30$ and $20$, bowl size $50$, fractions $40/50$ and $10/50$.
 
-The loop **never uses** $Z$. The die is compared to $a$, not to the overall keep rate; $Z$ is that overall keep rate, so it is not the cutoff. Here $a=f\in\{0,1\}$, so you skip the die ($f=1$ always keep, $f=0$ always drop). The steps only sample from $\pi$ and check $f$.
+The loop **never uses** $Z$. The die is compared to $a$, not to the overall keep rate; $Z$ is that overall keep rate, so it is not the cutoff. Here $a=f\in\lbrace0,1\rbrace$, so you skip the die ($f=1$ always keep, $f=0$ always drop). The steps only sample from $\pi$ and check $f$.
